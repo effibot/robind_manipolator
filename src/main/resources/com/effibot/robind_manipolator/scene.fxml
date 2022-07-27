@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.SegmentedButton?>
+
+<SplitPane fx:id="mainView" dividerPositions="0.325" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="768.0" prefWidth="514.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.effibot.robind_manipolator.SceneController">
+  <items>
+    <AnchorPane fx:id="topAnchor" minHeight="0.0" minWidth="0.0" prefHeight="256.0" prefWidth="514.0">
+         <children>
+            <SplitPane fx:id="topSplit" dividerPositions="0.49" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane fx:id="leftAnchor" minHeight="0.0" minWidth="0.0" prefHeight="256.0" prefWidth="256.0">
+                     <children>
+                        <TabPane fx:id="tabPane" prefHeight="256.0" prefWidth="256.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <tabs>
+                            <Tab fx:id="setupTab" text="Setup">
+                                 <content>
+                                    <AnchorPane fx:id="paneOne">
+                                       <children>
+                                          <Button fx:id="cont" layoutX="126.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onContinueButtonClick" text="Continua" AnchorPane.topAnchor="136.0" />
+                                          <Label layoutX="5.0" layoutY="46.0" text="Premi Continua per Chiudere la Visuale dall'Alto e Confermare." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0" />
+                                          <Label layoutX="5.0" layoutY="78.0" text="Premi Annulla per Cancellare l'ultimo Ostacolo posizionato." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
+                                          <Button fx:id="back" layoutX="34.0" layoutY="195.0" mnemonicParsing="false" text="Annulla" AnchorPane.topAnchor="136.0" />
+                                          <Label layoutX="12.0" layoutY="14.0" text="Benvenuti nella schermata di controllo dell'applicazione." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </Tab>
+                            <Tab fx:id="infoTab" text="Info">
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label text="Scegliete l'Oggetto da Cercare" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                          <SegmentedButton layoutX="57.0" layoutY="59.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0" />
+                                          <ToggleButton fx:id="cubeBtn" layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cubo" AnchorPane.topAnchor="30.0" />
+                                          <ToggleButton fx:id="coneBtn" layoutX="73.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cono" AnchorPane.topAnchor="30.0" />
+                                          <ToggleButton fx:id="sphereBtn" layoutX="131.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Sfera" AnchorPane.topAnchor="30.0" />
+                                          <Label layoutX="14.0" layoutY="102.0" text="Il robot è in movimento verso l'ostacolo numero:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
+                                          <Label fx:id="obsNumber" layoutX="131.0" layoutY="76.0" text="obstNumber" textAlignment="CENTER" AnchorPane.topAnchor="77.0">
+                                             <font>
+                                                <Font name="System Bold Italic" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="14.0" layoutY="100.0" text="Il percorso scelto delle celle da attraversare è:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
+                                          <Label fx:id="pathLabel" alignment="TOP_LEFT" layoutX="14.0" layoutY="140.0" text="pathLabel" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="133.0">
+                                             <font>
+                                                <Font name="System Bold Italic" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </content></Tab>
+                          </tabs>
+                        </TabPane>
+                     </children></AnchorPane>
+                <AnchorPane fx:id="rightAnchor" minHeight="0.0" minWidth="0.0" prefHeight="256.0" prefWidth="256.0">
+                     <children>
+                        <ImageView fx:id="basicMap" fitHeight="256.0" fitWidth="256.0" layoutX="11.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children></AnchorPane>
+    <AnchorPane fx:id="bottomAnchor" minHeight="0.0" minWidth="0.0" prefHeight="512.0" prefWidth="512.0">
+         <children>
+            <ImageView fx:id="map" fitHeight="512.0" fitWidth="512.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>

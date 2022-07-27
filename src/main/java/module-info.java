@@ -13,4 +13,6 @@ module com.effibot.robind_manipolator {
     requires core;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
+    exports com.effibot.robind_manipolator.Processing;
+    opens com.effibot.robind_manipolator.Processing to javafx.fxml;
 }
