@@ -1,4 +1,6 @@
 package com.effibot.robind_manipolator;
+import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -125,5 +127,15 @@ public class SceneController implements Initializable {
         // Setup delle label di info
         obsNumber.setText("");
         pathLabel.setText("");
+        infoTab.setClosable(true);
+        infoTab.setDisable(true);
     }
+    // Processing 2D setup
+    public ProcessingBase sketch;
+    Application app;
+    public void setJavafxApp(Application jfxApp) {
+        app = jfxApp;
+    }
+    public void setSketch(ProcessingBase sketch) { this.sketch = sketch; }
+
 }

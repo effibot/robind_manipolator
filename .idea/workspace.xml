@@ -4,22 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="project initialization">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/FXController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Obstacle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img/mappaPost.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img/mappaPre.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/scene.fxml" afterDir="false" />
+    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="@feat: processing initializing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/HelloController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/hello-view.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/FXController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Obstacle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Obstacle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,26 +43,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/effi/Desktop/robind_manipolator/src/main/resources/com/effibot/robind_manipolator/img&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.4236038&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/effi/Desktop/robind_manipolator/lib/geomerative",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.4236038",
+    "settings.editor.selected.configurable": "vcs.Git"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/geomerative" />
+      <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/mapImage" />
-      <recent name="$PROJECT_DIR$/lib/processing" />
-      <recent name="$PROJECT_DIR$/lib/peasycam" />
     </key>
   </component>
   <component name="RunManager" selected="Application.com.effibot.robind_manipolator.Main">
@@ -120,8 +112,20 @@
       <workItem from="1658755528267" duration="6111000" />
       <workItem from="1658781437411" duration="7905000" />
       <workItem from="1658824866960" duration="15980000" />
-      <workItem from="1658866495809" duration="10493000" />
+      <workItem from="1658866495809" duration="10795000" />
+      <workItem from="1658998750047" duration="13998000" />
+      <workItem from="1659080985284" duration="2453000" />
+      <workItem from="1659096302037" duration="17641000" />
+      <workItem from="1659192123196" duration="11486000" />
     </task>
+    <task id="LOCAL-00001" summary="@feat: processing initializing">
+      <created>1658881132568</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1658881132568</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,5 +141,23 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="@feat: processing initializing" />
+    <option name="LAST_COMMIT_MESSAGE" value="@feat: processing initializing" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint type="java-exception">
+          <properties class="java.util.ConcurrentModificationException" package="java.util" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+        <breakpoint type="java-exception">
+          <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="9" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

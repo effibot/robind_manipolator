@@ -1,9 +1,10 @@
 package com.effibot.robind_manipolator.Processing;
 
+import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
 
-public abstract class ProcessingBase extends PApplet implements FXController{
-    public FXController controller;
+public abstract class ProcessingBase extends PApplet {
+    public SceneController controller;
     @Override
     public void setup() {
         smooth();

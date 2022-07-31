@@ -1,100 +1,130 @@
 package com.effibot.robind_manipolator.Processing;
 
-import javafx.application.Platform;
+import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
 
 public class P2DMap extends ProcessingBase {
     private final int padding = 10;
-    private final int mapColor = color(102,102,102);
+    private final int mapColor = color(102, 102, 102);
     private final int size = 512;
     private int targetColor;
-    private float targetAlpha = 80f;
-    private float targetR = 30.0f;
-    private boolean click = false;
-    private ArrayList<Obstacle> obsList = new ArrayList<>();
+    private final float targetAlpha = 80f;
+    private final float targetSize = 60.0f;
+
+    private final int colorPass = color(0, 255, 0, targetAlpha);
+    private final int colorFail = color(255, 0, 0, targetAlpha);
+    private ArrayList<Obstacle> obsList;
+
     @Override
     public void settings() {
-        size(size+2*padding, size+2*padding, P2D);
+        size(size + 2 * padding, size + 2 * padding, P2D);
         pixelDensity(1);
-
     }
+
     @Override
     public void setup() {
         super.setup();
         surface.setTitle("Posizionamento Ostacoli");
+        rectMode(CENTER);
+        obsList = new ArrayList<>();
     }
-    public void run(){
+
+    public void run() {
         String[] processingArgs = {"main.java.com.effibot.robind_manipolator.Processing.P2DMap"};
         PApplet.runSketch(processingArgs, this);
     }
-    @Override
-    public void setJavaFX(FXController controller) {
-        /*TODO: define controller for this class and implement it*/
+
+    public void setJavaFX(SceneController controller) {
+        this.controller = controller;
     }
+
     @Override
     public void draw() {
         // background
         setGradient(0, 0, width, height, c1, c2, Y_AXIS);
         fill(mapColor);
         stroke(0);
-        rect(padding, padding,size,size);
+        pushMatrix();
+        translate(width / 2.0f, height / 2.0f);
+        rect(0, 0, size, size);
+        popMatrix();
         noFill();
         noStroke();
-//        translate(width/2.0f, height/2.0f);
-        // obstacle positioning
-        fill(255);
         target();
-        stroke(0);
-        line(0,mouseY,width,mouseY);
-        line(mouseX,0,mouseX,height);
         drawObstacles2D();
-
     }
+
     public int getPadding() {
         return padding;
     }
-    private boolean isDrawable(){
-        return  (mouseX + targetR <= size+padding) && (mouseX - targetR >= padding) &&
-                (mouseY + targetR <= size+padding) && (mouseY - targetR >= padding);
-    }
-    private void targetColorSelect(float targetAlpha){
-        if(isDrawable()) {
-            targetColor =  color(0,255,0,targetAlpha);
+
+    private void targetColorSelect() {
+        // ObsList is empty> checks only if mouse is inside the box
+        if (checkConstrains(mouseX + targetSize / 2, mouseY + targetSize / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX + targetSize / 2, mouseY - targetSize / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX - targetSize / 2, mouseY + targetSize / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX - targetSize / 2, mouseY - targetSize / 2, padding, padding, size, size)) {
+            targetColor = colorPass;
         } else {
-            targetColor =  color(255,0,0,targetAlpha);
+            targetColor = colorFail;
         }
     }
-    void target(){
-        int targetX = 2*(mouseX-padding);
-        int targetY = 2*(mouseY-padding);
+
+    void target() {
         pushMatrix();
-        translate(mouseX,mouseY);
-        targetColorSelect(targetAlpha);
+        translate(mouseX, mouseY);
+        targetColorSelect();
         fill(targetColor);
         noStroke();
-        circle(0,0,2*targetR);
+        rect(0, 0, targetSize, targetSize);
+        noFill();
         popMatrix();
-        if (click && isDrawable()) {
-            click = false;
-            int id = obsList.size();
-            Obstacle obs = new Obstacle(this, targetX, targetY,0,targetR,100,id);
-            obsList.add(obs);
-            fill(targetColor);
-            pushMatrix();
-            translate(mouseX,mouseY);
-            circle(0,0,2*targetR);
-            popMatrix();
+    }
+
+    public void mouseClicked() {
+        int targetX = 2 * (mouseX - padding);
+        int targetY = 2 * (mouseY - padding);
+        if (targetColor == colorPass) {
+            if (!obsList.isEmpty()) {
+                boolean isIn = false;
+                int currSize = obsList.size() - 1;
+                for (int i = 0; i <= currSize; i++) {
+                    Obstacle obs = obsList.get(i);
+                    if (checkConstrains(mouseX, mouseY, obs.getXc() / 2 + padding - obs.getR() / 2,
+                            obs.getYc() / 2 + padding - obs.getR() / 2, obs.getR(), obs.getR())) {
+                        isIn = true;
+                    }
+                }
+                if (!isIn)
+                    addObstacle(targetX, targetY);
+            } else {
+                addObstacle(targetX, targetY);
+            }
+
         }
     }
-    public void mouseClicked(){
-        if(isDrawable()) click = true;
-    }
-    public void drawObstacles2D(){
-        if (!obsList.isEmpty()){
-            for (Obstacle obs : obsList)
+
+    public void drawObstacles2D() {
+        if (!obsList.isEmpty()) {
+            for (Obstacle obs : obsList) {
                 obs.drawObstacle2D();
+            }
         }
+    }
+
+    public void addObstacle(int targetX, int targetY) {
+        int id = obsList.size();
+        Obstacle obs = new Obstacle(this, targetX, targetY, 0, 2 * targetSize, 100, id);
+        obsList.add(obs);
+    }
+
+    boolean checkConstrains(float px, float py, float rx, float ry, float rw, float rh) {
+        // is the point inside the rectangle's bounds?
+        return px >= rx &&          // right of the left edge AND
+                px <= rx + rw &&    // left of the right edge AND
+                py >= ry &&         // below the top AND
+                py <= ry + rh;      // above the bottom
     }
 }

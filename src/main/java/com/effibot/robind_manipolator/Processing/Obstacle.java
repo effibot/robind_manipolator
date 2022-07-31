@@ -9,6 +9,9 @@ public class Obstacle{
     private float r;
     private float h;
     private int id;
+
+
+
     private PApplet p;
     public Obstacle(PApplet p, float xc, float yc, float zc, float r, float h, int id){
         this.xc = xc;
@@ -32,7 +35,63 @@ public class Obstacle{
     public void drawObstacle2D(){
         p.pushMatrix();
         p.fill(150,200,100);
-        p.circle(this.xc/2+10, this.yc/2+10,2*this.r);
+        p.rect(this.xc/2+10, this.yc/2+10,this.r/2,this.r/2);
         p.popMatrix();
     }
+    public float getXc() {
+        return xc;
+    }
+
+    public void setXc(float xc) {
+        this.xc = xc;
+    }
+
+    public float getYc() {
+        return yc;
+    }
+
+    public void setYc(float yc) {
+        this.yc = yc;
+    }
+
+    public float getZc() {
+        return zc;
+    }
+
+    public void setZc(float zc) {
+        this.zc = zc;
+    }
+
+    public float getR() {
+        return r;
+    }
+
+    public void setR(float r) {
+        this.r = r;
+    }
+
+    public float getH() {
+        return h;
+    }
+
+    public void setH(float h) {
+        this.h = h;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public PApplet getP() {
+        return p;
+    }
+
+    public void setP(PApplet p) {
+        this.p = p;
+    }
+
 }
