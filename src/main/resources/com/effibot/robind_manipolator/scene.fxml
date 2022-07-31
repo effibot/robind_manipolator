@@ -60,7 +60,7 @@
                                           <Button fx:id="cont" layoutX="126.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onContinueButtonClick" text="Continua" AnchorPane.topAnchor="136.0" />
                                           <Label layoutX="5.0" layoutY="46.0" text="Premi Continua per Chiudere la Visuale dall'Alto e Confermare." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0" />
                                           <Label layoutX="5.0" layoutY="78.0" text="Premi Annulla per Cancellare l'ultimo Ostacolo posizionato." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
-                                          <Button fx:id="back" layoutX="34.0" layoutY="195.0" mnemonicParsing="false" text="Annulla" AnchorPane.topAnchor="136.0" />
+                                          <Button fx:id="cancel" layoutX="34.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClick" text="Annulla" AnchorPane.topAnchor="136.0" />
                                           <Label layoutX="12.0" layoutY="14.0" text="Benvenuti nella schermata di controllo dell'applicazione." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                        </children>
                                     </AnchorPane>

@@ -3,8 +3,12 @@ package com.effibot.robind_manipolator.Processing;
 import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
 
-public abstract class ProcessingBase extends PApplet {
+import java.util.List;
+
+public abstract class ProcessingBase extends PApplet implements Subject{
     public SceneController controller;
+    protected List<Observer> observers;
+
     @Override
     public void setup() {
         smooth();
@@ -38,4 +42,20 @@ public abstract class ProcessingBase extends PApplet {
             }
         }
     }
+
+    // Observer Pattern implementation to notify the FX controller when new obstacles are added to the map
+    // We added to the base class for further development.
+    @Override
+    public void registerObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public abstract void notifyObservers();
+
 }

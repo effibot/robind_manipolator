@@ -4,8 +4,9 @@ import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class P2DMap extends ProcessingBase {
+public class P2DMap extends ProcessingBase implements Subject{
     private final int padding = 10;
     private final int mapColor = color(102, 102, 102);
     private final int size = 512;
@@ -17,11 +18,17 @@ public class P2DMap extends ProcessingBase {
     private final int colorFail = color(255, 0, 0, targetAlpha);
     private ArrayList<Obstacle> obsList;
 
+    public P2DMap(){
+        observers = new ArrayList<>();
+    }
+
     @Override
     public void settings() {
         size(size + 2 * padding, size + 2 * padding, P2D);
         pixelDensity(1);
     }
+
+
 
     @Override
     public void setup() {
@@ -72,7 +79,7 @@ public class P2DMap extends ProcessingBase {
         }
     }
 
-    void target() {
+    private void target() {
         pushMatrix();
         translate(mouseX, mouseY);
         targetColorSelect();
@@ -106,7 +113,7 @@ public class P2DMap extends ProcessingBase {
         }
     }
 
-    public void drawObstacles2D() {
+    private void drawObstacles2D() {
         if (!obsList.isEmpty()) {
             for (Obstacle obs : obsList) {
                 obs.drawObstacle2D();
@@ -114,17 +121,34 @@ public class P2DMap extends ProcessingBase {
         }
     }
 
-    public void addObstacle(int targetX, int targetY) {
+    private void addObstacle(int targetX, int targetY) {
         int id = obsList.size();
         Obstacle obs = new Obstacle(this, targetX, targetY, 0, 2 * targetSize, 100, id);
         obsList.add(obs);
+        notifyObservers();
     }
 
-    boolean checkConstrains(float px, float py, float rx, float ry, float rw, float rh) {
+    private boolean checkConstrains(float px, float py, float rx, float ry, float rw, float rh) {
         // is the point inside the rectangle's bounds?
         return px >= rx &&          // right of the left edge AND
                 px <= rx + rw &&    // left of the right edge AND
                 py >= ry &&         // below the top AND
                 py <= ry + rh;      // above the bottom
+    }
+
+    public ArrayList<Obstacle> getObstacleList() {
+        return obsList;
+    }
+    // set method to let FX controller remove the last added obstacle to the list.
+    public void setObstacleList(ArrayList<Obstacle> obsList) {
+        this.obsList = obsList;
+        notifyObservers();
+    }
+    @Override
+    public void notifyObservers() {
+        for(Observer observer : observers){
+            observer.update(this);
+        }
+        println(obsList.size());
     }
 }

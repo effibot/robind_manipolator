@@ -1,4 +1,7 @@
 package com.effibot.robind_manipolator;
+import com.effibot.robind_manipolator.Processing.Observer;
+import com.effibot.robind_manipolator.Processing.Obstacle;
+import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -11,9 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class SceneController implements Initializable {
+public class SceneController implements Initializable, Observer {
     @FXML
     private Button back;
 
@@ -85,8 +90,9 @@ public class SceneController implements Initializable {
         tabPane.getSelectionModel().select(infoTab);
     }
     @FXML
-    public void onDismissButtonClick() {
-        //TODO: implementa funzionalità annulla
+    public void onCancelButtonClick() {
+        obsList.remove(obsList.size()-1);
+        ((P2DMap)sketch).setObstacleList((ArrayList<Obstacle>) obsList);
     }
 
     @FXML
@@ -137,5 +143,9 @@ public class SceneController implements Initializable {
         app = jfxApp;
     }
     public void setSketch(ProcessingBase sketch) { this.sketch = sketch; }
-
+    private List<Obstacle> obsList;
+    @Override
+    public void update(Object object) {
+        this.obsList = ((P2DMap)object).getObstacleList();
+    }
 }

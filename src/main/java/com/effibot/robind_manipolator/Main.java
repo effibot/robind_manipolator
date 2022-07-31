@@ -29,9 +29,11 @@ public class Main extends Application {
         stage.show();
         SceneController controller = fxmlLoader.getController();
         controller.setSketch(sketch);
+        sketch.registerObserver(controller);
         controller.setJavafxApp(this);
         sketch.setJavaFX(controller);
         sketch.run();
+
 
     }
     @Override
