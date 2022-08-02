@@ -11,6 +11,8 @@ module com.effibot.robind_manipolator {
     requires eu.hansolo.tilesfx;
     requires peasycam;
     requires core;
+    requires jogl.all;
+    requires java.desktop;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;

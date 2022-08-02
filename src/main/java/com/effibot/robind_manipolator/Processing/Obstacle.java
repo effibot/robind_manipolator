@@ -12,8 +12,8 @@ public class Obstacle{
 
 
 
-    private PApplet p;
-    public Obstacle(PApplet p, float xc, float yc, float zc, float r, float h, int id){
+    private ProcessingBase p;
+    public Obstacle(ProcessingBase p, float xc, float yc, float zc, float r, float h, int id){
         this.xc = xc;
         this.yc = yc;
         this.zc = zc;
@@ -45,53 +45,44 @@ public class Obstacle{
     public void setXc(float xc) {
         this.xc = xc;
     }
-
     public float getYc() {
         return yc;
     }
-
     public void setYc(float yc) {
         this.yc = yc;
     }
-
     public float getZc() {
         return zc;
     }
-
     public void setZc(float zc) {
         this.zc = zc;
     }
-
     public float getR() {
         return r;
     }
-
     public void setR(float r) {
         this.r = r;
     }
-
     public float getH() {
         return h;
     }
-
     public void setH(float h) {
         this.h = h;
     }
-
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public PApplet getP() {
         return p;
     }
-
-    public void setP(PApplet p) {
+    public void setP(ProcessingBase p) {
         this.p = p;
     }
-
+    public void adaptTo3D(){
+        setXc(this.getXc()+p.getPadding());
+        setYc(this.getYc()+p.getPadding());
+    }
 }

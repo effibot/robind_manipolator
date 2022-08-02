@@ -4,14 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="fix: obstacle intersection and position">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Observer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Subject.java" afterDir="false" />
+    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="feat: observer pattern for obstacle positioning and removing.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Reference.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj.mtl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r1c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r2c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.mtl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.mtl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.mtl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.mtl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Obstacle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Obstacle.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,8 +38,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -49,21 +66,21 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/home/effi/Desktop/robind_manipolator/lib/geomerative",
+    "last_opened_file_path": "/home/effi/Desktop/robind_manipolator/src/main/resources/com/effibot/robind_manipolator/models",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.4236038",
-    "settings.editor.selected.configurable": "vcs.Git"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models" />
       <recent name="$PROJECT_DIR$/lib/geomerative" />
       <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator" />
-      <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/mapImage" />
     </key>
   </component>
   <component name="RunManager" selected="Application.com.effibot.robind_manipolator.Main">
@@ -118,7 +135,11 @@
       <workItem from="1659080985284" duration="2453000" />
       <workItem from="1659096302037" duration="17641000" />
       <workItem from="1659192123196" duration="11486000" />
-      <workItem from="1659279005615" duration="7724000" />
+      <workItem from="1659279005615" duration="11227000" />
+      <workItem from="1659301185535" duration="8000" />
+      <workItem from="1659342215076" duration="19246000" />
+      <workItem from="1659427932109" duration="5184000" />
+      <workItem from="1659435100697" duration="17012000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>
@@ -134,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1659279228844</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="feat: observer pattern for obstacle positioning and removing.">
+      <created>1659290516747</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1659290516747</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -154,7 +182,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="@feat: processing initializing" />
     <MESSAGE value="fix: obstacle intersection and position" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: obstacle intersection and position" />
+    <MESSAGE value="feat: observer pattern for obstacle positioning and removing." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: observer pattern for obstacle positioning and removing." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -169,5 +198,9 @@
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

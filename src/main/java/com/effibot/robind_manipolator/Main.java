@@ -32,9 +32,7 @@ public class Main extends Application {
         sketch.registerObserver(controller);
         controller.setJavafxApp(this);
         sketch.setJavaFX(controller);
-        sketch.run();
-
-
+        sketch.run(sketch.getClass().getSimpleName());
     }
     @Override
     public void stop(){

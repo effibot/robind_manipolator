@@ -6,23 +6,31 @@ import processing.core.PApplet;
 import java.util.List;
 
 public abstract class ProcessingBase extends PApplet implements Subject{
-    public SceneController controller;
+    protected SceneController controller;
     protected List<Observer> observers;
+    protected final int padding = 10;
+    protected int size;
+
 
     @Override
     public void setup() {
-        smooth();
+        smooth(8);
     }
     @Override
     public abstract void draw();
+    public void run(String className){
+        String[] processingArgs = {"main.java.com.effibot.robind_manipolator.Processing."+className};
+        PApplet.runSketch(processingArgs, this);
+    }
     @Override
     public abstract void settings();
-    public int Y_AXIS = 1;
-    public int X_AXIS = 2;
-    int c1 = color(153,204,204);
-    int c2 = color(57,104,124);
+
+    protected int Y_AXIS = 1;
+    protected int X_AXIS = 2;
+    protected int c1 = color(153,204,204);
+    protected int c2 = color(57,104,124);
     // bg utils
-    void setGradient(int x, int y, float w, float h, int c1, int c2, int axis) {
+    protected void setGradient(int x, int y, float w, float h, int c1, int c2, int axis) {
 
         noFill();
 
@@ -42,7 +50,9 @@ public abstract class ProcessingBase extends PApplet implements Subject{
             }
         }
     }
-
+    public int getPadding() {
+        return padding;
+    }
     // Observer Pattern implementation to notify the FX controller when new obstacles are added to the map
     // We added to the base class for further development.
     @Override
@@ -57,5 +67,9 @@ public abstract class ProcessingBase extends PApplet implements Subject{
 
     @Override
     public abstract void notifyObservers();
+
+    public void setJavaFX(SceneController controller) {
+        this.controller = controller;
+    }
 
 }

@@ -1,18 +1,13 @@
 package com.effibot.robind_manipolator.Processing;
 
-import com.effibot.robind_manipolator.SceneController;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class P2DMap extends ProcessingBase implements Subject{
-    private final int padding = 10;
     private final int mapColor = color(102, 102, 102);
-    private final int size = 512;
     private int targetColor;
     private final float targetAlpha = 80f;
-    private final float targetSize = 60.0f;
+    private final float targetSize = 40.0f;
 
     private final int colorPass = color(0, 255, 0, targetAlpha);
     private final int colorFail = color(255, 0, 0, targetAlpha);
@@ -20,6 +15,7 @@ public class P2DMap extends ProcessingBase implements Subject{
 
     public P2DMap(){
         observers = new ArrayList<>();
+        size = 512;
     }
 
     @Override
@@ -37,16 +33,10 @@ public class P2DMap extends ProcessingBase implements Subject{
         rectMode(CENTER);
         obsList = new ArrayList<>();
     }
-
-    public void run() {
-        String[] processingArgs = {"main.java.com.effibot.robind_manipolator.Processing.P2DMap"};
-        PApplet.runSketch(processingArgs, this);
+    @Override
+    public void exitActual(){
+        surface.setVisible(false);
     }
-
-    public void setJavaFX(SceneController controller) {
-        this.controller = controller;
-    }
-
     @Override
     public void draw() {
         // background
@@ -63,9 +53,7 @@ public class P2DMap extends ProcessingBase implements Subject{
         drawObstacles2D();
     }
 
-    public int getPadding() {
-        return padding;
-    }
+
 
     private void targetColorSelect() {
         // ObsList is empty> checks only if mouse is inside the box
@@ -123,7 +111,9 @@ public class P2DMap extends ProcessingBase implements Subject{
 
     private void addObstacle(int targetX, int targetY) {
         int id = obsList.size();
-        Obstacle obs = new Obstacle(this, targetX, targetY, 0, 2 * targetSize, 100, id);
+        final int obsHeight = 200;
+        Obstacle obs = new Obstacle(this, targetX, targetY,
+                obsHeight/2.0f, 2 * targetSize, obsHeight, id);
         obsList.add(obs);
         notifyObservers();
     }
@@ -149,6 +139,5 @@ public class P2DMap extends ProcessingBase implements Subject{
         for(Observer observer : observers){
             observer.update(this);
         }
-        println(obsList.size());
     }
 }

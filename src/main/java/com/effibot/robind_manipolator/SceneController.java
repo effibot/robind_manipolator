@@ -1,8 +1,5 @@
 package com.effibot.robind_manipolator;
-import com.effibot.robind_manipolator.Processing.Observer;
-import com.effibot.robind_manipolator.Processing.Obstacle;
-import com.effibot.robind_manipolator.Processing.P2DMap;
-import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import com.effibot.robind_manipolator.Processing.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -77,17 +74,35 @@ public class SceneController implements Initializable, Observer {
 
     @FXML
     public void onContinueButtonClick() {
-        // load images
-        Image basicMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPre.jpeg")),
-                256d,256d,true,true);
-        basicMap.setImage(basicMapImage);
-        Image postProcMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPost.jpeg")),
-                512d,512d,true,true);
-        // disable setup tab and select info tab
-        map.setImage(postProcMapImage);
-        setupTab.setClosable(true);
-        setupTab.setDisable(true);
-        tabPane.getSelectionModel().select(infoTab);
+//        ArrayList<Obstacle> dummy = new ArrayList<>();
+//        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
+//        ((P2DMap)sketch).setObstacleList(dummy);
+        if(obsList != null) {
+            // load images
+            Image basicMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPre.jpeg")),
+                    256d, 256d, true, true);
+            basicMap.setImage(basicMapImage);
+            Image postProcMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPost.jpeg")),
+                    512d, 512d, true, true);
+            // disable setup tab and select info tab
+            map.setImage(postProcMapImage);
+            setupTab.setClosable(true);
+            setupTab.setDisable(true);
+            tabPane.getSelectionModel().select(infoTab);
+            infoTab.setDisable(false);
+            // close 2D map
+            sketch.removeObserver(this);
+            sketch.noLoop();
+            sketch.stop();
+            sketch.exit();
+            // open 3D map
+            sketch = new P3DMap(obsList);
+            this.setSketch(sketch);
+            sketch.setJavaFX(this);
+            sketch.run(sketch.getClass().getSimpleName());
+        } else {
+            //TODO: implements popup to specify at leas one obstacle
+        }
     }
     @FXML
     public void onCancelButtonClick() {
@@ -122,7 +137,7 @@ public class SceneController implements Initializable, Observer {
         cubeBtn.setId("cube");
         coneBtn.setId("cone");
 
-        // blocco dei divisori degli splitpane
+        // blocco dei divisori degli split pane
         SplitPane.Divider mainDivider = mainView.getDividers().get(0);
         double mainDividerPosition = mainDivider.getPosition();
         mainDivider.positionProperty().addListener((observable, oldValue, newValue) -> mainDivider.setPosition(mainDividerPosition));
@@ -130,7 +145,7 @@ public class SceneController implements Initializable, Observer {
         double topDividerPosition = topDivider.getPosition();
         topDivider.positionProperty().addListener((observable, oldValue, newValue) -> topDivider.setPosition(topDividerPosition));
 
-        // Setup delle label di info
+        // Setup delle label d'info
         obsNumber.setText("");
         pathLabel.setText("");
         infoTab.setClosable(true);
