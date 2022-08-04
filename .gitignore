@@ -43,3 +43,4 @@ build/
 .idea/.name
 .idea/
 .idea/workspace.xml
+*.xml

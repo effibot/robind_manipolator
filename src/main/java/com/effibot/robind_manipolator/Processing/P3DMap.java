@@ -18,6 +18,12 @@ public class P3DMap extends ProcessingBase{
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
     private Reference frame;
 
+    private int qSelection = 0;                                // Joint selection (for interactive controls).
+
+    private final  int i = (6) + 48;
+    private boolean showPlots=false;
+
+    private ArrayList<Plot2D> plots = new ArrayList<>();
     public P3DMap(List<Obstacle> obsList) {
         this.obsList = obsList;
         size = 1024;
@@ -89,6 +95,7 @@ public class P3DMap extends ProcessingBase{
             }
         }
 
+        plots = new Plot2D(this).initializePlot(this);
     }
 
     @Override
@@ -112,27 +119,35 @@ public class P3DMap extends ProcessingBase{
             dy = dy - 1;
         } else if (key == 'c') {
             dz -= 1;
+        }else if (key =='K'|| key == 'k'){
+            showPlots=true;
+        }else if (key =='W'|| key == 'w'){
+            showPlots=false;
         }
         println("""
                 [dx, dy, dz] = {%f, %d, %d}
                 """.formatted(dx, dy, dz));
-        if (key == '1') {
-            r.setJoint(0,0.2f);
-        }
-        if (key == '2') {
-            r.setJoint(1,0.2f);
-        }
-        if (key == '3') {
-            r.setJoint(2,0.2f);
-        }
-        if (key == '4') {
-            r.setJoint(3,0.2f);
-        }
-        if (key == '5') {
-            r.setJoint(4,0.2f);
-        }
-        if (key == '6') {
-            r.setJoint(5,0.2f);
+//        if (key == '1') {
+//            r.setJoint(0,0.2f);
+//        }
+//        if (key == '2') {
+//            r.setJoint(1,0.2f);
+//        }
+//        if (key == '3') {
+//            r.setJoint(2,0.2f);
+//        }
+//        if (key == '4') {
+//            r.setJoint(3,0.2f);
+//        }
+//        if (key == '5') {
+//            r.setJoint(4,0.2f);
+//        }
+//        if (key == '6') {
+//            r.setJoint(5,0.2f);
+//        }
+        // Select joint to control (with some ASCII magic).
+        if ((key >= '1') && (key <= (char) i)) {
+            qSelection = key - 48 - 1;  // It's an array index.
         }
 
     }
@@ -217,6 +232,17 @@ public class P3DMap extends ProcessingBase{
     public void draw3Drobot(PeasyCam cam){
         translate(0,0,-100);
         r.drawLink();
+        int nPoints = 300;
+        cam.beginHUD();
+        if (showPlots) {
+            this.plots.get(qSelection).drawCanvas();
+            this.plots.get(qSelection).drawGrid();
+//            this.plots.get(qSelection).addLine(qrs_p[qSelection], nPoints, 255);
+//            this.plots.get(qSelection).addLine(qs_p[qSelection], nPoints, 16711680);
+        }
+
+
+        cam.endHUD();
     }
     public void setGLGraphicsViewport(int x, int y, int w, int h) {
         PGraphics3D pg = (PGraphics3D) this.g;
@@ -226,5 +252,6 @@ public class P3DMap extends ProcessingBase{
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
     }
+
 
 }
