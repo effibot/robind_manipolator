@@ -4,8 +4,8 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Reference {
-    private final float length = 100.0f;
-    private final float box_size = 40.0f;
+    private final float length = 200.0f;
+    private final float box_size = 5.0f;
     private PVector origin;
     private final PApplet p3d;
 
@@ -40,7 +40,7 @@ public class Reference {
     public void show(boolean show) {
         // reference coordinates
         p3d.pushMatrix();
-        p3d.translate(origin.x, origin.y, origin.z+box_size/2);
+        p3d.translate(origin.x, origin.y, origin.z);
         float alpha = show ? 255.0f : 0.0f;
         p3d.strokeWeight(3);
         // x-axis

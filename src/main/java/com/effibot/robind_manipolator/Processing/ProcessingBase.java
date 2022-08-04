@@ -2,19 +2,19 @@ package com.effibot.robind_manipolator.Processing;
 
 import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
+import processing.core.PSurface;
 
 import java.util.List;
 
 public abstract class ProcessingBase extends PApplet implements Subject{
     protected SceneController controller;
     protected List<Observer> observers;
-    protected final int padding = 10;
+    protected int padding = 10;
     protected int size;
 
 
     @Override
     public void setup() {
-        smooth(8);
     }
     @Override
     public abstract void draw();
@@ -72,4 +72,7 @@ public abstract class ProcessingBase extends PApplet implements Subject{
         this.controller = controller;
     }
 
+    public PSurface getSurface() {
+        return this.surface;
+    }
 }

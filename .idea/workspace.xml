@@ -4,10 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="feat: obstacles positioning adapted 3D world. TODO: robot implementation.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Oscilloscope.java" afterDir="false" />
+    <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="TODO: fix nullpointer on robot observers">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Reference.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Reference.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r1c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r2c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.mtl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.obj" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +63,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/loren/OneDrive/Desktop/robind_manipolator/lib/processing/windows-amd64/newt_head.dll&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/effi/Desktop/robind_manipolator/src/main/resources/com/effibot/robind_manipolator/models&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
@@ -55,11 +73,19 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib/models" />
+      <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models" />
       <recent name="$PROJECT_DIR$/lib/geomerative" />
-      <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img" />
-      <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/models" />
+      <recent name="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing" />
+      <recent name="$PROJECT_DIR$/src/main/java" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.effibot.robind_manipolator" />
     </key>
   </component>
   <component name="RunManager" selected="Application.com.effibot.robind_manipolator.Main">
@@ -119,7 +145,11 @@
       <workItem from="1659342215076" duration="19246000" />
       <workItem from="1659427932109" duration="5184000" />
       <workItem from="1659435100697" duration="17012000" />
-      <workItem from="1659460108739" duration="180000" />
+      <workItem from="1659460108739" duration="235000" />
+      <workItem from="1659517066874" duration="12288000" />
+      <workItem from="1659536769491" duration="7119000" />
+      <workItem from="1659543904642" duration="131000" />
+      <workItem from="1659600531579" duration="19996000" />
       <workItem from="1659533000721" duration="1011000" />
       <workItem from="1659534029645" duration="886000" />
       <workItem from="1659553412347" duration="25000" />
@@ -157,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1659460213683</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="git-ignore stuff">
+      <created>1659460321701</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1659460321701</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,7 +216,9 @@
     <MESSAGE value="fix: obstacle intersection and position" />
     <MESSAGE value="feat: observer pattern for obstacle positioning and removing." />
     <MESSAGE value="feat: obstacles positioning adapted 3D world. TODO: robot implementation." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: obstacles positioning adapted 3D world. TODO: robot implementation." />
+    <MESSAGE value="git-ignore stuff" />
+    <MESSAGE value="TODO: fix nullpointer on robot observers" />
+    <option name="LAST_COMMIT_MESSAGE" value="TODO: fix nullpointer on robot observers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

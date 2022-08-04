@@ -3,7 +3,7 @@ package com.effibot.robind_manipolator.Processing;
 
 import java.util.ArrayList;
 
-public class P2DMap extends ProcessingBase implements Subject{
+public class P2DMap extends ProcessingBase {
     private final int mapColor = color(102, 102, 102);
     private int targetColor;
     private final float targetAlpha = 80f;
