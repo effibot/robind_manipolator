@@ -33,6 +33,7 @@
 -->
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -42,6 +43,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.SegmentedButton?>
+<?import org.controlsfx.control.textfield.CustomTextField?>
 
 <SplitPane fx:id="mainView" dividerPositions="0.325" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="768.0" prefWidth="514.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.effibot.robind_manipolator.SceneController">
   <items>
@@ -60,33 +62,65 @@
                                           <Button fx:id="cont" layoutX="126.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onContinueButtonClick" text="Continua" AnchorPane.topAnchor="136.0" />
                                           <Label layoutX="5.0" layoutY="46.0" text="Premi Continua per Chiudere la Visuale dall'Alto e Confermare." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="50.0" />
                                           <Label layoutX="5.0" layoutY="78.0" text="Premi Annulla per Cancellare l'ultimo Ostacolo posizionato." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
-                                          <Button fx:id="cancel" layoutX="34.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClick" text="Annulla" AnchorPane.topAnchor="136.0" />
+                                          <Button fx:id="back" layoutX="34.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#onCancelButtonClick" text="Annulla" AnchorPane.topAnchor="136.0" />
                                           <Label layoutX="12.0" layoutY="14.0" text="Benvenuti nella schermata di controllo dell'applicazione." wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                        </children>
                                     </AnchorPane>
                                  </content>
                               </Tab>
+                              <Tab fx:id="controlTab" text="Control">
+                                <content>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Label text="Scegliete l'Oggetto da Cercare" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                          <SegmentedButton fx:id="segButtonBar" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0" />
+                                          <ToggleButton fx:id="cubeBtn" layoutX="124.0" layoutY="23.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cubo" AnchorPane.topAnchor="23.0" />
+                                          <ToggleButton fx:id="coneBtn" layoutX="70.0" layoutY="23.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cono" AnchorPane.topAnchor="23.0" />
+                                          <ToggleButton fx:id="sphereBtn" layoutX="14.0" layoutY="23.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Sfera" AnchorPane.topAnchor="23.0" />
+                                          <Label layoutX="5.0" layoutY="50.0" text="Scegliete l'Orientamento della Pinza" wrapText="true" AnchorPane.leftAnchor="5.0" />
+                                          <CustomTextField fx:id="rollField" layoutX="65.0" layoutY="71.0" prefHeight="24.0" prefWidth="112.0" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="90.0" />
+                                          <Label layoutX="20.0" layoutY="75.0" text="Roll:" AnchorPane.leftAnchor="20.0">
+                                             <font>
+                                                <Font name="System Bold Italic" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <CustomTextField fx:id="pitchField" layoutX="65.0" layoutY="97.0" prefHeight="24.0" prefWidth="55.0" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="90.0" AnchorPane.topAnchor="97.0" />
+                                          <Label layoutX="20.0" layoutY="103.0" text="Pitch:" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="103.0">
+                                             <font>
+                                                <Font name="System Bold Italic" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <CustomTextField fx:id="yawField" layoutX="65.0" layoutY="123.0" prefHeight="24.0" prefWidth="55.0" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="90.0" />
+                                          <Label layoutX="20.0" layoutY="129.0" text="Yaw:" AnchorPane.leftAnchor="20.0">
+                                             <font>
+                                                <Font name="System Bold Italic" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <ComboBox fx:id="method" layoutX="22.0" layoutY="183.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" />
+                                          <Label layoutX="5.0" layoutY="150.0" text="Scegliete il metodo di interpolazione del percorso" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                          <Button fx:id="startBtn" disable="true" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#onStartAction" text="Start!" underline="true" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="171.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="183.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                             <Tab fx:id="infoTab" text="Info">
                                  <content>
                                     <AnchorPane>
                                        <children>
-                                          <Label text="Scegliete l'Oggetto da Cercare" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-                                          <SegmentedButton layoutX="57.0" layoutY="59.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0" />
-                                          <ToggleButton fx:id="cubeBtn" layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cubo" AnchorPane.topAnchor="30.0" />
-                                          <ToggleButton fx:id="coneBtn" layoutX="73.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Cono" AnchorPane.topAnchor="30.0" />
-                                          <ToggleButton fx:id="sphereBtn" layoutX="131.0" layoutY="55.0" mnemonicParsing="false" onAction="#onObjectButtonAction" text="Sfera" AnchorPane.topAnchor="30.0" />
-                                          <Label layoutX="14.0" layoutY="102.0" text="Il robot è in movimento verso l'ostacolo numero:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
-                                          <Label fx:id="obsNumber" layoutX="131.0" layoutY="76.0" text="obstNumber" textAlignment="CENTER" AnchorPane.topAnchor="77.0">
+                                          <Label layoutX="14.0" layoutY="14.0" text="Il robot è in movimento verso l'oggetto:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-4.0" AnchorPane.topAnchor="5.0" />
+                                          <Label fx:id="objName" layoutX="77.0" layoutY="21.0" text="objName" textAlignment="CENTER" AnchorPane.topAnchor="21.0">
                                              <font>
                                                 <Font name="System Bold Italic" size="13.0" />
                                              </font>
                                           </Label>
-                                          <Label layoutX="14.0" layoutY="100.0" text="Il percorso scelto delle celle da attraversare è:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
-                                          <Label fx:id="pathLabel" alignment="TOP_LEFT" layoutX="14.0" layoutY="140.0" text="pathLabel" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="133.0">
+                                          <Label layoutX="5.0" layoutY="38.0" text="Il percorso scelto delle celle attraversabili è:" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="38.0" />
+                                          <Label fx:id="pathLabel" alignment="TOP_LEFT" layoutX="5.0" layoutY="70.0" prefHeight="50.0" prefWidth="237.0" text="pathLabel" wrapText="true" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="70.0">
                                              <font>
                                                 <Font name="System Bold Italic" size="13.0" />
                                              </font>
                                           </Label>
+                                          <Button fx:id="bckCtrlBtn" layoutX="34.0" layoutY="120.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="166.0" text="Torna alla Control tab" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="69.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="120.0" />
+                                          <Button fx:id="bckStpBtn" layoutX="34.0" layoutY="159.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="166.0" text="Torna alla Setup tab" textAlignment="CENTER" wrapText="true" />
                                        </children>
                                     </AnchorPane>
                                  </content></Tab>
