@@ -12,28 +12,28 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.FloatStringConverter;
-import javafx.util.converter.IntegerStringConverter;
 import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 
 import java.net.URL;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.function.UnaryOperator;
 
 public class SceneController implements Initializable, Observer {
     @FXML
     public SegmentedButton segButtonBar;
     @FXML
+    public ChoiceBox<String> startPos;
+    @FXML
     private Button cancel;
     @FXML
     private Tab controlTab;
     @FXML
-    private ComboBox method;
+    private ChoiceBox<String> method;
     @FXML
     private Button startBtn;
     @FXML
@@ -69,8 +69,6 @@ public class SceneController implements Initializable, Observer {
     @FXML
     private AnchorPane paneOne;
     @FXML
-    private AnchorPane paneTwo;
-    @FXML
     private Label pathLabel;
     @FXML
     private AnchorPane rightAnchor;
@@ -84,11 +82,15 @@ public class SceneController implements Initializable, Observer {
     private TabPane tabPane;
     @FXML
     private Tab setupTab, infoTab;
-    private final ToggleGroup group = new ToggleGroup();
-
+    @FXML
+    private List<Obstacle> obsList;
+    @FXML
+    private RadioButton paraRadio, quinticRadio, cubicRadio;
+    private ToggleGroup radioGroup;
     private final ObservableList<String> methods = FXCollections.observableArrayList("Parabolic", "Quintic", "Cubic");
     private float roll, pitch, yaw;
     private ArrayList<Integer> sequence;
+    private Vector<Integer> startPosition;
 
     @FXML
     public void onContinueButtonClick() {
@@ -118,6 +120,7 @@ public class SceneController implements Initializable, Observer {
             this.setSketch(sketch);
             sketch.setJavaFX(this);
             sketch.run(sketch.getClass().getSimpleName());
+            ((Main)app).setSketch(sketch);
         } else {
             //TODO: implements popup to specify at leas one obstacle
         }
@@ -133,7 +136,6 @@ public class SceneController implements Initializable, Observer {
     public void onObjectButtonAction(ActionEvent actionEvent) {
         //TODO: implementa azione basata sull'oggetto chiamante
         // in base al bottone che chiama il metodo, carica l'oggetto
-
         String id = ((Node) actionEvent.getSource()).getId();
         switch (id) {
             case "sphere":
@@ -158,25 +160,29 @@ public class SceneController implements Initializable, Observer {
                 }
                 break;
         }
-        System.out.println(sequence);
     }
-
     @FXML
     public void onStartAction(ActionEvent actionEvent) {
-        String interp = ((String) method.getValue()).toLowerCase();
-        roll = Integer.parseInt(rollField.getText());
-        pitch = Integer.parseInt(pitchField.getText());
-        yaw = Integer.parseInt(yawField.getText());
+        String interp = method.getValue().toLowerCase();
+        roll = Float.parseFloat(rollField.getText());
+        pitch = Float.parseFloat(pitchField.getText());
+        yaw = Float.parseFloat(yawField.getText());
         boolean condition = sequence.isEmpty() || method.getSelectionModel().isEmpty() ||
                 rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
         if (condition) {
-
+//            TODO> implementare il salto a matlab
+            System.out.println("Start");
         }
 
 
     }
 
+    @FXML
+    public void onMethodAction(ActionEvent actionEvent) {
+        String selection = method.getSelectionModel().getSelectedItem().toString();
+        System.out.println(selection);
 
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sphereBtn.setId("sphere");
@@ -199,9 +205,14 @@ public class SceneController implements Initializable, Observer {
         // setup label control
         controlTab.setClosable(true);
         controlTab.setDisable(true);
-        method.getItems().addAll("Parabolic", "Quintic", "Cubic");
-        method.setVisibleRowCount(3);
-        method.setPromptText("Metodo");
+        // setup choicebox
+//        method.getItems().addAll(methods);
+//        method.setValue(methods.get(0));
+        radioGroup = new ToggleGroup();
+        paraRadio.setToggleGroup(radioGroup);
+        quinticRadio.setToggleGroup(radioGroup);
+        cubicRadio.setToggleGroup(radioGroup);
+        //startPos.getItems().addAll(/*TODO: get list of green cells from the map and add to the choicebox*/)
         // Setup RPY default value
         rollField.setText("");
         mySetFormatter(rollField);
@@ -214,7 +225,24 @@ public class SceneController implements Initializable, Observer {
 
         startBtn.setDisable(false);
     }
+    // Processing 2D setup
 
+    public ProcessingBase sketch;
+    Application app;
+
+
+    public void setJavafxApp(Application jfxApp) {
+        app = jfxApp;
+    }
+
+    public void setSketch(ProcessingBase sketch) {
+        this.sketch = sketch;
+    }
+
+    @Override
+    public void update(Object object) {
+        this.obsList = ((P2DMap) object).getObstacleList();
+    }
     private void mySetFormatter(CustomTextField txtField) {
         // Create new text filter
         UnaryOperator<TextFormatter.Change> floatFilter = change -> {
@@ -248,24 +276,5 @@ public class SceneController implements Initializable, Observer {
         };
         txtField.setTextFormatter(
                 new TextFormatter<>(new FloatStringConverter(), 0.0f, floatFilter));
-    }
-
-    // Processing 2D setup
-    public ProcessingBase sketch;
-    Application app;
-
-    public void setJavafxApp(Application jfxApp) {
-        app = jfxApp;
-    }
-
-    public void setSketch(ProcessingBase sketch) {
-        this.sketch = sketch;
-    }
-
-    private List<Obstacle> obsList;
-
-    @Override
-    public void update(Object object) {
-        this.obsList = ((P2DMap) object).getObstacleList();
     }
 }

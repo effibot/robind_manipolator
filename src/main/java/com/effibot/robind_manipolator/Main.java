@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator;
 
 import com.effibot.robind_manipolator.Processing.P2DMap;
+import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -11,7 +12,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class Main extends Application {
-    public P2DMap sketch;
+    private ProcessingBase sketch;
+    public void setSketch(ProcessingBase sketch){
+        this.sketch = sketch;
+    }
+    public ProcessingBase getSketch(){ return  this.sketch; }
     @Override
     public void init() throws Exception {
         sketch = new P2DMap();

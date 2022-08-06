@@ -37,7 +37,10 @@ public class P3DMap extends ProcessingBase{
     public void draw() {
         setGLGraphicsViewport(0, 0, width, height);
         background(153,204,153);
-
+        // Aggiungo degli effetti di luce direzionale
+        directionalLight(126F, 126F, 126F, (float) -1, (float) 1, (float) -0.7);
+        // Aggiungo degli effetti di luce ambientale
+        ambientLight(200, 200, 200);
         // setup bg
         for (int i = 0; i < cameras.length; i++) {
             pushStyle();
@@ -185,10 +188,6 @@ public class P3DMap extends ProcessingBase{
         // Ruoto il mondo per settare
         // Z > 0 su, X > 0 a destra, Y > 0 in avanti
         rotateX(PI / 2);
-        // Aggiungo degli effetti di luce direzionale
-        directionalLight(126F, 126F, 126F, (float) -1, (float) -1, (float) -0.7);
-        // Aggiungo degli effetti di luce ambientale
-        ambientLight(200, 200, 200);
         //!! End camera setup
         return cam;
     }
