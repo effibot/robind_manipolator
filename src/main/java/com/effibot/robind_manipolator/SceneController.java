@@ -1,9 +1,6 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.Processing.*;
 import javafx.application.Application;
-import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,13 +11,20 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.converter.FloatStringConverter;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 
 import java.net.URL;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
+
 public class SceneController implements Initializable, Observer {
     @FXML
     public SegmentedButton segButtonBar;
@@ -199,30 +203,51 @@ public class SceneController implements Initializable, Observer {
         method.setVisibleRowCount(3);
         method.setPromptText("Metodo");
         // Setup RPY default value
-        rollField.setText(String.valueOf(0));
-        addTextListener(rollField);
-        pitchField.setText(String.valueOf(0));
-        addTextListener(pitchField);
-        yawField.setText(String.valueOf(0));
-        addTextListener(yawField);
+        rollField.setText("");
+        mySetFormatter(rollField);
+        pitchField.setText("");
+        mySetFormatter(pitchField);
+        yawField.setText("");
+        mySetFormatter(yawField);
         // init sequence
         sequence = new ArrayList<>();
 
         startBtn.setDisable(false);
     }
 
-    private void addTextListener(CustomTextField txtField) {
-        txtField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("\\d{0,7}([\\.]\\d{0,4})?")) {
-                        rollField.setText(oldValue);
-                    }
-//                    if (newValue.equals(String.valueOf(0)) || oldValue.equals(String.valueOf(0)))
-//                        rollField.setText(oldValue + "." + newValue);
-                    //TODO doppio zero va trimmato e mezzo a singolo 0
-                    else if (newValue.equals("."))
-                        rollField.setText("0" + newValue);
+    private void mySetFormatter(CustomTextField txtField) {
+        // Create new text filter
+        UnaryOperator<TextFormatter.Change> floatFilter = change -> {
+            String newText = change.getControlNewText();
+            // if proposed change results in a valid value, return change as-is:
+            if (newText.matches("-?(\\d{0,7}([\\.]\\d{0,4}))?")) {
+                return change;
+            } else if ("-".equals(change.getText()) ) {
+
+                // if user types or pastes a "-" in middle of current text,
+                // toggle sign of value:
+
+                if (change.getControlText().startsWith("-")) {
+                    // if we currently start with a "-", remove first character:
+                    change.setText("");
+                    change.setRange(0, 1);
+                    // since we're deleting a character instead of adding one,
+                    // the caret position needs to move back one, instead of
+                    // moving forward one, so we modify the proposed change to
+                    // move the caret two places earlier than the proposed change:
+                    change.setCaretPosition(change.getCaretPosition()-2);
+                    change.setAnchor(change.getAnchor()-2);
+                } else {
+                    // otherwise just insert at the beginning of the text:
+                    change.setRange(0, 0);
                 }
-        );
+                return change ;
+            }
+            // invalid change, veto it by returning null:
+            return null;
+        };
+        txtField.setTextFormatter(
+                new TextFormatter<>(new FloatStringConverter(), 0.0f, floatFilter));
     }
 
     // Processing 2D setup
