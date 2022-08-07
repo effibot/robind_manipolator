@@ -5,27 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="TODO: fix nullpointer on robot observers">
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/allclasses-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/allclasses-noframe.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/constant-values.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/deprecated-list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/help-doc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/index-all.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/Map.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/MapGenerationMCRFactory.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/MapRemote.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-frame.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-summary.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/overview-tree.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/package-list" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/serialized-form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/stylesheet.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/mapGenerationSample1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P2DMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/ProcessingBase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Reference.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Reference.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r0c.obj.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r1c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r2c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r3c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r4c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r5c.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models/r6c.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/saveimage.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/saveimage.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/UdpModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/UdpModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,27 +65,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/effi/Desktop/robind_manipolator/src/main/resources/com/effibot/robind_manipolator/models&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.4236038&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/loren/OneDrive/Desktop/robind_manipolator/lib/MatlabClasses/mapGeneration.jar",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.4236038",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\loren\OneDrive\Desktop\robind_manipolator\lib\MatlabClasses" />
+      <recent name="C:\Users\loren\OneDrive\Desktop\robind_manipolator\lib\MatlabClasses\samples" />
       <recent name="$PROJECT_DIR$/lib/models" />
       <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/models" />
-      <recent name="$PROJECT_DIR$/lib/geomerative" />
-      <recent name="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/models" />
@@ -88,7 +96,21 @@
       <recent name="com.effibot.robind_manipolator" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.com.effibot.robind_manipolator.Main">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.effibot.robind_manipolator.Main" />
+      <module name="robind_manipolator" />
+      <option name="VM_PARAMETERS" value="--add-exports java.desktop/com.sun.java.swing.plaf.motif=ALL-UNNAMED" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.effibot.robind_manipolator.Processing.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="P2DMap" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.effibot.robind_manipolator.Processing.P2DMap" />
       <module name="robind_manipolator" />
@@ -102,22 +124,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="com.effibot.robind_manipolator.Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.effibot.robind_manipolator.Main" />
-      <module name="robind_manipolator" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.effibot.robind_manipolator.Processing.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.P2DMap" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.com.effibot.robind_manipolator.Main" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.P2DMap" />
       </list>
     </recent_temporary>
@@ -158,6 +171,7 @@
       <workItem from="1659557374498" duration="2139000" />
       <workItem from="1659621305578" duration="23000" />
       <workItem from="1659621389266" duration="1684000" />
+      <workItem from="1659902468427" duration="5137000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>
@@ -231,8 +245,18 @@
           <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="9" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java</url>
+          <line>65</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="m.DISPOSE_MCR_INSTANCE" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -29,5 +29,5 @@ function gids=gPlot(nodeList, A, Amid, Aint,mapImg)
             end
         end
     end
-    saveimage(gcf,'PianificazioneMoto\mapgenerationimg\constructing\',strcat(num2str(size(Amid,1)+1),'.png'));
+    saveimage(gcf,'.\mapgenerationimg\constructing\',strcat(num2str(size(Amid,1)+1),'.png'));
 end

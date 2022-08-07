@@ -4,9 +4,9 @@ delete('.\mapgenerationimg\generated\*.png');
 delete('.\mapgenerationimg\constructing\*.png');
 delete('.\mapgenerationimg\generatedsim\*.png');
 delete('.\mapgenerationimg\originalsim\*.png');
-mkdir mapgenerationimg\generated
-mkdir mapgenerationimg\constructing
-mkdir mapgenerationimg\generatedsim
+mkdir mapGeneration\generated
+mkdir mapGeneration\constructinhìg
+mkdir mapGeneration\generatedsim
 mkdir mapgenerationimg\originalsim
 robotsize=50;
 map = makeMap(obs,dim);

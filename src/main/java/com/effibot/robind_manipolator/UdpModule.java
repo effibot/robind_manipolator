@@ -18,6 +18,10 @@ public class UdpModule {
         this.sk = new UDP(this, this.portTX, this.addr);
     }
 
+    public void closeConnection(){
+        this.sk.dispose();
+    }
+
     public String getAddr() {
         return addr;
     }

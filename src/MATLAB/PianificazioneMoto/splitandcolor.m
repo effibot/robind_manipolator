@@ -69,7 +69,7 @@ function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
                 filename =strcat(num2str(mapList(i).id),'.png');
 %                 imwrite(M,filename,'jpg');
                 showimage(M);
-                saveimage(gcf,'PianificazioneMoto\mapgenerationimg\constructing\',filename)
+                saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
             end
         end
         currdim = currdim/2;

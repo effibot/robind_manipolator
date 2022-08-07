@@ -3,5 +3,6 @@ function saveimage(gcf,path,name)
 absPath = [path,name];
 f=getframe(gcf);
 [XX, ~] = frame2im(f);
-imwrite(XX,absPath);
+outfile = fullfile(path,name);
+imwrite(XX,outfile,'png');
 end
