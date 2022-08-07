@@ -13,6 +13,7 @@ module com.effibot.robind_manipolator {
     requires core;
     requires jogl.all;
     requires java.desktop;
+    requires udp;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;

@@ -13,6 +13,9 @@ import java.io.IOException;
 
 public class Main extends Application {
     private ProcessingBase sketch;
+    private static final String addr="127.0.0.1";
+    private static final int portRx = 12345;
+    private static final int portTx = 12346;
     public void setSketch(ProcessingBase sketch){
         this.sketch = sketch;
     }
