@@ -1,5 +1,6 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.Processing.*;
+import com.effibot.robind_manipolator.Processing.Observer;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,29 +12,26 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.StringConverter;
 import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
+import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class SceneController implements Initializable, Observer {
     @FXML
     public SegmentedButton segButtonBar;
     @FXML
-    public ChoiceBox<String> startPos;
+    public ComboBox<String> startPos;
     @FXML
     private Button cancel;
     @FXML
     private Tab controlTab;
-    @FXML
-    private ChoiceBox<String> method;
     @FXML
     private Button startBtn;
     @FXML
@@ -163,11 +161,10 @@ public class SceneController implements Initializable, Observer {
     }
     @FXML
     public void onStartAction(ActionEvent actionEvent) {
-        String interp = method.getValue().toLowerCase();
         roll = Float.parseFloat(rollField.getText());
         pitch = Float.parseFloat(pitchField.getText());
         yaw = Float.parseFloat(yawField.getText());
-        boolean condition = sequence.isEmpty() || method.getSelectionModel().isEmpty() ||
+        boolean condition = sequence.isEmpty() ||
                 rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
         if (condition) {
 //            TODO> implementare il salto a matlab
@@ -177,12 +174,6 @@ public class SceneController implements Initializable, Observer {
 
     }
 
-    @FXML
-    public void onMethodAction(ActionEvent actionEvent) {
-        String selection = method.getSelectionModel().getSelectedItem().toString();
-        System.out.println(selection);
-
-    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sphereBtn.setId("sphere");
@@ -205,13 +196,27 @@ public class SceneController implements Initializable, Observer {
         // setup label control
         controlTab.setClosable(true);
         controlTab.setDisable(true);
-        // setup choicebox
-//        method.getItems().addAll(methods);
-//        method.setValue(methods.get(0));
+        // setup robot start position combobox
+
+        //! this is for dummy usage
+        List<String> greenId = randomSequence(10);
+        final ObservableList<String> gids = FXCollections.observableArrayList(greenId);
+        //! -----------------------------
+        startPos.getItems().addAll(gids);   //? replace gids with the sequence list from the map
+        startPos.setVisibleRowCount(5);
+        startPos.getEditor().setTextFormatter(new TextFormatter<>(c -> {
+            if (c.getControlNewText().matches("\\d*") && greenId.contains(c.getText()))
+                return c;
+            else
+                return null;
+        }
+        ));
+        // setup interpolation method
         radioGroup = new ToggleGroup();
         paraRadio.setToggleGroup(radioGroup);
         quinticRadio.setToggleGroup(radioGroup);
         cubicRadio.setToggleGroup(radioGroup);
+        radioGroup.selectToggle(paraRadio); // default value
         //startPos.getItems().addAll(/*TODO: get list of green cells from the map and add to the choicebox*/)
         // Setup RPY default value
         rollField.setText("");
@@ -222,11 +227,20 @@ public class SceneController implements Initializable, Observer {
         mySetFormatter(yawField);
         // init sequence
         sequence = new ArrayList<>();
-
         startBtn.setDisable(false);
     }
-    // Processing 2D setup
+    private List<String> randomSequence(int n){
+        ArrayList<String> list = new ArrayList<>(n);
+        Random random = new Random();
 
+        for (int i = 0; i < n; i++)
+        {
+            list.add(String.valueOf(random.nextInt(1000)));
+        }
+        return list;
+    }
+
+    // Processing 2D setup
     public ProcessingBase sketch;
     Application app;
 
