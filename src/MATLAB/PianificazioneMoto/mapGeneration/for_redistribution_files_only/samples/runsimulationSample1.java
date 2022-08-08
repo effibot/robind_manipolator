@@ -14,7 +14,7 @@ import mapGeneration.Simulate;
  * @see com.mathworks.toolbox.javabuilder.MWArray
  *
  */
-public class mapGenerationSample1 {
+public class runsimulationSample1 {
 
 	private static Map mapInstance;
 	private static Path pathInstance;
@@ -27,34 +27,44 @@ public class mapGenerationSample1 {
 	}
 
 	/**
-	 * Sample code for {@link Map#mapGeneration(int, Object...)}.
+	 * Sample code for {@link Simulate#runsimulation(int, Object...)}.
 	 */
-	public static void mapGenerationExample() {
-		MWArray obsIn = null;
-		MWArray dimIn = null;
-		MWNumericArray gidOut = null;
-		MWNumericArray shapeposOut = null;
+	public static void runsimulationExample() {
+		MWArray MIn = null;
+		MWArray alphaIn = null;
+		MWNumericArray qrOut = null;
+		MWNumericArray dqrOut = null;
+		MWNumericArray ddqrOut = null;
+		MWNumericArray eOut = null;
 		Object[] results = null;
 		try {
-			double[][] obsInData = {{250.0, 480.0, 340.0}, {60.0, 250.0, 60.0}};
-			obsIn = new MWNumericArray(obsInData, MWClassID.DOUBLE);
-			double[] dimInData = {1024.0, 1024.0};
-			dimIn = new MWNumericArray(dimInData, MWClassID.DOUBLE);
-			results = mapInstance.mapGeneration(2, obsIn, dimIn);
+			double MInData = 10.0;
+			MIn = new MWNumericArray(MInData, MWClassID.DOUBLE);
+			double alphaInData = 200.0;
+			alphaIn = new MWNumericArray(alphaInData, MWClassID.DOUBLE);
+			results = simulateInstance.runsimulation(4, MIn, alphaIn);
 			if (results[0] instanceof MWNumericArray) {
-				gidOut = (MWNumericArray) results[0];
+				qrOut = (MWNumericArray) results[0];
 			}
 			if (results[1] instanceof MWNumericArray) {
-				shapeposOut = (MWNumericArray) results[1];
+				dqrOut = (MWNumericArray) results[1];
 			}
-			System.out.println(gidOut);
-			System.out.println(shapeposOut);
+			if (results[2] instanceof MWNumericArray) {
+				ddqrOut = (MWNumericArray) results[2];
+			}
+			if (results[3] instanceof MWNumericArray) {
+				eOut = (MWNumericArray) results[3];
+			}
+			System.out.println(qrOut);
+			System.out.println(dqrOut);
+			System.out.println(ddqrOut);
+			System.out.println(eOut);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			// Dispose of native resources
-			MWArray.disposeArray(obsIn);
-			MWArray.disposeArray(dimIn);
+			MWArray.disposeArray(MIn);
+			MWArray.disposeArray(alphaIn);
 			MWArray.disposeArray(results);
 		}
 	}
@@ -67,7 +77,7 @@ public class mapGenerationSample1 {
 			System.exit(1);
 		}
 		try {
-			mapGenerationExample();
+			runsimulationExample();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

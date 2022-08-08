@@ -1,1 +1,4 @@
 Path	Symbol	Reason
+mapGeneratio\runsimulation.m	load_system	undeployable
+mapGeneratio\runsimulation.m	save_system	undeployable
+mapGeneratio\runsimulation.m	close_system	undeployable

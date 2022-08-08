@@ -6,6 +6,9 @@ robotColor = [1 1 0 0.7];
 hold on
 plot(p(:,1),p(:,2),'LineWidth',3);
 ii=1;
+str = strcat('.\mapgenerationimg\',type);
+mkdir str
+
 for j = 1:fix(size(p,1)/100):size(p,1)
     currPoint = p(j,:);
     [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
@@ -26,7 +29,7 @@ for j = 1:fix(size(p,1)/100):size(p,1)
     ll = line([currPoint(1), closestObs(2)],...
         [currPoint(2), closestObs(1)],...
         'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-    saveimage(gcf,strcat('PianificazioneMoto\mapgenerationimg\',type),strcat(num2str(ii),'.png'));
+    saveimage(gcf,str,strcat(num2str(ii),'.png'));
     delete(h);
     delete(hobs);
     delete(robot)

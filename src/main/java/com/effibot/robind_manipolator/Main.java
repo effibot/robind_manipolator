@@ -7,7 +7,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import mapGeneration.Map;
 import com.mathworks.toolbox.javabuilder.*;
 
 import java.io.IOException;
@@ -50,33 +49,9 @@ public class Main extends Application {
         sketch.stop();
         sketch.exit();
     }
-    private static Map m;
 
-    private static void setup() throws MWException {
-        m = new Map();
-    }
+
     public static void main(String[] args) {
-        try {
-            setup();
-            int [][] obs = {{100,100,30},{800,800,100}};
-            MWArray obsin =new MWNumericArray(obs, MWClassID.DOUBLE);;
-            int[] dim ={1024,1024};
-            MWArray dimin = new MWNumericArray(dim, MWClassID.DOUBLE);;
-            Object[] result = m.mapGeneration(2,obsin,dimin);
-            MWNumericArray gidOut = null;
-            MWNumericArray shapeposOut = null;
-            if (result[0] instanceof MWNumericArray) {
-                gidOut = (MWNumericArray) result[0];
-            }
-            if (result[1] instanceof MWNumericArray) {
-                shapeposOut = (MWNumericArray) result[1];
-            }
-            System.out.println(gidOut);
-            System.out.println(shapeposOut);
-        } catch (MWException e) {
-            throw new RuntimeException(e);
-        }
-
         launch();
     }
 }

@@ -1,5 +1,7 @@
 import com.mathworks.toolbox.javabuilder.*;
 import mapGeneration.Map;
+import mapGeneration.Path;
+import mapGeneration.Simulate;
 
 /**
  *
@@ -15,9 +17,13 @@ import mapGeneration.Map;
 public class mapGenerationSample1 {
 
 	private static Map mapInstance;
+	private static Path pathInstance;
+	private static Simulate simulateInstance;
 
 	private static void setup() throws MWException {
 		mapInstance = new Map();
+		pathInstance = new Path();
+		simulateInstance = new Simulate();
 	}
 
 	/**
@@ -68,6 +74,10 @@ public class mapGenerationSample1 {
 		} finally {
 			// Dispose of native resources
 			mapInstance.dispose();
+			// Dispose of native resources
+			pathInstance.dispose();
+			// Dispose of native resources
+			simulateInstance.dispose();
 		}
 	}
 

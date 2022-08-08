@@ -14,7 +14,7 @@ import mapGeneration.Simulate;
  * @see com.mathworks.toolbox.javabuilder.MWArray
  *
  */
-public class mapGenerationSample1 {
+public class path_generatorSample1 {
 
 	private static Map mapInstance;
 	private static Path pathInstance;
@@ -27,34 +27,43 @@ public class mapGenerationSample1 {
 	}
 
 	/**
-	 * Sample code for {@link Map#mapGeneration(int, Object...)}.
+	 * Sample code for {@link Path#path_generator(int, Object...)}.
 	 */
-	public static void mapGenerationExample() {
-		MWArray obsIn = null;
-		MWArray dimIn = null;
-		MWNumericArray gidOut = null;
-		MWNumericArray shapeposOut = null;
+	public static void path_generatorExample() {
+		MWArray startIdIn = null;
+		MWArray shapeposIn = null;
+		MWArray methodIn = null;
+		MWNumericArray pOut = null;
+		MWNumericArray dpOut = null;
+		MWNumericArray ddpOut = null;
 		Object[] results = null;
 		try {
-			double[][] obsInData = {{250.0, 480.0, 340.0}, {60.0, 250.0, 60.0}};
-			obsIn = new MWNumericArray(obsInData, MWClassID.DOUBLE);
-			double[] dimInData = {1024.0, 1024.0};
-			dimIn = new MWNumericArray(dimInData, MWClassID.DOUBLE);
-			results = mapInstance.mapGeneration(2, obsIn, dimIn);
+			double startIdInData = 3.0;
+			startIdIn = new MWNumericArray(startIdInData, MWClassID.DOUBLE);
+			double[] shapeposInData = {150.0, 150.0};
+			shapeposIn = new MWNumericArray(shapeposInData, MWClassID.DOUBLE);
+			String methodInData = "paraboloic";
+			methodIn = new MWCharArray(methodInData);
+			results = pathInstance.path_generator(3, startIdIn, shapeposIn, methodIn);
 			if (results[0] instanceof MWNumericArray) {
-				gidOut = (MWNumericArray) results[0];
+				pOut = (MWNumericArray) results[0];
 			}
 			if (results[1] instanceof MWNumericArray) {
-				shapeposOut = (MWNumericArray) results[1];
+				dpOut = (MWNumericArray) results[1];
 			}
-			System.out.println(gidOut);
-			System.out.println(shapeposOut);
+			if (results[2] instanceof MWNumericArray) {
+				ddpOut = (MWNumericArray) results[2];
+			}
+			System.out.println(pOut);
+			System.out.println(dpOut);
+			System.out.println(ddpOut);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			// Dispose of native resources
-			MWArray.disposeArray(obsIn);
-			MWArray.disposeArray(dimIn);
+			MWArray.disposeArray(startIdIn);
+			MWArray.disposeArray(shapeposIn);
+			MWArray.disposeArray(methodIn);
 			MWArray.disposeArray(results);
 		}
 	}
@@ -67,7 +76,7 @@ public class mapGenerationSample1 {
 			System.exit(1);
 		}
 		try {
-			mapGenerationExample();
+			path_generatorExample();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

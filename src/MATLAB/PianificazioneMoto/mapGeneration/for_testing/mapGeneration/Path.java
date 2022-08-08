@@ -13,17 +13,17 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
- * The <code>Map</code> class provides a Java interface to MATLAB functions. 
+ * The <code>Path</code> class provides a Java interface to MATLAB functions. 
  * The interface is compiled from the following files:
  * <pre>
- *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m
+ *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\path_generator.m
  * </pre>
- * The {@link #dispose} method <b>must</b> be called on a <code>Map</code> instance when 
+ * The {@link #dispose} method <b>must</b> be called on a <code>Path</code> instance when 
  * it is no longer needed to ensure that native resources allocated by this class are 
  * properly freed.
  * @version 0.0
  */
-public class Map extends MWComponentInstance<Map> implements Serializable
+public class Path extends MWComponentInstance<Path> implements Serializable
 {
     /**
      * Tracks all instances of this class to ensure their dispose method is
@@ -32,34 +32,34 @@ public class Map extends MWComponentInstance<Map> implements Serializable
     private static final Set<Disposable> sInstances = new HashSet<Disposable>();
 
     /**
-     * Maintains information used in calling the <code>mapGeneration</code> MATLAB 
+     * Maintains information used in calling the <code>path_generator</code> MATLAB 
      *function.
      */
-    private static final MWFunctionSignature sMapGenerationSignature =
-        new MWFunctionSignature(/* max outputs = */ 2,
+    private static final MWFunctionSignature sPath_generatorSignature =
+        new MWFunctionSignature(/* max outputs = */ 3,
                                 /* has varargout = */ false,
-                                /* function name = */ "mapGeneration",
-                                /* max inputs = */ 2,
+                                /* function name = */ "path_generator",
+                                /* max inputs = */ 3,
                                 /* has varargin = */ false);
 
     /**
      * Shared initialization implementation - private
      * @throws MWException An error has occurred during the function call.
      */
-    private Map (final MWMCR mcr) throws MWException
+    private Path (final MWMCR mcr) throws MWException
     {
         super(mcr);
         // add this to sInstances
-        synchronized(Map.class) {
+        synchronized(Path.class) {
             sInstances.add(this);
         }
     }
 
     /**
-     * Constructs a new instance of the <code>Map</code> class.
+     * Constructs a new instance of the <code>Path</code> class.
      * @throws MWException An error has occurred during the function call.
      */
-    public Map() throws MWException
+    public Path() throws MWException
     {
         this(MapGenerationMCRFactory.newInstance());
     }
@@ -72,26 +72,26 @@ public class Map extends MWComponentInstance<Map> implements Serializable
     }
     
     /**
-     * @deprecated Please use the constructor {@link #Map(MWComponentOptions componentOptions)}.
+     * @deprecated Please use the constructor {@link #Path(MWComponentOptions componentOptions)}.
      * The <code>com.mathworks.toolbox.javabuilder.MWComponentOptions</code> class provides an API to set the
      * path to the component.
      * @param pathToComponent Path to component directory.
      * @throws MWException An error has occurred during the function call.
      */
     @Deprecated
-    public Map(String pathToComponent) throws MWException
+    public Path(String pathToComponent) throws MWException
     {
         this(MapGenerationMCRFactory.newInstance(getPathToComponentOptions(pathToComponent)));
     }
     
     /**
-     * Constructs a new instance of the <code>Map</code> class. Use this constructor to 
+     * Constructs a new instance of the <code>Path</code> class. Use this constructor to 
      * specify the options required to instantiate this component.  The options will be 
      * specific to the instance of this component being created.
      * @param componentOptions Options specific to the component.
      * @throws MWException An error has occurred during the function call.
      */
-    public Map(MWComponentOptions componentOptions) throws MWException
+    public Path(MWComponentOptions componentOptions) throws MWException
     {
         this(MapGenerationMCRFactory.newInstance(componentOptions));
     }
@@ -102,7 +102,7 @@ public class Map extends MWComponentInstance<Map> implements Serializable
         try {
             super.dispose();
         } finally {
-            synchronized(Map.class) {
+            synchronized(Path.class) {
                 sInstances.remove(this);
             }
         }
@@ -113,24 +113,16 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      */
     public static void disposeAllInstances()
     {
-        synchronized(Map.class) {
+        synchronized(Path.class) {
             for (Disposable i : sInstances) i.dispose();
             sInstances.clear();
         }
     }
 
     /**
-     * Provides the interface for calling the <code>mapGeneration</code> MATLAB function 
+     * Provides the interface for calling the <code>path_generator</code> MATLAB function 
      * where the first argument, an instance of List, receives the output of the MATLAB function and
      * the second argument, also an instance of List, provides the input to the MATLAB function.
-     * <p>
-     * Description as provided by the author of the MATLAB function:
-     * </p>
-     * <pre>
-     * {@literal
-	 * % addpath(genpath('.\\'));
-	 * }
-     * </pre>
      * @param lhs List in which to return outputs. Number of outputs (nargout) is
      * determined by allocated size of this List. Outputs are returned as
      * sub-classes of <code>com.mathworks.toolbox.javabuilder.MWArray</code>.
@@ -144,23 +136,15 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * converted to MATLAB arrays according to default conversion rules.
      * @throws MWException An error has occurred during the function call.
      */
-    public void mapGeneration(List lhs, List rhs) throws MWException
+    public void path_generator(List lhs, List rhs) throws MWException
     {
-        fMCR.invoke(lhs, rhs, sMapGenerationSignature);
+        fMCR.invoke(lhs, rhs, sPath_generatorSignature);
     }
 
     /**
-     * Provides the interface for calling the <code>mapGeneration</code> MATLAB function 
+     * Provides the interface for calling the <code>path_generator</code> MATLAB function 
      * where the first argument, an Object array, receives the output of the MATLAB function and
      * the second argument, also an Object array, provides the input to the MATLAB function.
-     * <p>
-     * Description as provided by the author of the MATLAB function:
-     * </p>
-     * <pre>
-     * {@literal
-	 * % addpath(genpath('.\\'));
-	 * }
-	 * </pre>
      * @param lhs array in which to return outputs. Number of outputs (nargout)
      * is determined by allocated size of this array. Outputs are returned as
      * sub-classes of <code>com.mathworks.toolbox.javabuilder.MWArray</code>.
@@ -175,27 +159,19 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * MATLAB arrays according to default conversion rules.
      * @throws MWException An error has occurred during the function call.
      */
-    public void mapGeneration(Object[] lhs, Object[] rhs) throws MWException
+    public void path_generator(Object[] lhs, Object[] rhs) throws MWException
     {
-        fMCR.invoke(Arrays.asList(lhs), Arrays.asList(rhs), sMapGenerationSignature);
+        fMCR.invoke(Arrays.asList(lhs), Arrays.asList(rhs), sPath_generatorSignature);
     }
 
     /**
-     * Provides the standard interface for calling the <code>mapGeneration</code> MATLAB function with 
-     * 2 comma-separated input arguments.
+     * Provides the standard interface for calling the <code>path_generator</code> MATLAB function with 
+     * 3 comma-separated input arguments.
      * Input arguments may be passed as sub-classes of
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
      * any supported Java type. Arguments passed as Java types are converted to
      * MATLAB arrays according to default conversion rules.
      *
-     * <p>
-     * Description as provided by the author of the MATLAB function:
-     * </p>
-     * <pre>
-     * {@literal
-	 * % addpath(genpath('.\\'));
-	 * }
-     * </pre>
      * @param nargout Number of outputs to return.
      * @param rhs The inputs to the MATLAB function.
      * @return Array of length nargout containing the function outputs. Outputs
@@ -204,12 +180,12 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * should be freed by calling its <code>dispose()</code> method.
      * @throws MWException An error has occurred during the function call.
      */
-    public Object[] mapGeneration(int nargout, Object... rhs) throws MWException
+    public Object[] path_generator(int nargout, Object... rhs) throws MWException
     {
         Object[] lhs = new Object[nargout];
         fMCR.invoke(Arrays.asList(lhs), 
-                    MWMCR.getRhsCompat(rhs, sMapGenerationSignature), 
-                    sMapGenerationSignature);
+                    MWMCR.getRhsCompat(rhs, sPath_generatorSignature), 
+                    sPath_generatorSignature);
         return lhs;
     }
 }

@@ -13,17 +13,17 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
- * The <code>Map</code> class provides a Java interface to MATLAB functions. 
+ * The <code>Simulate</code> class provides a Java interface to MATLAB functions. 
  * The interface is compiled from the following files:
  * <pre>
- *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m
+ *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m
  * </pre>
- * The {@link #dispose} method <b>must</b> be called on a <code>Map</code> instance when 
- * it is no longer needed to ensure that native resources allocated by this class are 
- * properly freed.
+ * The {@link #dispose} method <b>must</b> be called on a <code>Simulate</code> instance 
+ * when it is no longer needed to ensure that native resources allocated by this class 
+ * are properly freed.
  * @version 0.0
  */
-public class Map extends MWComponentInstance<Map> implements Serializable
+public class Simulate extends MWComponentInstance<Simulate> implements Serializable
 {
     /**
      * Tracks all instances of this class to ensure their dispose method is
@@ -32,13 +32,13 @@ public class Map extends MWComponentInstance<Map> implements Serializable
     private static final Set<Disposable> sInstances = new HashSet<Disposable>();
 
     /**
-     * Maintains information used in calling the <code>mapGeneration</code> MATLAB 
+     * Maintains information used in calling the <code>runsimulation</code> MATLAB 
      *function.
      */
-    private static final MWFunctionSignature sMapGenerationSignature =
-        new MWFunctionSignature(/* max outputs = */ 2,
+    private static final MWFunctionSignature sRunsimulationSignature =
+        new MWFunctionSignature(/* max outputs = */ 4,
                                 /* has varargout = */ false,
-                                /* function name = */ "mapGeneration",
+                                /* function name = */ "runsimulation",
                                 /* max inputs = */ 2,
                                 /* has varargin = */ false);
 
@@ -46,20 +46,20 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * Shared initialization implementation - private
      * @throws MWException An error has occurred during the function call.
      */
-    private Map (final MWMCR mcr) throws MWException
+    private Simulate (final MWMCR mcr) throws MWException
     {
         super(mcr);
         // add this to sInstances
-        synchronized(Map.class) {
+        synchronized(Simulate.class) {
             sInstances.add(this);
         }
     }
 
     /**
-     * Constructs a new instance of the <code>Map</code> class.
+     * Constructs a new instance of the <code>Simulate</code> class.
      * @throws MWException An error has occurred during the function call.
      */
-    public Map() throws MWException
+    public Simulate() throws MWException
     {
         this(MapGenerationMCRFactory.newInstance());
     }
@@ -72,26 +72,26 @@ public class Map extends MWComponentInstance<Map> implements Serializable
     }
     
     /**
-     * @deprecated Please use the constructor {@link #Map(MWComponentOptions componentOptions)}.
+     * @deprecated Please use the constructor {@link #Simulate(MWComponentOptions componentOptions)}.
      * The <code>com.mathworks.toolbox.javabuilder.MWComponentOptions</code> class provides an API to set the
      * path to the component.
      * @param pathToComponent Path to component directory.
      * @throws MWException An error has occurred during the function call.
      */
     @Deprecated
-    public Map(String pathToComponent) throws MWException
+    public Simulate(String pathToComponent) throws MWException
     {
         this(MapGenerationMCRFactory.newInstance(getPathToComponentOptions(pathToComponent)));
     }
     
     /**
-     * Constructs a new instance of the <code>Map</code> class. Use this constructor to 
-     * specify the options required to instantiate this component.  The options will be 
-     * specific to the instance of this component being created.
+     * Constructs a new instance of the <code>Simulate</code> class. Use this constructor 
+     * to specify the options required to instantiate this component.  The options will 
+     * be specific to the instance of this component being created.
      * @param componentOptions Options specific to the component.
      * @throws MWException An error has occurred during the function call.
      */
-    public Map(MWComponentOptions componentOptions) throws MWException
+    public Simulate(MWComponentOptions componentOptions) throws MWException
     {
         this(MapGenerationMCRFactory.newInstance(componentOptions));
     }
@@ -102,7 +102,7 @@ public class Map extends MWComponentInstance<Map> implements Serializable
         try {
             super.dispose();
         } finally {
-            synchronized(Map.class) {
+            synchronized(Simulate.class) {
                 sInstances.remove(this);
             }
         }
@@ -113,14 +113,14 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      */
     public static void disposeAllInstances()
     {
-        synchronized(Map.class) {
+        synchronized(Simulate.class) {
             for (Disposable i : sInstances) i.dispose();
             sInstances.clear();
         }
     }
 
     /**
-     * Provides the interface for calling the <code>mapGeneration</code> MATLAB function 
+     * Provides the interface for calling the <code>runsimulation</code> MATLAB function 
      * where the first argument, an instance of List, receives the output of the MATLAB function and
      * the second argument, also an instance of List, provides the input to the MATLAB function.
      * <p>
@@ -128,7 +128,7 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * </p>
      * <pre>
      * {@literal
-	 * % addpath(genpath('.\\'));
+	 * % time = 0:step:(size(p,1)-1)/1000;
 	 * }
      * </pre>
      * @param lhs List in which to return outputs. Number of outputs (nargout) is
@@ -144,13 +144,13 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * converted to MATLAB arrays according to default conversion rules.
      * @throws MWException An error has occurred during the function call.
      */
-    public void mapGeneration(List lhs, List rhs) throws MWException
+    public void runsimulation(List lhs, List rhs) throws MWException
     {
-        fMCR.invoke(lhs, rhs, sMapGenerationSignature);
+        fMCR.invoke(lhs, rhs, sRunsimulationSignature);
     }
 
     /**
-     * Provides the interface for calling the <code>mapGeneration</code> MATLAB function 
+     * Provides the interface for calling the <code>runsimulation</code> MATLAB function 
      * where the first argument, an Object array, receives the output of the MATLAB function and
      * the second argument, also an Object array, provides the input to the MATLAB function.
      * <p>
@@ -158,7 +158,7 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * </p>
      * <pre>
      * {@literal
-	 * % addpath(genpath('.\\'));
+	 * % time = 0:step:(size(p,1)-1)/1000;
 	 * }
 	 * </pre>
      * @param lhs array in which to return outputs. Number of outputs (nargout)
@@ -175,13 +175,13 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * MATLAB arrays according to default conversion rules.
      * @throws MWException An error has occurred during the function call.
      */
-    public void mapGeneration(Object[] lhs, Object[] rhs) throws MWException
+    public void runsimulation(Object[] lhs, Object[] rhs) throws MWException
     {
-        fMCR.invoke(Arrays.asList(lhs), Arrays.asList(rhs), sMapGenerationSignature);
+        fMCR.invoke(Arrays.asList(lhs), Arrays.asList(rhs), sRunsimulationSignature);
     }
 
     /**
-     * Provides the standard interface for calling the <code>mapGeneration</code> MATLAB function with 
+     * Provides the standard interface for calling the <code>runsimulation</code> MATLAB function with 
      * 2 comma-separated input arguments.
      * Input arguments may be passed as sub-classes of
      * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
@@ -193,7 +193,7 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * </p>
      * <pre>
      * {@literal
-	 * % addpath(genpath('.\\'));
+	 * % time = 0:step:(size(p,1)-1)/1000;
 	 * }
      * </pre>
      * @param nargout Number of outputs to return.
@@ -204,12 +204,12 @@ public class Map extends MWComponentInstance<Map> implements Serializable
      * should be freed by calling its <code>dispose()</code> method.
      * @throws MWException An error has occurred during the function call.
      */
-    public Object[] mapGeneration(int nargout, Object... rhs) throws MWException
+    public Object[] runsimulation(int nargout, Object... rhs) throws MWException
     {
         Object[] lhs = new Object[nargout];
         fMCR.invoke(Arrays.asList(lhs), 
-                    MWMCR.getRhsCompat(rhs, sMapGenerationSignature), 
-                    sMapGenerationSignature);
+                    MWMCR.getRhsCompat(rhs, sRunsimulationSignature), 
+                    sRunsimulationSignature);
         return lhs;
     }
 }

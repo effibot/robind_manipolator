@@ -1,8 +1,8 @@
 /*
  * MATLAB Compiler: 8.4 (R2022a)
- * Date: Sun Aug  7 23:05:38 2022
+ * Date: Mon Aug  8 11:25:44 2022
  * Arguments: 
- * "-B""macro_default""-W""java:mapGeneration,Map""-T""link:lib""-d""C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration\\for_testing""class{Map:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m}"
+ * "-B""macro_default""-W""java:mapGeneration,Map""-T""link:lib""-d""C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration\\for_testing""class{Map:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m}""class{Path:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\path_generator.m}""class{Simulate:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m}"
  */
 
 package mapGeneration;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class MapGenerationMCRFactory implements Serializable 
 {
     /** Component's uuid */
-    private static final String sComponentId = "mapGeneratio_212f69e9-1445-43ad-9faa-210615b7ba74";
+    private static final String sComponentId = "mapGeneratio_3af7ec76-2c5b-476f-ae3b-b94ee72f19cf";
     
     /** Component name */
     private static final String sComponentName = "mapGeneration";

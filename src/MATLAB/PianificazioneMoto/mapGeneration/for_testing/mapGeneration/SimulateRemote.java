@@ -13,25 +13,25 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * The <code>MapRemote</code> class provides a Java RMI-compliant interface to MATLAB 
- * functions. The interface is compiled from the following files:
+ * The <code>SimulateRemote</code> class provides a Java RMI-compliant interface to 
+ * MATLAB functions. The interface is compiled from the following files:
  * <pre>
- *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m
+ *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m
  * </pre>
- * The {@link #dispose} method <b>must</b> be called on a <code>MapRemote</code> instance 
- * when it is no longer needed to ensure that native resources allocated by this class 
- * are properly freed, and the server-side proxy is unexported.  (Failure to call dispose 
- * may result in server-side threads not being properly shut down, which often appears as 
- * a hang.)  
+ * The {@link #dispose} method <b>must</b> be called on a <code>SimulateRemote</code> 
+ * instance when it is no longer needed to ensure that native resources allocated by this 
+ * class are properly freed, and the server-side proxy is unexported.  (Failure to call 
+ * dispose may result in server-side threads not being properly shut down, which often 
+ * appears as a hang.)  
  *
  * This interface is designed to be used together with 
  * <code>com.mathworks.toolbox.javabuilder.remoting.RemoteProxy</code> to automatically 
- * generate RMI server proxy objects for instances of mapGeneration.Map.
+ * generate RMI server proxy objects for instances of mapGeneration.Simulate.
  */
-public interface MapRemote extends Poolable
+public interface SimulateRemote extends Poolable
 {
     /**
-     * Provides the standard interface for calling the <code>mapGeneration</code> MATLAB 
+     * Provides the standard interface for calling the <code>runsimulation</code> MATLAB 
      * function with 2 input arguments.  
      *
      * Input arguments to standard interface methods may be passed as sub-classes of 
@@ -46,7 +46,7 @@ public interface MapRemote extends Poolable
      * Documentation as provided by the author of the MATLAB function:
      * <pre>
      * {@literal 
-	 * % addpath(genpath('.\\'));
+	 * % time = 0:step:(size(p,1)-1)/1000;
 	 * }
      * </pre>
      *
@@ -60,7 +60,7 @@ public interface MapRemote extends Poolable
      * @throws java.rmi.RemoteException An error has occurred during the function call or 
      * in communication with the server.
      */
-    public Object[] mapGeneration(int nargout, Object... rhs) throws RemoteException;
+    public Object[] runsimulation(int nargout, Object... rhs) throws RemoteException;
   
     /** 
      * Frees native resources associated with the remote server object 
