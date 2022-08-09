@@ -69,7 +69,7 @@ function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
                 filename =strcat(num2str(mapList(i).id),'.png');
 %                 imwrite(M,filename,'jpg');
                 showimage(M);
-                saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
+                saveimage(gcf,'.\robind_manipolator\src\main\resources\com\effibot\robind_manipolator\img\constructing\',filename)
             end
         end
         currdim = currdim/2;

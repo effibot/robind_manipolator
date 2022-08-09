@@ -4,16 +4,27 @@ import MatlabUtility.MatlabUtility;
 import com.effibot.robind_manipolator.Processing.Obstacle;
 import com.mathworks.toolbox.javabuilder.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Matlab extends MatlabUtility {
     private static MatlabUtility matlabUtility = null;
 
+    private static info info = null;
+    private static path path = null;
+    private static sysout sysout = null;
+
+
+    private static geomprops geomprops = null;
+    private static ik ik = null;
     private Matlab() throws MWException {
         matlabUtility = new MatlabUtility();
+
     }
 
-    public info mapgeneration(double[][] obs, double[] dim) {
+
+
+    public void mapgeneration(double[][] obs, double[] dim) {
         MWArray obsIn = null;
         MWArray dimIn = null;
         MWNumericArray gidOut = null;
@@ -31,8 +42,7 @@ public class Matlab extends MatlabUtility {
             }
             System.out.println(gidOut);
             System.out.println(shapeposOut);
-            info res = new info( gidOut.getDoubleData(),shapeposOut.getDoubleData());
-            return  res;
+            setInfo(new info( gidOut.getDoubleData(),shapeposOut.getDoubleData()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -40,10 +50,9 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{obsIn, dimIn});
             MWArray.disposeArray(results);
         }
-        return null;
     }
 
-    public path pathgeneration(double startId,double[] shapepos, String method){
+    public void pathgeneration(double startId,double[] shapepos, String method){
         MWArray startIdIn = null;
         MWArray shapeposIn = null;
         MWArray methodIn = null;
@@ -68,8 +77,7 @@ public class Matlab extends MatlabUtility {
             System.out.println(pOut);
             System.out.println(dpOut);
             System.out.println(ddpOut);
-            path res = new path(pOut.getDoubleData(),dpOut.getDoubleData(),ddpOut.getDoubleData());
-            return res;
+            setPath(new path(pOut.getDoubleData(),dpOut.getDoubleData(),ddpOut.getDoubleData()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -77,10 +85,9 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{startIdIn,shapeposIn,methodIn});
             MWArray.disposeArray(results);
         }
-        return null;
     }
 
-    public sysout runsimulation(double M, double alpha){
+    public void runsimulation(double M, double alpha){
         MWArray MIn = null;
         MWArray alphaIn = null;
         MWNumericArray qrOut = null;
@@ -108,8 +115,7 @@ public class Matlab extends MatlabUtility {
             System.out.println(dqrOut);
             System.out.println(ddqrOut);
             System.out.println(eOut);
-            sysout res = new sysout(qrOut.getDoubleData(), dqrOut.getDoubleData(), ddqrOut.getDoubleData(), eOut.getDoubleData());
-            return res;
+            setSysout(new sysout(qrOut.getDoubleData(), dqrOut.getDoubleData(), ddqrOut.getDoubleData(), eOut.getDoubleData()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -117,10 +123,9 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{MIn,alphaIn});
             MWArray.disposeArray(results);
         }
-        return  null;
     }
 
-    public geomprops vision(String filename){
+    public void vision(String filename){
         MWArray filenameIn = null;
         MWNumericArray objAreaOut = null;
         MWNumericArray objPerimOut = null;
@@ -146,8 +151,7 @@ public class Matlab extends MatlabUtility {
             System.out.println(objPerimOut);
             System.out.println(objShapeOut);
             System.out.println(angOut);
-            geomprops res = new geomprops(objAreaOut.getDouble(),objPerimOut.getDouble(),objShapeOut.getDouble(), angOut.getDouble());
-            return res;
+            setGeomprops(new geomprops(objAreaOut.getDouble(),objPerimOut.getDouble(),objShapeOut.getDouble(), angOut.getDouble()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -155,10 +159,9 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{filenameIn});
             MWArray.disposeArray(results);
         }
-    return  null;
     }
 
-    public ik inverse_kinematics(double xdes, double ydes,double zdes,double roll,double pitch,double yaw){
+    public void inverse_kinematics(double xdes, double ydes,double zdes,double roll,double pitch,double yaw){
         MWArray x = null;
         MWArray y = null;
         MWArray z = null;
@@ -180,8 +183,7 @@ public class Matlab extends MatlabUtility {
                 qikOut = (MWNumericArray) results[0];
             }
             System.out.println(qikOut);
-            ik res = new ik(qikOut.getDoubleData());
-            return res;
+            setIk( new ik(qikOut.getDoubleData()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -189,7 +191,6 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{x,y,z,r,p,yy});
             MWArray.disposeArray(results);
         }
-        return null;
     }
 
     public static void disposeResources(MWArray[] mw){
@@ -203,19 +204,47 @@ public class Matlab extends MatlabUtility {
         matlabUtility.dispose();
     }
 
-    public double[][] Obs2List(List<Obstacle> obsList) {
 
-        double[][] col = new double[obsList.size()][];
-        for(int i = 0;i<obsList.size();i++){
-            Obstacle o = obsList.get(i);
-            double[] row = new double[3];
-            row[0] = o.getXc();
-            row[1] = o.getYc();
-            row[2] = o.getR();
-            col[i]=row;
-        }
-        return col;
+    public static info getInfo() {
+        return info;
     }
+
+    public static void setInfo(info info) {
+        Matlab.info = info;
+    }
+
+    public static path getPath() {
+        return path;
+    }
+
+    public static void setPath(path path) {
+        Matlab.path = path;
+    }
+
+    public static sysout getSysout() {
+        return sysout;
+    }
+
+    public static void setSysout(sysout sysout) {
+        Matlab.sysout = sysout;
+    }
+
+    public static geomprops getGeomprops() {
+        return geomprops;
+    }
+
+    public static void setGeomprops(geomprops geomprops) {
+        Matlab.geomprops = geomprops;
+    }
+
+    public static ik getIk() {
+        return ik;
+    }
+
+    public static void setIk(ik ik) {
+        Matlab.ik = ik;
+    }
+
 
     public  static  synchronized Matlab getInstance() throws MWException {
         if (matlabUtility==null){

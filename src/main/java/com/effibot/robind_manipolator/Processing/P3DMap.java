@@ -1,5 +1,8 @@
 package com.effibot.robind_manipolator.Processing;
 
+import com.effibot.robind_manipolator.MATLAB.Matlab;
+import com.effibot.robind_manipolator.MATLAB.path;
+import com.mathworks.toolbox.javabuilder.MWException;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
@@ -23,7 +26,7 @@ public class P3DMap extends ProcessingBase{
     private boolean showPlots=false;
 
     private ArrayList<Plot2D> plots = new ArrayList<>();
-    public P3DMap(List<Obstacle> obsList) {
+    public P3DMap(List<Obstacle> obsList) throws MWException {
         this.obsList = obsList;
         size = 1024;
         mapH = 20;

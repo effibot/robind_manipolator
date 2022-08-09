@@ -6,28 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="TODO: fix nullpointer on robot observers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/MatlabUtility.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/MatlabUtility.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/samples/visioneSample2.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/visioneSample2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution/MyAppInstaller_web.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution/MyAppInstaller_web.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/MatlabUtility.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/MatlabUtility.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/samples/visioneSample2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/samples/visioneSample2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityMCRFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityMCRFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityRemote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityRemote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtility.ctf" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtility.ctf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtilityMCRFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtilityMCRFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/unresolvedSymbols.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/unresolvedSymbols.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/UDP/udp.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/mapg.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Visione/mapg.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/path.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Visione/path.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/visioneSample2.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Visione/visioneSample2.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/Matlab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/Matlab.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/geomprops.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/geomprops.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
     </list>
@@ -40,8 +26,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -175,7 +161,7 @@
       <workItem from="1659947305884" duration="870000" />
       <workItem from="1659948204938" duration="1235000" />
       <workItem from="1659950653140" duration="3986000" />
-      <workItem from="1659964976627" duration="12146000" />
+      <workItem from="1659964976627" duration="26593000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>
@@ -249,6 +235,11 @@
           <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="9" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/Matlab.java</url>
+          <line>90</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

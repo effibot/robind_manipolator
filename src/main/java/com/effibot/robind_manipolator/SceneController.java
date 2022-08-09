@@ -1,11 +1,15 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.MATLAB.Matlab;
 import com.effibot.robind_manipolator.MATLAB.info;
+import com.effibot.robind_manipolator.MATLAB.path;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
 import com.mathworks.toolbox.javabuilder.MWException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
@@ -22,7 +27,9 @@ import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 
+import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
@@ -93,6 +100,8 @@ public class SceneController implements Initializable, Observer {
     private ArrayList<Integer> sequence;
     private Vector<Integer> startPosition;
     private static  Matlab matlabInstance;
+    private static List<String> greenId= new ArrayList<>();
+    private static final Utils util= new Utils();
     @FXML
     public void onContinueButtonClick() throws MWException {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
@@ -100,17 +109,41 @@ public class SceneController implements Initializable, Observer {
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
             matlabInstance=Matlab.getInstance();
-            double[][] obslist = matlabInstance.Obs2List(obsList);
+            double[][] obslist = util.Obs2List(obsList);
             double[] dim = {1024.0,1024.0};
-            info res = matlabInstance.mapgeneration(obslist,dim);
+            matlabInstance.mapgeneration(obslist,dim);
+            DecimalFormat format = new DecimalFormat("0.#");
+
+            info ids = matlabInstance.getInfo();
+            for (Double id : ids.gids()){
+
+                greenId.add(format.format(id));
+            }
+            startPos.getItems().addAll(greenId);   //? replace gids with the sequence list from the map
+
             // load images
-            Image basicMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPre.jpeg")),
+            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
                     256d, 256d, true, true);
             basicMap.setImage(basicMapImage);
-            Image postProcMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPost.jpeg")),
-                    512d, 512d, true, true);
+
+            ArrayList<Image> imgs = util.makeImage("mapgenerationimg/constructing");
+//            Image postProcMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPost.jpeg")),
+//                    512d, 512d, true, true);
             // disable setup tab and select info tab
-            map.setImage(postProcMapImage);
+            map.setImage(imgs.get(0));
+            Timeline timeLine = new Timeline();
+            Collection<KeyFrame> frames = timeLine.getKeyFrames();
+            Duration frameGap = Duration.millis(256);
+            Duration frameTime = Duration.ZERO;
+            int sz = imgs.size();
+            for (int i = 0;i<sz;i++) {
+                frameTime = frameTime.add(frameGap);
+                Image imgi = imgs.get(i);
+                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
+            }
+            timeLine.setCycleCount(1);
+            timeLine.play();
+//            map.setImage(postProcMapImage);
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -167,7 +200,7 @@ public class SceneController implements Initializable, Observer {
         }
     }
     @FXML
-    public void onStartAction(ActionEvent actionEvent) {
+    public void onStartAction(ActionEvent actionEvent) throws MWException {
         roll = Float.parseFloat(rollField.getText());
         pitch = Float.parseFloat(pitchField.getText());
         yaw = Float.parseFloat(yawField.getText());
@@ -176,6 +209,10 @@ public class SceneController implements Initializable, Observer {
         if (condition) {
 //            TODO> implementare il salto a matlab
             System.out.println("Start");
+            Matlab mapInstance = Matlab.getInstance();
+            double[] obspos = {412.0,602,0};
+            String method = "paraboloic";
+            mapInstance.pathgeneration(5,obspos ,method);
         }
 
 
@@ -204,12 +241,9 @@ public class SceneController implements Initializable, Observer {
         controlTab.setClosable(true);
         controlTab.setDisable(true);
         // setup robot start position combobox
-
+//        greenId = randomSequence(10);
         //! this is for dummy usage
-        List<String> greenId = randomSequence(10);
-        final ObservableList<String> gids = FXCollections.observableArrayList(greenId);
         //! -----------------------------
-        startPos.getItems().addAll(gids);   //? replace gids with the sequence list from the map
         startPos.setVisibleRowCount(5);
         startPos.getEditor().setTextFormatter(new TextFormatter<>(c -> {
             if (c.getControlNewText().matches("\\d*") && greenId.contains(c.getText()))

@@ -6,7 +6,7 @@ robotColor = [1 1 0 0.7];
 hold on
 plot(p(:,1),p(:,2),'LineWidth',3);
 ii=1;
-str = strcat('.\mapgenerationimg\',type);
+str = strcat('.\robind_manipolator\src\main\resources\com\effibot\robind_manipolator\img\',type);
 mkdir str
 
 for j = 1:fix(size(p,1)/100):size(p,1)
