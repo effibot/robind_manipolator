@@ -23,12 +23,26 @@ objPerim = max(perims);
 apothem = objArea*2/objPerim;
 epsilon = 0.01;
 fixed = [0.28867, 0.5, 0.68819, 0.86602];
-polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono"];
+polig = ["Triangolo", "Quadrilatero", "Pentagono", "Esagono","Cerchio"];
 deltaP=zeros(size(polig));
 deltaA=zeros(size(polig));
 deltaFix=zeros(size(polig));
 deltaAp=zeros(size(polig));
 for i=1:length(polig)
+    if i == length(polig)
+        % Calcolo perimetro sperimentale 
+    perimExp = apothem*2*pi;
+    areaExp = apothem^2*pi;
+    fixExp = pi;
+    apExp = 2*areaExp/perimExp;
+% controllo quale perimetro più si avvicina a quello dell'oggetto
+    deltaP(i) = min(abs(objPerim-perimExp));
+    deltaA(i) = min(abs(objArea-areaExp));
+    deltaFix(i) = pi;
+    deltaAp(i) = min(abs(apothem-apExp));
+        break;
+    end
+
     numLati = i+2;
 % calcolo valori fissi sperimentali
 % controllo quale valore fisso è più vicino
@@ -50,6 +64,19 @@ end
 [~,idF] = min(deltaFix);
 [~,idap] = min(deltaAp);
 objShape = polig(mode([idP,idA,idF,idap]));
+switch objShape
+    case 'Triangolo'
+        objShape=0;
+    case 'Quadrilatero'
+        objShape=1;
+    case 'Pentagono'
+        objShape=2;
+    case 'Esagono'
+        objShape=3;
+    case 'Cerchio'
+        objShape=4;
+end
+
 
 %% Eseguo Trasformata di Radon per determinare baricentro ed orientamento
 % Calcoliamo le proiezioni, in modo tale da identificare le diagonali

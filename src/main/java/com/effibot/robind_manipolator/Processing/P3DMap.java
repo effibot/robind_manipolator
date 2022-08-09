@@ -1,19 +1,9 @@
 package com.effibot.robind_manipolator.Processing;
 
-import com.mathworks.toolbox.javabuilder.MWArray;
-import com.mathworks.toolbox.javabuilder.MWClassID;
-import com.mathworks.toolbox.javabuilder.MWException;
-import com.mathworks.toolbox.javabuilder.MWNumericArray;
-import mapGeneration.Map;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,74 +30,10 @@ public class P3DMap extends ProcessingBase{
         frame = new Reference(this);
         observers = new ArrayList<>();
         this.padding = 5;
-        double[][] obspos = generateMap(obsList, size);
-        File pathbw = new File("mapgenerationimg/generated");
-        File pathgraph = new File("mapgenerationimg/generated");
-        File[] bwfile = pathbw.listFiles();
-        File[] graphfile = pathgraph.listFiles();
-        BufferedImage[] sequence = new BufferedImage[graphfile.length+1];
-        try {
-            sequence[0]= ImageIO.read(bwfile[0]);
-            for(int i=0;i<graphfile.length;i++){
-                sequence[i+1] = ImageIO.read(graphfile[i]);
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
 
     }
 
-    private double[][] generateMap(List<Obstacle> obsList,int size) {
-        MWArray obsIn = null;
-        MWArray dimIn = null;
-        MWNumericArray gidOut = null;
-        MWNumericArray shapeposOut = null;
-        Object[] results = null;
-        Map m = null;
-        double[][] r = new double[2][];
-        try {
-            m = new Map();
-            double[][] obslist = this.Obs2List(obsList);
-            int[] dim = {size,size};
-            obsIn = new MWNumericArray(obslist, MWClassID.DOUBLE);
-            dimIn = new MWNumericArray(dim, MWClassID.DOUBLE);
-            results = m.mapGeneration(2, obsIn, dimIn);
-            if (results[0] instanceof MWNumericArray) {
-                gidOut = (MWNumericArray) results[0];
-            }
-            if (results[1] instanceof MWNumericArray) {
-                shapeposOut = (MWNumericArray) results[1];
-            }
-            System.out.println(gidOut);
-            System.out.println(shapeposOut);
-            // Dispose of native resources
-            MWArray.disposeArray(obsIn);
-            MWArray.disposeArray(dimIn);
-            MWArray.disposeArray(results);
-            // Dispose of native resources
-            m.dispose();
-            r[0]=gidOut.getDoubleData();
-            r[1]=shapeposOut.getDoubleData();
-            return r;
-        } catch (MWException e) {
-            // Dispose of native resources
-            MWArray.disposeArray(obsIn);
-            MWArray.disposeArray(dimIn);
-            MWArray.disposeArray(results);
-            // Dispose of native resources
-            m.dispose();
-            throw new RuntimeException(e);
-        }finally {
-            // Dispose of native resources
-            MWArray.disposeArray(obsIn);
-            MWArray.disposeArray(dimIn);
-            MWArray.disposeArray(results);
-            // Dispose of native resources
-            m.dispose();
-        }
-    }
+
 
     private double[][] Obs2List(List<Obstacle> obsList) {
 

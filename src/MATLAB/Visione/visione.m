@@ -1,23 +1,23 @@
-function [objArea,objPerim,objShape,ang]=visione(obsTarget)
-addpath(genpath('./MATLAB/Visione/'))
-addpath('MATLAB/PianificazioneMoto/')
+function [objArea,objPerim,objShape,ang]=visione(filename)
+% addpath(genpath('./MATLAB/Visione/'))
+% addpath('MATLAB/PianificazioneMoto/')
 delete('./Visione/Processed/*.png')
+mkdir Immagini/Processed
 % variabili simboliche
 syms x rect(x,x0,y0,m) rect2p(x,x0,y0,x1,y1)  
 rect(x,x0,y0,m)=m*(x-x0)+y0;
 rect2p(x,x0,y0,x1,y1) = (x-x0)/(x1-x0)*(y1-y0)+y0;
-filename='';
-switch(obsTarget)
-    case 1
-        filename = 'Immagini/triangolo.jpg';
-    case 2
-        filename = 'Immagini/quadrato.jpg';
-
-    case 3
-        filename = 'Immagini/sfera.jpg';
-    otherwise
-        disp("No obstacle match");
-end
+% switch(obsTarget)
+%     case 1
+%         filename = 'Immagini/triangolo.jpg';
+%     case 2
+%         filename = 'Immagini/quadrato.jpg';
+% 
+%     case 3
+%         filename = 'Immagini/sfera.jpg';
+%     otherwise
+%         disp("No obstacle match");
+% end
 [preprocessdata,maxRes]=preprocess(filename);
 center=preprocessdata{1};
 imgRGB=preprocessdata{2};
@@ -80,7 +80,7 @@ for i =1:size(diag,2)
     fplot(eq, 'b','LineWidth', 1.5);
     hold on
 end
-saveimage(gcf,'./Visione/Processed/','1.png');
+saveimage(gcf,'./Immagini/Processed','1.png');
 %% Report dell'Identificazione
 % fprintf("Area: %f, Perimetro: %f\n", objArea, objPerim);
 % fprintf("Forma dell'Oggetto: %s\n", objShape);

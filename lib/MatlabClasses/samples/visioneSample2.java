@@ -12,7 +12,7 @@ import MatlabUtility.MatlabUtility;
  * @see com.mathworks.toolbox.javabuilder.MWArray
  *
  */
-public class mapGenerationSample1 {
+public class visioneSample2 {
 
 	private static MatlabUtility matlabutilityInstance;
 
@@ -21,34 +21,40 @@ public class mapGenerationSample1 {
 	}
 
 	/**
-	 * Sample code for {@link MatlabUtility#mapGeneration(int, Object...)}.
+	 * Sample code for {@link MatlabUtility#visione(int, Object...)}.
 	 */
-	public static void mapGenerationExample() {
-		MWArray obsIn = null;
-		MWArray dimIn = null;
-		MWNumericArray gidOut = null;
-		MWNumericArray shapeposOut = null;
+	public static void visioneExample() {
+		MWArray filenameIn = null;
+		MWNumericArray objAreaOut = null;
+		MWNumericArray objPerimOut = null;
+		MWNumericArray objShapeOut = null;
+		MWNumericArray angOut = null;
 		Object[] results = null;
 		try {
-			double[][] obsInData = {{250.0, 480.0, 340.0}, {60.0, 250.0, 60.0}};
-			obsIn = new MWNumericArray(obsInData, MWClassID.DOUBLE);
-			double[] dimInData = {1024.0, 1024.0};
-			dimIn = new MWNumericArray(dimInData, MWClassID.DOUBLE);
-			results = matlabutilityInstance.mapGeneration(2, obsIn, dimIn);
+			String filenameInData = "Immagini/sfera.jpg";
+			filenameIn = new MWCharArray(filenameInData);
+			results = matlabutilityInstance.visione(4, filenameIn);
 			if (results[0] instanceof MWNumericArray) {
-				gidOut = (MWNumericArray) results[0];
+				objAreaOut = (MWNumericArray) results[0];
 			}
 			if (results[1] instanceof MWNumericArray) {
-				shapeposOut = (MWNumericArray) results[1];
+				objPerimOut = (MWNumericArray) results[1];
 			}
-			System.out.println(gidOut);
-			System.out.println(shapeposOut);
+			if (results[2] instanceof MWNumericArray) {
+				objShapeOut = (MWNumericArray) results[2];
+			}
+			if (results[3] instanceof MWNumericArray) {
+				angOut = (MWNumericArray) results[3];
+			}
+			System.out.println(objAreaOut);
+			System.out.println(objPerimOut);
+			System.out.println(objShapeOut);
+			System.out.println(angOut);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			// Dispose of native resources
-			MWArray.disposeArray(obsIn);
-			MWArray.disposeArray(dimIn);
+			MWArray.disposeArray(filenameIn);
 			MWArray.disposeArray(results);
 		}
 	}
@@ -61,7 +67,7 @@ public class mapGenerationSample1 {
 			System.exit(1);
 		}
 		try {
-			mapGenerationExample();
+			visioneExample();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

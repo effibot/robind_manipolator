@@ -5,49 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="TODO: fix nullpointer on robot observers">
-      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/path_generatorSample1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/runsimulationSample1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/MatlabUtility.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/visioneSample2.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/allclasses-frame.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/allclasses-noframe.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/constant-values.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/deprecated-list.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/help-doc.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/index-all.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/Map.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/MapGenerationMCRFactory.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/MapRemote.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-frame.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-summary.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/mapGeneration/package-tree.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/overview-tree.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/serialized-form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/mapGeneration.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/mapGeneration.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/package-list" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/doc/html/package-list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/mapGeneration.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/samples/mapGenerationSample1.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/mapGenerationSample1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/samples/path_generatorSample1.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/path_generatorSample1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/samples/runsimulationSample1.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/runsimulationSample1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/mapg.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slxc" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slxc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.asv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution_files_only/mapGeneration.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution_files_only/mapGeneration.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution_files_only/samples/mapGenerationSample1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution_files_only/samples/mapGenerationSample1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/classes/mapGeneration/MapGenerationMCRFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/classes/mapGeneration/MapGenerationMCRFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/classes/mapGeneration/mapGeneration.ctf" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/classes/mapGeneration/mapGeneration.ctf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/Map.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/MapGenerationMCRFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/MapGenerationMCRFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/MapRemote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/mapGeneration/MapRemote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/requiredMCRProducts.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/requiredMCRProducts.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/unresolvedSymbols.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration/for_testing/unresolvedSymbols.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/tmwinternal/simulink_cache.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/tmwinternal/simulink_cache.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/varInfo.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/varInfo.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/computeGeometric.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Visione/computeGeometric.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/visione.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Visione/visione.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,7 +58,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/loren/OneDrive/Desktop/robind_manipolator/lib/MatlabClasses/mapGeneration.jar",
+    "last_opened_file_path": "C:/Users/loren/OneDrive/Desktop/robind_manipolator/lib/MatlabClasses/MatlabUtility.jar",
     "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
@@ -192,7 +163,8 @@
       <workItem from="1659946960036" duration="305000" />
       <workItem from="1659947305884" duration="870000" />
       <workItem from="1659948204938" duration="1235000" />
-      <workItem from="1659950653140" duration="2162000" />
+      <workItem from="1659950653140" duration="3986000" />
+      <workItem from="1659964976627" duration="5075000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>

@@ -1,0 +1,6 @@
+Path	Symbol	Reason
+Users\loren\OneDrive\Desktop\robind_manipolator\src\MATLAB\PianificazioneMoto\runsimulation.m	load_system	undeployable
+Users\loren\OneDrive\Desktop\robind_manipolator\src\MATLAB\PianificazioneMoto\runsimulation.m	save_system	undeployable
+Users\loren\OneDrive\Desktop\robind_manipolator\src\MATLAB\PianificazioneMoto\runsimulation.m	close_system	undeployable
+MatlabUtilit\computeGeometric.m	syms	undeployable
+MatlabUtilit\visione.m	syms	undeployable
