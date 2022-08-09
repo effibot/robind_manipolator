@@ -34,21 +34,6 @@ public class P3DMap extends ProcessingBase{
     }
 
 
-
-    private double[][] Obs2List(List<Obstacle> obsList) {
-
-        double[][] col = new double[obsList.size()][];
-        for(int i = 0;i<obsList.size();i++){
-            Obstacle o = obsList.get(i);
-            double[] row = new double[3];
-            row[0] = o.getXc();
-            row[1] = o.getYc();
-            row[2] = o.getR();
-            col[i]=row;
-        }
-        return col;
-    }
-
     @Override
     public void draw() {
         setGLGraphicsViewport(0, 0, width, height);

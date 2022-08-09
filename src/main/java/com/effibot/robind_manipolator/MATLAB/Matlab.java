@@ -1,7 +1,10 @@
 package com.effibot.robind_manipolator.MATLAB;
 
 import MatlabUtility.MatlabUtility;
+import com.effibot.robind_manipolator.Processing.Obstacle;
 import com.mathworks.toolbox.javabuilder.*;
+
+import java.util.List;
 
 public class Matlab extends MatlabUtility {
     private static MatlabUtility matlabUtility = null;
@@ -10,13 +13,12 @@ public class Matlab extends MatlabUtility {
         matlabUtility = new MatlabUtility();
     }
 
-    private double[][] mapgeneration(double[][] obs, double[] dim) {
+    public info mapgeneration(double[][] obs, double[] dim) {
         MWArray obsIn = null;
         MWArray dimIn = null;
         MWNumericArray gidOut = null;
         MWNumericArray shapeposOut = null;
         Object[] results = null;
-        double[][] id_shape= new double[2][];
         try {
             obsIn = new MWNumericArray(obs, MWClassID.DOUBLE);
             dimIn = new MWNumericArray(dim, MWClassID.DOUBLE);
@@ -29,9 +31,8 @@ public class Matlab extends MatlabUtility {
             }
             System.out.println(gidOut);
             System.out.println(shapeposOut);
-            id_shape[0] = gidOut.getDoubleData();
-            id_shape[1] = shapeposOut.getDoubleData();
-
+            info res = new info( gidOut.getDoubleData(),shapeposOut.getDoubleData());
+            return  res;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -39,10 +40,10 @@ public class Matlab extends MatlabUtility {
             disposeResources(new MWArray[]{obsIn, dimIn});
             MWArray.disposeArray(results);
         }
-        return id_shape;
+        return null;
     }
 
-    private path pathgeneration(double startId,double[] shapepos, String method){
+    public path pathgeneration(double startId,double[] shapepos, String method){
         MWArray startIdIn = null;
         MWArray shapeposIn = null;
         MWArray methodIn = null;
@@ -79,7 +80,7 @@ public class Matlab extends MatlabUtility {
         return null;
     }
 
-    private sysout runsimulation(double M, double alpha){
+    public sysout runsimulation(double M, double alpha){
         MWArray MIn = null;
         MWArray alphaIn = null;
         MWNumericArray qrOut = null;
@@ -119,12 +120,79 @@ public class Matlab extends MatlabUtility {
         return  null;
     }
 
-    private geomprops vision(String filename){
+    public geomprops vision(String filename){
+        MWArray filenameIn = null;
+        MWNumericArray objAreaOut = null;
+        MWNumericArray objPerimOut = null;
+        MWNumericArray objShapeOut = null;
+        MWNumericArray angOut = null;
+        Object[] results = null;
+        try {
+            filenameIn = new MWCharArray(filename);
+            results = matlabUtility.visione(4, filenameIn);
+            if (results[0] instanceof MWNumericArray) {
+                objAreaOut = (MWNumericArray) results[0];
+            }
+            if (results[1] instanceof MWNumericArray) {
+                objPerimOut = (MWNumericArray) results[1];
+            }
+            if (results[2] instanceof MWNumericArray) {
+                objShapeOut = (MWNumericArray) results[2];
+            }
+            if (results[3] instanceof MWNumericArray) {
+                angOut = (MWNumericArray) results[3];
+            }
+            System.out.println(objAreaOut);
+            System.out.println(objPerimOut);
+            System.out.println(objShapeOut);
+            System.out.println(angOut);
+            geomprops res = new geomprops(objAreaOut.getDouble(),objPerimOut.getDouble(),objShapeOut.getDouble(), angOut.getDouble());
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Dispose of native resources
+            disposeResources(new MWArray[]{filenameIn});
+            MWArray.disposeArray(results);
+        }
     return  null;
     }
 
+    public ik inverse_kinematics(double xdes, double ydes,double zdes,double roll,double pitch,double yaw){
+        MWArray x = null;
+        MWArray y = null;
+        MWArray z = null;
+        MWArray r = null;
+        MWArray p = null;
+        MWArray yy = null;
+        MWNumericArray qikOut = null;
+        Object[] results = null;
+        try {
+            x = new MWNumericArray(xdes, MWClassID.DOUBLE);
+            y = new MWNumericArray(ydes, MWClassID.DOUBLE);
+            z = new MWNumericArray(zdes, MWClassID.DOUBLE);
+            r = new MWNumericArray(roll, MWClassID.DOUBLE);
+            p = new MWNumericArray(pitch, MWClassID.DOUBLE);
+            y = new MWNumericArray(yaw, MWClassID.DOUBLE);
 
-    private static void disposeResources(MWArray[] mw){
+            results = matlabUtility.newtongrad(1,x,y,z,r,p,yy);
+            if (results[0] instanceof MWNumericArray) {
+                qikOut = (MWNumericArray) results[0];
+            }
+            System.out.println(qikOut);
+            ik res = new ik(qikOut.getDoubleData());
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Dispose of native resources
+            disposeResources(new MWArray[]{x,y,z,r,p,yy});
+            MWArray.disposeArray(results);
+        }
+        return null;
+    }
+
+    public static void disposeResources(MWArray[] mw){
         int sz = mw.length;
         for(int i=0;i<sz;i++) {
             MWArray.disposeArray(mw[i]);
@@ -133,6 +201,20 @@ public class Matlab extends MatlabUtility {
 
     public void disposeMatlab(){
         matlabUtility.dispose();
+    }
+
+    public double[][] Obs2List(List<Obstacle> obsList) {
+
+        double[][] col = new double[obsList.size()][];
+        for(int i = 0;i<obsList.size();i++){
+            Obstacle o = obsList.get(i);
+            double[] row = new double[3];
+            row[0] = o.getXc();
+            row[1] = o.getYc();
+            row[2] = o.getR();
+            col[i]=row;
+        }
+        return col;
     }
 
     public  static  synchronized Matlab getInstance() throws MWException {

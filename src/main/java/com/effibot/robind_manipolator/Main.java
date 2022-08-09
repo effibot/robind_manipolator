@@ -1,4 +1,5 @@
 package com.effibot.robind_manipolator;
+import com.effibot.robind_manipolator.MATLAB.Matlab;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import javafx.application.Application;
@@ -52,6 +53,11 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        try {
+            Matlab.getInstance();
+        } catch (MWException e) {
+            throw new RuntimeException(e);
+        }
         launch();
     }
 }

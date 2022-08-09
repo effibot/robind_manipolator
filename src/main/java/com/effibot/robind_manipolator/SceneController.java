@@ -1,6 +1,9 @@
 package com.effibot.robind_manipolator;
+import com.effibot.robind_manipolator.MATLAB.Matlab;
+import com.effibot.robind_manipolator.MATLAB.info;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
+import com.mathworks.toolbox.javabuilder.MWException;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -89,13 +92,17 @@ public class SceneController implements Initializable, Observer {
     private float roll, pitch, yaw;
     private ArrayList<Integer> sequence;
     private Vector<Integer> startPosition;
-
+    private static  Matlab matlabInstance;
     @FXML
-    public void onContinueButtonClick() {
+    public void onContinueButtonClick() throws MWException {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
+            matlabInstance=Matlab.getInstance();
+            double[][] obslist = matlabInstance.Obs2List(obsList);
+            double[] dim = {1024.0,1024.0};
+            info res = matlabInstance.mapgeneration(obslist,dim);
             // load images
             Image basicMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPre.jpeg")),
                     256d, 256d, true, true);
