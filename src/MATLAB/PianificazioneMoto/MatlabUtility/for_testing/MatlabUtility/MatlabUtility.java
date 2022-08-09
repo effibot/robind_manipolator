@@ -1,8 +1,8 @@
 /*
  * MATLAB Compiler: 8.4 (R2022a)
- * Date: Tue Aug  9 11:07:48 2022
+ * Date: Tue Aug  9 12:18:36 2022
  * Arguments: 
- * "-B""macro_default""-W""java:MatlabUtility,MatlabUtility""-T""link:lib""-d""C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\MatlabUtility\\for_testing""class{MatlabUtility:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\path_generator.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\Visione\\visione.m}"
+ * "-B""macro_default""-W""java:MatlabUtility,MatlabUtility""-T""link:lib""-d""C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\MatlabUtility\\for_testing""class{MatlabUtility:C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\IK\\newtongrad.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\path_generator.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m,C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\Visione\\visione.m}"
  */
 
 package MatlabUtility;
@@ -17,6 +17,7 @@ import java.io.Serializable;
  * The interface is compiled from the following files:
  * <pre>
  *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\mapGeneration.m
+ *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\IK\\newtongrad.m
  *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\path_generator.m
  *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\PianificazioneMoto\\runsimulation.m
  *  C:\\Users\\loren\\OneDrive\\Desktop\\robind_manipolator\\src\\MATLAB\\Visione\\visione.m
@@ -43,6 +44,15 @@ public class MatlabUtility extends MWComponentInstance<MatlabUtility> implements
                                 /* has varargout = */ false,
                                 /* function name = */ "mapGeneration",
                                 /* max inputs = */ 2,
+                                /* has varargin = */ false);
+    /**
+     * Maintains information used in calling the <code>newtongrad</code> MATLAB function.
+     */
+    private static final MWFunctionSignature sNewtongradSignature =
+        new MWFunctionSignature(/* max outputs = */ 1,
+                                /* has varargout = */ false,
+                                /* function name = */ "newtongrad",
+                                /* max inputs = */ 6,
                                 /* has varargin = */ false);
     /**
      * Maintains information used in calling the <code>path_generator</code> MATLAB 
@@ -242,6 +252,99 @@ public class MatlabUtility extends MWComponentInstance<MatlabUtility> implements
         fMCR.invoke(Arrays.asList(lhs), 
                     MWMCR.getRhsCompat(rhs, sMapGenerationSignature), 
                     sMapGenerationSignature);
+        return lhs;
+    }
+    /**
+     * Provides the interface for calling the <code>newtongrad</code> MATLAB function 
+     * where the first argument, an instance of List, receives the output of the MATLAB function and
+     * the second argument, also an instance of List, provides the input to the MATLAB function.
+     * <p>
+     * Description as provided by the author of the MATLAB function:
+     * </p>
+     * <pre>
+     * {@literal
+	 * %% Inverse Functions
+	 * }
+     * </pre>
+     * @param lhs List in which to return outputs. Number of outputs (nargout) is
+     * determined by allocated size of this List. Outputs are returned as
+     * sub-classes of <code>com.mathworks.toolbox.javabuilder.MWArray</code>.
+     * Each output array should be freed by calling its <code>dispose()</code>
+     * method.
+     *
+     * @param rhs List containing inputs. Number of inputs (nargin) is determined
+     * by the allocated size of this List. Input arguments may be passed as
+     * sub-classes of <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or
+     * as arrays of any supported Java type. Arguments passed as Java types are
+     * converted to MATLAB arrays according to default conversion rules.
+     * @throws MWException An error has occurred during the function call.
+     */
+    public void newtongrad(List lhs, List rhs) throws MWException
+    {
+        fMCR.invoke(lhs, rhs, sNewtongradSignature);
+    }
+
+    /**
+     * Provides the interface for calling the <code>newtongrad</code> MATLAB function 
+     * where the first argument, an Object array, receives the output of the MATLAB function and
+     * the second argument, also an Object array, provides the input to the MATLAB function.
+     * <p>
+     * Description as provided by the author of the MATLAB function:
+     * </p>
+     * <pre>
+     * {@literal
+	 * %% Inverse Functions
+	 * }
+	 * </pre>
+     * @param lhs array in which to return outputs. Number of outputs (nargout)
+     * is determined by allocated size of this array. Outputs are returned as
+     * sub-classes of <code>com.mathworks.toolbox.javabuilder.MWArray</code>.
+     * Each output array should be freed by calling its <code>dispose()</code>
+     * method.
+     *
+     * @param rhs array containing inputs. Number of inputs (nargin) is
+     * determined by the allocated size of this array. Input arguments may be
+     * passed as sub-classes of
+     * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
+     * any supported Java type. Arguments passed as Java types are converted to
+     * MATLAB arrays according to default conversion rules.
+     * @throws MWException An error has occurred during the function call.
+     */
+    public void newtongrad(Object[] lhs, Object[] rhs) throws MWException
+    {
+        fMCR.invoke(Arrays.asList(lhs), Arrays.asList(rhs), sNewtongradSignature);
+    }
+
+    /**
+     * Provides the standard interface for calling the <code>newtongrad</code> MATLAB function with 
+     * 6 comma-separated input arguments.
+     * Input arguments may be passed as sub-classes of
+     * <code>com.mathworks.toolbox.javabuilder.MWArray</code>, or as arrays of
+     * any supported Java type. Arguments passed as Java types are converted to
+     * MATLAB arrays according to default conversion rules.
+     *
+     * <p>
+     * Description as provided by the author of the MATLAB function:
+     * </p>
+     * <pre>
+     * {@literal
+	 * %% Inverse Functions
+	 * }
+     * </pre>
+     * @param nargout Number of outputs to return.
+     * @param rhs The inputs to the MATLAB function.
+     * @return Array of length nargout containing the function outputs. Outputs
+     * are returned as sub-classes of
+     * <code>com.mathworks.toolbox.javabuilder.MWArray</code>. Each output array
+     * should be freed by calling its <code>dispose()</code> method.
+     * @throws MWException An error has occurred during the function call.
+     */
+    public Object[] newtongrad(int nargout, Object... rhs) throws MWException
+    {
+        Object[] lhs = new Object[nargout];
+        fMCR.invoke(Arrays.asList(lhs), 
+                    MWMCR.getRhsCompat(rhs, sNewtongradSignature), 
+                    sNewtongradSignature);
         return lhs;
     }
     /**
