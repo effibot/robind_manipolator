@@ -13,8 +13,7 @@ module com.effibot.robind_manipolator {
     requires core;
     requires jogl.all;
     requires java.desktop;
-    requires udp;
-    requires mapGeneration;
+    requires MatlabUtility;
     requires javabuilder;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;

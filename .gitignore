@@ -52,3 +52,4 @@ build/
 src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution/MyAppInstaller_web.exe
 src/MATLAB/PianificazioneMoto/mapGeneration/for_redistribution_files_only/doc/html/stylesheet.css
 *.xml
+*.xml
