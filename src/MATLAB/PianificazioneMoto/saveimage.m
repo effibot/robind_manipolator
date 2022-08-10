@@ -4,5 +4,5 @@ absPath = [path,name];
 f=getframe(gcf);
 [XX, ~] = frame2im(f);
 outfile = fullfile(path,name);
-imwrite(XX,outfile,'png');
+imwrite(XX,absPath,'png');
 end

@@ -1,4 +1,4 @@
-function [qik]=IK_Newton(xdes,ydes,zdes,roll,pitch,yaw)
+function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw)
     qik = double.empty(6,0);
     pend= [xdes;ydes;zdes];
     P=[pend(1);pend(2);pend(3);roll;pitch;yaw];

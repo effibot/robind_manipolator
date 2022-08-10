@@ -95,6 +95,7 @@ public class SceneController implements Initializable, Observer {
     @FXML
     private RadioButton paraRadio, quinticRadio, cubicRadio;
     private ToggleGroup radioGroup;
+    private ToggleGroup shapeGroup;
     private final ObservableList<String> methods = FXCollections.observableArrayList("Parabolic", "Quintic", "Cubic");
     private float roll, pitch, yaw;
     private ArrayList<Integer> sequence;
@@ -153,12 +154,7 @@ public class SceneController implements Initializable, Observer {
             sketch.noLoop();
             sketch.stop();
             sketch.exit();
-            // open 3D map
-            sketch = new P3DMap(obsList);
-            this.setSketch(sketch);
-            sketch.setJavaFX(this);
-            sketch.run(sketch.getClass().getSimpleName());
-            ((Main)app).setSketch(sketch);
+
         } else {
             //TODO: implements popup to specify at leas one obstacle
         }
@@ -201,18 +197,50 @@ public class SceneController implements Initializable, Observer {
     }
     @FXML
     public void onStartAction(ActionEvent actionEvent) throws MWException {
+        DecimalFormat format = new DecimalFormat("0.#");
         roll = Float.parseFloat(rollField.getText());
         pitch = Float.parseFloat(pitchField.getText());
         yaw = Float.parseFloat(yawField.getText());
         boolean condition = sequence.isEmpty() ||
                 rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
-        if (condition) {
-//            TODO> implementare il salto a matlab
-            System.out.println("Start");
-            Matlab mapInstance = Matlab.getInstance();
-            double[] obspos = {412.0,602,0};
-            String method = "paraboloic";
-            mapInstance.pathgeneration(5,obspos ,method);
+        double startid = Double.parseDouble(startPos.getValue());
+        double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
+        String method = (String) radioGroup.getSelectedToggle().getUserData();
+        if (!condition) {
+            Matlab matlabInstance = Matlab.getInstance();
+            double[][] shapepositions = matlabInstance.getInfo().shapepos();
+            double[] obspos = {shapepositions[(int)selectedShape][1],shapepositions[(int)selectedShape][2]};
+            matlabInstance.pathgeneration((int) startid,obspos ,method);
+            // load images
+            Image basicMapImage = new Image("file:mapgenerationimg/constructing/mapid.png",
+                    256d, 256d, true, true);
+            basicMap.setImage(basicMapImage);
+            ArrayList<Image> imgs = util.makeImage("mapgenerationimg/originalsim/");
+            map.setImage(imgs.get(0));
+            Timeline timeLine = new Timeline();
+            Collection<KeyFrame> frames = timeLine.getKeyFrames();
+            Duration frameGap = Duration.millis(256);
+            Duration frameTime = Duration.ZERO;
+            int sz = imgs.size();
+            for (int i = 0;i<sz;i++) {
+                frameTime = frameTime.add(frameGap);
+                Image imgi = imgs.get(i);
+                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
+            }
+            timeLine.setCycleCount(1);
+            timeLine.play();
+            // open 3D map
+            sketch = new P3DMap(obsList);
+            P3DMap sketchmap = (P3DMap) sketch;
+            this.setSketch(sketch);
+            sketch.setJavaFX(this);
+            double[][] pos = matlabInstance.getPath().q();
+            sketchmap.setInitPos(pos[0]);
+            sketch.run(sketch.getClass().getSimpleName());
+            ((Main)app).setSketch(sketch);
+            matlabInstance.runsimulation(10,200);
+            sketchmap.setsysout(matlabInstance.getSysout());
+
         }
 
 
@@ -221,9 +249,15 @@ public class SceneController implements Initializable, Observer {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sphereBtn.setId("sphere");
+        sphereBtn.setUserData(0);
         cubeBtn.setId("cube");
+        cubeBtn.setUserData(1);
         coneBtn.setId("cone");
-
+        coneBtn.setUserData(2);
+        shapeGroup = new ToggleGroup();
+        sphereBtn.setToggleGroup(shapeGroup);
+        cubeBtn.setToggleGroup(shapeGroup);
+        coneBtn.setToggleGroup(shapeGroup);
         // blocco dei divisori degli split pane
         SplitPane.Divider mainDivider = mainView.getDividers().get(0);
         double mainDividerPosition = mainDivider.getPosition();
@@ -255,8 +289,11 @@ public class SceneController implements Initializable, Observer {
         // setup interpolation method
         radioGroup = new ToggleGroup();
         paraRadio.setToggleGroup(radioGroup);
+        paraRadio.setUserData("paraboloic");
         quinticRadio.setToggleGroup(radioGroup);
+        quinticRadio.setUserData("quintic");
         cubicRadio.setToggleGroup(radioGroup);
+        cubicRadio.setUserData("cubic");
         radioGroup.selectToggle(paraRadio); // default value
         //startPos.getItems().addAll(/*TODO: get list of green cells from the map and add to the choicebox*/)
         // Setup RPY default value

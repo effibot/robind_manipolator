@@ -31,7 +31,7 @@ public class visioneSample2 {
 		MWNumericArray angOut = null;
 		Object[] results = null;
 		try {
-			String filenameInData = "./Immagini/sfera.jpg";
+			String filenameInData = ".\\mapgenerationimg\\visione\\sfera.jpg";
 			filenameIn = new MWCharArray(filenameInData);
 			results = matlabutilityInstance.visione(4, filenameIn);
 			if (results[0] instanceof MWNumericArray) {

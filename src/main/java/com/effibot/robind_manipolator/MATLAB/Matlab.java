@@ -5,6 +5,7 @@ import com.effibot.robind_manipolator.Processing.Obstacle;
 import com.mathworks.toolbox.javabuilder.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Matlab extends MatlabUtility {
@@ -42,7 +43,8 @@ public class Matlab extends MatlabUtility {
             }
             System.out.println(gidOut);
             System.out.println(shapeposOut);
-            setInfo(new info( gidOut.getDoubleData(),shapeposOut.getDoubleData()));
+            Object shapemat = shapeposOut.toDoubleArray();
+            setInfo(new info( gidOut.getDoubleData(),(double[][]) shapemat));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -77,7 +79,7 @@ public class Matlab extends MatlabUtility {
             System.out.println(pOut);
             System.out.println(dpOut);
             System.out.println(ddpOut);
-            setPath(new path(pOut.getDoubleData(),dpOut.getDoubleData(),ddpOut.getDoubleData()));
+            setPath(new path((double[][]) pOut.toDoubleArray(),(double[][]) dpOut.toDoubleArray(),(double[][]) ddpOut.toDoubleArray()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -115,7 +117,8 @@ public class Matlab extends MatlabUtility {
             System.out.println(dqrOut);
             System.out.println(ddqrOut);
             System.out.println(eOut);
-            setSysout(new sysout(qrOut.getDoubleData(), dqrOut.getDoubleData(), ddqrOut.getDoubleData(), eOut.getDoubleData()));
+            setSysout(new sysout((double[]) qrOut.toDoubleArray(),(double[]) dqrOut.toDoubleArray(),
+                    (double[]) ddqrOut.toDoubleArray(),(double[]) eOut.toDoubleArray()));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -205,7 +208,7 @@ public class Matlab extends MatlabUtility {
     }
 
 
-    public static info getInfo() {
+    public  info getInfo() {
         return info;
     }
 
@@ -213,7 +216,7 @@ public class Matlab extends MatlabUtility {
         Matlab.info = info;
     }
 
-    public static path getPath() {
+    public  path getPath() {
         return path;
     }
 
@@ -221,7 +224,7 @@ public class Matlab extends MatlabUtility {
         Matlab.path = path;
     }
 
-    public static sysout getSysout() {
+    public  sysout getSysout() {
         return sysout;
     }
 

@@ -29,5 +29,5 @@ function gids=gPlot(nodeList, A, Amid, Aint,mapImg)
             end
         end
     end
-    saveimage(gcf,'.\robind_manipolator\src\main\resources\com\effibot\robind_manipolator\img\constructing\',strcat('mapid','.png'));
+    saveimage(gcf,'.\mapgenerationimg\constructing\',strcat('mapid','.png'));
 end

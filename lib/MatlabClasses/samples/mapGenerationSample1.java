@@ -30,7 +30,7 @@ public class mapGenerationSample1 {
 		MWNumericArray shapeposOut = null;
 		Object[] results = null;
 		try {
-			double[][] obsInData = {{250.0, 480.0, 340.0}, {60.0, 250.0, 60.0}};
+			double[][] obsInData = {{250.0, 1000.0, 480.0}, {600.0, 20.0, 340.0}, {700.0, 300.0, 60.0}, {30.0, 300.0, 250.0}, {1000.0, 60.0, 80.0}};
 			obsIn = new MWNumericArray(obsInData, MWClassID.DOUBLE);
 			double[] dimInData = {1024.0, 1024.0};
 			dimIn = new MWNumericArray(dimInData, MWClassID.DOUBLE);

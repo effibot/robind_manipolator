@@ -3,7 +3,7 @@ function [qr,dqr,ddqr,e]=runsimulation(M,alpha)
 Fa = 10*M;
 Kp = alpha^2;
 Kd = 2*alpha;
-load path.mat
+load matfiles/path.mat
 step=1e-3;
 time = 0:step:(size(p,1)-1)/1000;
 pidm = 'PIDTrajectory';
@@ -28,7 +28,7 @@ qr=simout.get('p');
 dqr=simout.get('v');
 ddqr=simout.get('a');
 e=simout.get('e');
-save_system('PIDTrajectory');
-close_system('PIDTrajectory');
+% save_system('PIDTrajectory');
+% close_system('PIDTrajectory');
 runonmap(M,qr,rbclist,nodeList,robotsize,'generatedsim\');
 end

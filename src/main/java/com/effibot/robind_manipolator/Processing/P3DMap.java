@@ -2,6 +2,7 @@ package com.effibot.robind_manipolator.Processing;
 
 import com.effibot.robind_manipolator.MATLAB.Matlab;
 import com.effibot.robind_manipolator.MATLAB.path;
+import com.effibot.robind_manipolator.MATLAB.sysout;
 import com.mathworks.toolbox.javabuilder.MWException;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
@@ -25,7 +26,13 @@ public class P3DMap extends ProcessingBase{
     private final  int i = (6) + 48;
     private boolean showPlots=false;
 
+    private sysout sim;
     private ArrayList<Plot2D> plots = new ArrayList<>();
+    private sysout sys;
+    private int symindex = 0;
+    private double x0;
+    private double y0;
+
     public P3DMap(List<Obstacle> obsList) throws MWException {
         this.obsList = obsList;
         size = 1024;
@@ -233,7 +240,14 @@ public class P3DMap extends ProcessingBase{
         cam.endHUD();
     }
     public void draw3Drobot(PeasyCam cam){
-        translate(0,0,-100);
+        if(sys!=null) {
+            if (symindex < sys.q().length)
+                translate(0, 0, -100);
+        }
+        else{
+            translate((float) x0, (float) y0, -100);
+
+        }
         r.drawLink();
         int nPoints = 300;
         cam.beginHUD();
@@ -256,5 +270,16 @@ public class P3DMap extends ProcessingBase{
         pgl.viewport(x, y, w, h);
     }
 
+    public void setsysout(sysout sys){
+        this.sys = sys;
+    }
 
+    private void resetSymindex(){
+        this.symindex=0;
+    }
+
+    public void setInitPos(double[] po) {
+        this.x0=po[0];
+        this.y0=po[1];
+    }
 }

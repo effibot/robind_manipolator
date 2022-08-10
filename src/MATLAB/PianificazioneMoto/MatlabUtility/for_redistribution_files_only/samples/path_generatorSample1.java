@@ -32,9 +32,9 @@ public class path_generatorSample1 {
 		MWNumericArray ddpOut = null;
 		Object[] results = null;
 		try {
-			double startIdInData = 3.0;
+			double startIdInData = 19.0;
 			startIdIn = new MWNumericArray(startIdInData, MWClassID.DOUBLE);
-			double[] shapeposInData = {150.0, 150.0};
+			double[] shapeposInData = {700.0, 600.0};
 			shapeposIn = new MWNumericArray(shapeposInData, MWClassID.DOUBLE);
 			String methodInData = "paraboloic";
 			methodIn = new MWCharArray(methodInData);

@@ -1,8 +1,7 @@
 function [objArea,objPerim,objShape,ang]=visione(filename)
 % addpath(genpath('./MATLAB/Visione/'))
 % addpath('MATLAB/PianificazioneMoto/')
-delete('./Visione/Processed/*.png')
-mkdir Immagini/Processed
+delete('.\mapgenerationimg\visione\Processed\*.png')
 % variabili simboliche
 syms x rect(x,x0,y0,m) rect2p(x,x0,y0,x1,y1)  
 rect(x,x0,y0,m)=m*(x-x0)+y0;
@@ -80,7 +79,7 @@ for i =1:size(diag,2)
     fplot(eq, 'b','LineWidth', 1.5);
     hold on
 end
-saveimage(gcf,'./Immagini/Processed','1.png');
+saveimage(gcf,'.\mapgenerationimg\visione\Processed\','1.png');
 %% Report dell'Identificazione
 % fprintf("Area: %f, Perimetro: %f\n", objArea, objPerim);
 % fprintf("Forma dell'Oggetto: %s\n", objShape);
