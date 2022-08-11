@@ -14,6 +14,8 @@ module com.effibot.robind_manipolator {
     requires java.desktop;
     requires MatlabUtility;
     requires javabuilder;
+    requires engine;
+    requires javafx.swing;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;

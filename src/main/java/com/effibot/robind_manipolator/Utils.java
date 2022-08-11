@@ -1,15 +1,12 @@
 package com.effibot.robind_manipolator;
 
 import com.effibot.robind_manipolator.Processing.Obstacle;
-import javafx.scene.Group;
-import javafx.scene.image.ImageView;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 public class Utils {
@@ -28,39 +25,32 @@ public class Utils {
         }
         return col;
     }
-
-    public ArrayList<Image> makeImage(String filepath)  {
-        File path = new File(filepath);
-        File[] allFiles = path.listFiles();
-        Arrays.sort(allFiles, new Comparator<File>() {
-            public int compare(File f1, File f2) {
-                try {
-                    String s1 = String.valueOf(f1.getName().lastIndexOf("."));
-                    String s2 = String.valueOf(f2.getName().lastIndexOf("."));
-
-                    if (s1.equals("mapid")){
-                        s1= "1000000";
-                    }
-                    else if(s2.equals("mapid")){
-                        s2="1000000";
-                    }
-
-                    int i1 = Integer.parseInt(s1);
-                    int i2 = Integer.parseInt(s2);
-                    return i1 - i2;
-                } catch(NumberFormatException e) {
-                    throw new AssertionError(e);
-                }
+    public BufferedImage createImage(byte[][][] bytes){
+        int sz = bytes.length-1;
+        BufferedImage image = new BufferedImage(sz,sz,BufferedImage.TYPE_INT_RGB);
+        Graphics g = image.getGraphics();
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        for(int x=0;x<sz;x++){
+            for(int y=0;y<sz;y++){
+                    red=Byte.toUnsignedInt(bytes[x][y][0]);
+                    green=Byte.toUnsignedInt(bytes[x][y][1]);
+                    blue=Byte.toUnsignedInt(bytes[x][y][2]);
+                //Construct color
+                Color color= new Color(red,green,blue);
+                g.setColor(color);//Set color
+                g.fillRect(y,x,1,1);//Fill pixel
             }
-        });
-        Image[] allImages = new Image[allFiles.length];
-        ArrayList<Image> imgviews = new ArrayList<Image>();
-        for(int i =0;i< allImages.length;i++){
-            allImages[i]= new Image("file:"+allFiles[i]);
-//            ImageView tmp = new ImageView(allImages[i]);
-//            imgviews.add(allImages[i]);
         }
-        imgviews.addAll(List.of(allImages));
+        return image;
+    }
+
+    public ArrayList<Image> makeImage(BufferedImage[] buffimg)  {
+        ArrayList<Image> imgviews = new ArrayList<Image>();
+        for(BufferedImage im: buffimg){
+            imgviews.add(SwingFXUtils.toFXImage(im,null));
+        }
         return  imgviews;
     }
 }

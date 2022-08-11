@@ -2,6 +2,7 @@ package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.MATLAB.Matlab;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import com.mathworks.engine.MatlabEngine;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -53,11 +54,12 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        try {
-            Matlab.getInstance();
-        } catch (MWException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Matlab.getInstance();
+//        } catch (MWException e) {
+//            throw new RuntimeException(e);
+//        }
+        MatlabEngine eng = Matlab.getInstance().getEngine();
         launch();
     }
 }

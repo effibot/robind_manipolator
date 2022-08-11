@@ -1,5 +1,5 @@
 import com.mathworks.toolbox.javabuilder.*;
-import MatlabUtility.MatlabUtility;
+import Simulate.Simulate;
 
 /**
  *
@@ -14,14 +14,14 @@ import MatlabUtility.MatlabUtility;
  */
 public class runsimulationSample1 {
 
-	private static MatlabUtility matlabutilityInstance;
+	private static Simulate simulateInstance;
 
 	private static void setup() throws MWException {
-		matlabutilityInstance = new MatlabUtility();
+		simulateInstance = new Simulate();
 	}
 
 	/**
-	 * Sample code for {@link MatlabUtility#runsimulation(int, Object...)}.
+	 * Sample code for {@link Simulate#runsimulation(int, Object...)}.
 	 */
 	public static void runsimulationExample() {
 		MWArray MIn = null;
@@ -36,7 +36,7 @@ public class runsimulationSample1 {
 			MIn = new MWNumericArray(MInData, MWClassID.DOUBLE);
 			double alphaInData = 200.0;
 			alphaIn = new MWNumericArray(alphaInData, MWClassID.DOUBLE);
-			results = matlabutilityInstance.runsimulation(4, MIn, alphaIn);
+			results = simulateInstance.runsimulation(4, MIn, alphaIn);
 			if (results[0] instanceof MWNumericArray) {
 				qrOut = (MWNumericArray) results[0];
 			}
@@ -77,7 +77,7 @@ public class runsimulationSample1 {
 			System.exit(1);
 		} finally {
 			// Dispose of native resources
-			matlabutilityInstance.dispose();
+			simulateInstance.dispose();
 		}
 	}
 

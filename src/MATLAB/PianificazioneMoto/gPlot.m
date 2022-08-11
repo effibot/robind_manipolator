@@ -1,7 +1,9 @@
-function gids=gPlot(nodeList, A, Amid, Aint,mapImg)
+function [gids,mapgraph]=gPlot(nodeList, A, Amid, Aint,mapImg)
     nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
     figure('Visible','off')
     gids = [findobj(nodeList,'prop','g').id];
+    mapgraph=uint8.empty;
+    saving=@(gcf)frame2im(getframe(gcf));
 
     showimage(mapImg);
     hold on
@@ -29,5 +31,7 @@ function gids=gPlot(nodeList, A, Amid, Aint,mapImg)
             end
         end
     end
-    saveimage(gcf,'.\mapgenerationimg\constructing\',strcat('mapid','.png'));
+%     save image(gcf,'.\mapgenerationimg\constructing\',strcat('mapid','.png'));
+    fm = saving(gcf);
+    mapgraph(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 end

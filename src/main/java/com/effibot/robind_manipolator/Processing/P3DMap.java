@@ -23,17 +23,17 @@ public class P3DMap extends ProcessingBase{
 
     private int qSelection = 0;                                // Joint selection (for interactive controls).
 
-    private final  int i = (6) + 48;
+    private int i = (6) + 48;
     private boolean showPlots=false;
 
     private sysout sim;
     private ArrayList<Plot2D> plots = new ArrayList<>();
     private sysout sys;
     private int symindex = 0;
-    private double x0;
-    private double y0;
+    private double x0=0;
+    private double y0=0;
 
-    public P3DMap(List<Obstacle> obsList) throws MWException {
+    public P3DMap(List<Obstacle> obsList) {
         this.obsList = obsList;
         size = 1024;
         mapH = 20;
@@ -205,6 +205,7 @@ public class P3DMap extends ProcessingBase{
 
     public void draw3Dmap(PeasyCam cam) {
         int zeroH = -300;
+        this.sys = Matlab.getInstance().getSysout();
         // scene objects
         pushMatrix();
         translate(0, 0, zeroH);  // translate to a nicer vertical position
@@ -225,10 +226,17 @@ public class P3DMap extends ProcessingBase{
             box(obs.getR(), obs.getR(), obs.getH());
             popMatrix();
         }
+        if(this.sys==null){
+            translate((float) 0, (float) 0, dz+9.5f);
+        } else {
+            double[][] position = this.sys.q();
+            translate(-512,-512,dx);
+            if (i<position.length) {
 
-        translate(dx, dy, dz + 9.5f);
-//        fill(140, 100, 20, 50);
-//        box(48,48,300);
+                translate((float) position[i][0], (float) position[i][1], dz + 9.5f);
+                i = i + 1;
+            }else{i=position.length;}
+        }
         pushMatrix();
         r.drawLink();
         popMatrix();
@@ -240,14 +248,9 @@ public class P3DMap extends ProcessingBase{
         cam.endHUD();
     }
     public void draw3Drobot(PeasyCam cam){
-        if(sys!=null) {
-            if (symindex < sys.q().length)
-                translate(0, 0, -100);
-        }
-        else{
-            translate((float) x0, (float) y0, -100);
+        translate(0,0,-100);
 
-        }
+
         r.drawLink();
         int nPoints = 300;
         cam.beginHUD();
@@ -279,7 +282,7 @@ public class P3DMap extends ProcessingBase{
     }
 
     public void setInitPos(double[] po) {
-        this.x0=po[0];
-        this.y0=po[1];
+        this.x0=po[1];
+        this.y0=po[0];
     }
 }

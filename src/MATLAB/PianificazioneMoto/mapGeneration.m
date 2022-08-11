@@ -1,22 +1,26 @@
-function [gid,shapepos]=mapGeneration(obs,dim)
+function [gid,shapepos,mapimg,mapworking,mapgraph]=mapGeneration(obs,dim)
 % addpath(genpath('.\')); 
 delete('.\mapgenerationimg\generated\*.png');
 delete('.\mapgenerationimg\constructing\*.png');
 delete('.\mapgenerationimg\generatedsim\*.png');
 delete('.\mapgenerationimg\originalsim\*.png');
+mapimg = uint8.empty;
 robotsize=50;
 map = makeMap(obs,dim);
 showimage(map.value);
-saveimage(gcf,'.\mapgenerationimg\generated\','bw.png');
+% saveimage(gcf,'.\mapgenerationimg\generated\','bw.png');
+saving=@(gcf)frame2im(getframe(gcf));
+fm = saving(gcf);
+mapimg(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 toSave = true;
 toShow = false;
 %% QT-Decomp
-[M, nodeList] = splitandcolor(map, robotsize, toSave, toShow);
+[M, nodeList,mapworking] = splitandcolor(map, robotsize, toSave);
 % mapImg = imshow(M);
 %% Adjiacency Matrix
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);
 G=graph(A);
-gid = gPlot(nodeList, A, Amid, Aint,M);
+[gid,mapgraph] = gPlot(nodeList, A, Amid, Aint,M);
 nobs = size(obs,1);
 shapepos = zeros(3,3);
 for i = 1:3

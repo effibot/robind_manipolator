@@ -37,8 +37,9 @@ function [A, Acomp, Aint, Amid] = adjmatrix(nodeList)
                     Acomp(node.id,t.id) = 1;
                     Acomp(t.id,node.id) = 1;
                     if strcmp(node.prop,'g') && strcmp(t.prop,'g')
-                        A(node.id,t.id) = 1;
-                        A(t.id,node.id) = 1;                        
+                        dist = pdist2(node.bc,t.bc);
+                        A(node.id,t.id) = dist;
+                        A(t.id,node.id) = dist;                        
                         commonborder = tnodespace(:,in);
                         cm=[];
                         if commonborder(1,1)==commonborder(1,2)

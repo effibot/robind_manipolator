@@ -1,5 +1,1 @@
 Path	Symbol	Reason
-MatlabUtilit\src\MATLAB\IK\expLap.m	syms	undeployable
-MatlabUtilit\src\MATLAB\PianificazioneMoto\runsimulation.m	load_system	undeployable
-MatlabUtilit\src\MATLAB\Visione\computeGeometric.m	syms	undeployable
-MatlabUtilit\src\MATLAB\Visione\visione.m	syms	undeployable

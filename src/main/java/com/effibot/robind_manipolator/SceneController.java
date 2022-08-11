@@ -1,7 +1,6 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.MATLAB.Matlab;
 import com.effibot.robind_manipolator.MATLAB.info;
-import com.effibot.robind_manipolator.MATLAB.path;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
 import com.mathworks.toolbox.javabuilder.MWException;
@@ -9,9 +8,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -100,7 +100,7 @@ public class SceneController implements Initializable, Observer {
     private float roll, pitch, yaw;
     private ArrayList<Integer> sequence;
     private Vector<Integer> startPosition;
-    private static  Matlab matlabInstance;
+    private static  Matlab matlabInstance= Matlab.getInstance();
     private static List<String> greenId= new ArrayList<>();
     private static final Utils util= new Utils();
     @FXML
@@ -109,13 +109,13 @@ public class SceneController implements Initializable, Observer {
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
-            matlabInstance=Matlab.getInstance();
             double[][] obslist = util.Obs2List(obsList);
             double[] dim = {1024.0,1024.0};
             matlabInstance.mapgeneration(obslist,dim);
             DecimalFormat format = new DecimalFormat("0.#");
 
             info ids = matlabInstance.getInfo();
+            while (ids==null){ids = matlabInstance.getInfo();}
             for (Double id : ids.gids()){
 
                 greenId.add(format.format(id));
@@ -123,18 +123,16 @@ public class SceneController implements Initializable, Observer {
             startPos.getItems().addAll(greenId);   //? replace gids with the sequence list from the map
 
             // load images
-            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
-                    256d, 256d, true, true);
-            basicMap.setImage(basicMapImage);
+//            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
+//                    256d, 256d, true, true);
+            basicMap.setImage(SwingFXUtils.toFXImage(ids.bw(),null));
 
-            ArrayList<Image> imgs = util.makeImage("mapgenerationimg/constructing");
-//            Image postProcMapImage = new Image(String.valueOf(getClass().getResource("img/mappaPost.jpeg")),
-//                    512d, 512d, true, true);
+            ArrayList<Image> imgs = util.makeImage(ids.mapwk());
             // disable setup tab and select info tab
             map.setImage(imgs.get(0));
             Timeline timeLine = new Timeline();
             Collection<KeyFrame> frames = timeLine.getKeyFrames();
-            Duration frameGap = Duration.millis(256);
+            Duration frameGap = Duration.millis(150);
             Duration frameTime = Duration.ZERO;
             int sz = imgs.size();
             for (int i = 0;i<sz;i++) {
@@ -143,8 +141,9 @@ public class SceneController implements Initializable, Observer {
                 frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
             }
             timeLine.setCycleCount(1);
+            timeLine.setOnFinished((finish)->{map.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));});
             timeLine.play();
-//            map.setImage(postProcMapImage);
+
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -207,19 +206,16 @@ public class SceneController implements Initializable, Observer {
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
         if (!condition) {
-            Matlab matlabInstance = Matlab.getInstance();
             double[][] shapepositions = matlabInstance.getInfo().shapepos();
             double[] obspos = {shapepositions[(int)selectedShape][1],shapepositions[(int)selectedShape][2]};
             matlabInstance.pathgeneration((int) startid,obspos ,method);
             // load images
-            Image basicMapImage = new Image("file:mapgenerationimg/constructing/mapid.png",
-                    256d, 256d, true, true);
-            basicMap.setImage(basicMapImage);
-            ArrayList<Image> imgs = util.makeImage("mapgenerationimg/originalsim/");
+            basicMap.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));
+            ArrayList<Image> imgs = util.makeImage(matlabInstance.getPath().mapsimimg());
             map.setImage(imgs.get(0));
             Timeline timeLine = new Timeline();
             Collection<KeyFrame> frames = timeLine.getKeyFrames();
-            Duration frameGap = Duration.millis(256);
+            Duration frameGap = Duration.millis(150);
             Duration frameTime = Duration.ZERO;
             int sz = imgs.size();
             for (int i = 0;i<sz;i++) {
@@ -228,20 +224,45 @@ public class SceneController implements Initializable, Observer {
                 frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
             }
             timeLine.setCycleCount(1);
+            timeLine.setOnFinished((finish)-> setUpStage(finish));
             timeLine.play();
+
+
+        }
+
+
+    }
+
+    private void setUpStage(ActionEvent finish) {
             // open 3D map
-            sketch = new P3DMap(obsList);
-            P3DMap sketchmap = (P3DMap) sketch;
-            this.setSketch(sketch);
-            sketch.setJavaFX(this);
+            P3DMap sketchmap = new P3DMap(obsList);
+            sketchmap.setsysout(matlabInstance.getSysout());
+
+            this.setSketch(sketchmap);
+
+            sketchmap.setJavaFX(this);
             double[][] pos = matlabInstance.getPath().q();
             sketchmap.setInitPos(pos[0]);
             sketch.run(sketch.getClass().getSimpleName());
-            ((Main)app).setSketch(sketch);
+            ((Main)app).setSketch(sketchmap);
             matlabInstance.runsimulation(10,200);
-            sketchmap.setsysout(matlabInstance.getSysout());
-
-        }
+            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
+            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
+            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
+            map.setImage(imgs.get(0));
+            Timeline timeLine = new Timeline();
+            Collection<KeyFrame> frames = timeLine.getKeyFrames();
+            Duration frameGap = Duration.millis(150);
+            Duration frameTime = Duration.ZERO;
+            int sz = imgs.size();
+            for (int i = 0;i<sz;i++) {
+                frameTime = frameTime.add(frameGap);
+                Image imgi = imgs.get(i);
+                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
+            }
+            timeLine.setCycleCount(1);
+    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
+            timeLine.play();
 
 
     }

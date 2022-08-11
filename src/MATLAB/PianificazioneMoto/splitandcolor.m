@@ -1,4 +1,4 @@
-function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
+function [M, nodeList,images] = splitandcolor(map, robotsize, toSave)
     % graphically split the map and return the list of all nodes also.
     decomp(map, robotsize, 0.9);
     dim = size(map.value);
@@ -7,7 +7,11 @@ function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
     Mtemp = map.value;
     nodeList = getAllNode(map, []);
     id = 0;
+    images = uint8.empty;
+    saving=@(gcf)frame2im(getframe(gcf));
+
     figure('visible','off')
+
     while(currdim >= robotsize)
         mapList = findobj(nodeList, 'dim', currdim);
         for i = 1:size(mapList,1)
@@ -25,28 +29,16 @@ function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
                     color = [255,0,0];
             end
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = mapList(i).value;
-            if toShow
-                imshow(M)
-                drawnow
-            end
+           
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color(1);
             %         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = 0;
-            if toShow
-                imshow(M)
-                drawnow
-            end
+           
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),2)=color(2);
             %         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
-            if toShow
-                imshow(M)
-                drawnow
-            end
+           
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),3)=color(3);
             %         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
-            if toShow
-                imshow(M)
-                drawnow
-            end
+            
             M(corner(1,1):corner(1,2),corner(2,1),:)=0;
             Mtemp(corner(1,1):corner(1,2),corner(2,1))=0;
             M(corner(1,1),corner(2,1):corner(2,3),:)=0;
@@ -66,10 +58,12 @@ function [M, nodeList] = splitandcolor(map, robotsize, toSave, toShow)
                 Mtemp(corner(1,2),corner(2,1):corner(2,3))=0;
             end
             if toSave
-                filename =strcat(num2str(mapList(i).id),'.png');
 %                 imwrite(M,filename,'jpg');
                 showimage(M);
-                saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
+                fm = saving(gcf);
+
+                images(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
+%                 saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
             end
         end
         currdim = currdim/2;

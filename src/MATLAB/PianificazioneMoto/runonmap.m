@@ -1,4 +1,4 @@
-function runonmap(M,p,rbclist,nodeList,robotsize,type)
+function img = runonmap(M,p,rbclist,nodeList,robotsize)
 showimage(M);
 circleColor = [0.0, 1.0, 1.0, 0.5];
 circleColorObs=[0.623, 0.501, 0.635, 0.5];
@@ -6,8 +6,8 @@ robotColor = [1 1 0 0.7];
 hold on
 plot(p(:,1),p(:,2),'LineWidth',3);
 ii=1;
-str = strcat('.\mapgenerationimg\',type);
-
+img = uint8.empty;
+saving=@(gcf)frame2im(getframe(gcf));
 for j = 1:fix(size(p,1)/100):size(p,1)
     currPoint = p(j,:);
     [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
@@ -28,7 +28,8 @@ for j = 1:fix(size(p,1)/100):size(p,1)
     ll = line([currPoint(1), closestObs(2)],...
         [currPoint(2), closestObs(1)],...
         'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-    saveimage(gcf,str,strcat(num2str(ii),'.png'));
+    fm = saving(gcf);
+    img(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
     delete(h);
     delete(hobs);
     delete(robot)
