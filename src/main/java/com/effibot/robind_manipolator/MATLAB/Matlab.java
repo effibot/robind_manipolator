@@ -264,6 +264,7 @@ public class Matlab extends MatlabEngine {
 
     public void pathgeneration(int startid, double[] obspos, String method) {
         try {
+            this.getEngine();
             Object[] results = eng.feval(4,"path_generator",startid,obspos,method);
             double[][] qr =  (double[][]) results[0];
             double[][] dqr =(double[][]) results[1];
@@ -275,6 +276,7 @@ public class Matlab extends MatlabEngine {
                 mapsimimg[i] = util.createImage(tmp);
             }
             setPath(new path(qr,dqr,ddqr,mapsimimg));
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
@@ -284,18 +286,23 @@ public class Matlab extends MatlabEngine {
 
     public void runsimulation(int M, int alpha) {
         try {
-            Object[] results = eng.feval(5,"runsimulation",M,alpha);
+            this.getEngine();
+            Object[] results = eng.feval(4,"runsimulation",M,alpha);
             double[][] qr =  (double[][]) results[0];
             double[][] dqr =(double[][]) results[1];
             double[][] ddqr =(double[][]) results[2];
             double[][] e =(double[][]) results[3];
-            byte[][][][] mapPID=(byte[][][][]) results[4];
-            BufferedImage[] mappid =   new BufferedImage[mapPID.length];
-            for(int i = 0; i<mapPID.length;i++){
-                byte[][][] tmp = mapPID[i];
-                mappid[i] = util.createImage(tmp);
-            }
-            setSysout(new sysout(qr,dqr,ddqr,e,mappid));
+//            byte[][][][] mapPID=(byte[][][][]) results[4];
+//            BufferedImage[] mappid =   new BufferedImage[mapPID.length];
+//            for(int i = 0; i<mapPID.length;i++){
+//                byte[][][] tmp = mapPID[i];
+//                mappid[i] = util.createImage(tmp);
+//            }
+//            setSysout(new sysout(qr,dqr,ddqr,e,mappid));
+            setSysout(new sysout(qr,dqr,ddqr,e));
+
+            eng.close();
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {

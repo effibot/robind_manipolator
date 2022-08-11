@@ -1,4 +1,4 @@
-function [qr,dqr,ddqr,e,img]=runsimulation(M,alpha)
+function [qr,dqr,ddqr,e]=runsimulation(M,alpha)
 % time = 0:step:(size(p,1)-1)/1000;
 Fa = 10*M;
 Kp = alpha^2;
@@ -30,5 +30,5 @@ ddqr=simout.get('a');
 e=simout.get('e');
 save_system('PIDTrajectory');
 close_system('PIDTrajectory');
-img=runonmap(M,qr,rbclist,nodeList,robotsize);
+%img=runonmap(M,qr,rbclist,nodeList,robotsize);
 end

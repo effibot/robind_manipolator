@@ -26,5 +26,5 @@ DataTypeTransition rtBTransitions [ ] = { { ( char_T * ) ( & rtB . dzhv4gakca
 rtBTransitions } ; static DataTypeTransition rtPTransitions [ ] = { { (
 char_T * ) ( & rtP . v0x ) , 0 , 0 , 4 } , { ( char_T * ) ( & rtP . Fa ) , 6
 , 0 , 3 } , { ( char_T * ) ( & rtP . FromWorkspace_Data0 [ 0 ] ) , 0 , 0 ,
-6016 } } ; static DataTypeTransitionTable rtPTransTable = { 3U ,
+30064 } } ; static DataTypeTransitionTable rtPTransTable = { 3U ,
 rtPTransitions } ;

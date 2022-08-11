@@ -79,31 +79,31 @@
 
                     ;% rtP.FromWorkspace_Data0_erdsjhbktd
                     section.data(2).logicalSrcIdx = 10;
-                    section.data(2).dtTransOffset = 1003;
+                    section.data(2).dtTransOffset = 5011;
 
                     ;% rtP.Gain1_Gain
                     section.data(3).logicalSrcIdx = 11;
-                    section.data(3).dtTransOffset = 2005;
+                    section.data(3).dtTransOffset = 10021;
 
                     ;% rtP.FromWorkspace_Data0_irypaqsgbf
                     section.data(4).logicalSrcIdx = 13;
-                    section.data(4).dtTransOffset = 2006;
+                    section.data(4).dtTransOffset = 10022;
 
                     ;% rtP.FromWorkspace_Data0_fbwrwi4aj1
                     section.data(5).logicalSrcIdx = 15;
-                    section.data(5).dtTransOffset = 3008;
+                    section.data(5).dtTransOffset = 15032;
 
                     ;% rtP.FromWorkspace_Data0_elsudc4efs
                     section.data(6).logicalSrcIdx = 17;
-                    section.data(6).dtTransOffset = 4011;
+                    section.data(6).dtTransOffset = 20043;
 
                     ;% rtP.Gain1_Gain_ipqblw4zv4
                     section.data(7).logicalSrcIdx = 18;
-                    section.data(7).dtTransOffset = 5013;
+                    section.data(7).dtTransOffset = 25053;
 
                     ;% rtP.FromWorkspace_Data0_a2gi03qt2b
                     section.data(8).logicalSrcIdx = 20;
-                    section.data(8).dtTransOffset = 5014;
+                    section.data(8).dtTransOffset = 25054;
 
             nTotData = nTotData + section.nData;
             paramMap.sections(3) = section;
@@ -370,8 +370,8 @@
     ;%
 
 
-    targMap.checksum0 = 4013739573;
-    targMap.checksum1 = 2881433035;
-    targMap.checksum2 = 648399044;
-    targMap.checksum3 = 1936786602;
+    targMap.checksum0 = 369493394;
+    targMap.checksum1 = 1671298009;
+    targMap.checksum2 = 1762336114;
+    targMap.checksum3 = 3939211091;
 

@@ -66,7 +66,7 @@ srcInfo . numBlockPathElems = 1 ; srcInfo . fullBlockPath = ( sdiFullBlkPathU
 subPath = subPath ; srcInfo . portIndex = 0 + 1 ; srcInfo . signalName =
 sigName ; srcInfo . sigSourceUUID = 0 ; rtDW . ecofnqvfjg . AQHandles =
 sdiStartAsyncioQueueCreation ( hDT , & srcInfo , rt_dataMapInfo . mmi .
-InstanceMap . fullPath , "3abd521f-775a-434a-a74b-6204927e3224" ,
+InstanceMap . fullPath , "a370717b-199b-453a-91bf-c13e77d8b487" ,
 sigComplexity , & sigDims , DIMENSIONS_MODE_FIXED , stCont , "" ) ;
 sdiCompleteAsyncioQueueCreation ( rtDW . ecofnqvfjg . AQHandles , hDT , &
 srcInfo ) ; if ( rtDW . ecofnqvfjg . AQHandles ) {
@@ -99,7 +99,7 @@ srcInfo . numBlockPathElems = 1 ; srcInfo . fullBlockPath = ( sdiFullBlkPathU
 subPath = subPath ; srcInfo . portIndex = 0 + 1 ; srcInfo . signalName =
 sigName ; srcInfo . sigSourceUUID = 0 ; rtDW . eiskowcg51 . AQHandles =
 sdiStartAsyncioQueueCreation ( hDT , & srcInfo , rt_dataMapInfo . mmi .
-InstanceMap . fullPath , "1078b89e-8e1b-45d4-9d87-514dc4566720" ,
+InstanceMap . fullPath , "7bcd5d82-b195-4850-9e44-94d6b7be22a5" ,
 sigComplexity , & sigDims , DIMENSIONS_MODE_FIXED , stCont , "" ) ;
 sdiCompleteAsyncioQueueCreation ( rtDW . eiskowcg51 . AQHandles , hDT , &
 srcInfo ) ; if ( rtDW . eiskowcg51 . AQHandles ) {
@@ -132,7 +132,7 @@ srcInfo . numBlockPathElems = 1 ; srcInfo . fullBlockPath = ( sdiFullBlkPathU
 subPath = subPath ; srcInfo . portIndex = 0 + 1 ; srcInfo . signalName =
 sigName ; srcInfo . sigSourceUUID = 0 ; rtDW . lseu3eofyv . AQHandles =
 sdiStartAsyncioQueueCreation ( hDT , & srcInfo , rt_dataMapInfo . mmi .
-InstanceMap . fullPath , "635d135e-bca6-4ed9-a39e-a310757adbb6" ,
+InstanceMap . fullPath , "537458d4-50e4-445f-ae3b-36ce8db779c2" ,
 sigComplexity , & sigDims , DIMENSIONS_MODE_FIXED , stCont , "" ) ;
 sdiCompleteAsyncioQueueCreation ( rtDW . lseu3eofyv . AQHandles , hDT , &
 srcInfo ) ; if ( rtDW . lseu3eofyv . AQHandles ) {
@@ -165,7 +165,7 @@ srcInfo . numBlockPathElems = 1 ; srcInfo . fullBlockPath = ( sdiFullBlkPathU
 subPath = subPath ; srcInfo . portIndex = 0 + 1 ; srcInfo . signalName =
 sigName ; srcInfo . sigSourceUUID = 0 ; rtDW . dbtjzghbsv . AQHandles =
 sdiStartAsyncioQueueCreation ( hDT , & srcInfo , rt_dataMapInfo . mmi .
-InstanceMap . fullPath , "0aebd2da-15a2-447e-a2a7-ca99d8174370" ,
+InstanceMap . fullPath , "a82c7e5d-e828-409f-80af-12ac4621ad93" ,
 sigComplexity , & sigDims , DIMENSIONS_MODE_FIXED , stCont , "" ) ;
 sdiCompleteAsyncioQueueCreation ( rtDW . dbtjzghbsv . AQHandles , hDT , &
 srcInfo ) ; if ( rtDW . dbtjzghbsv . AQHandles ) {
@@ -188,7 +188,7 @@ NULL ) ) { ssSetErrorStatus ( rtS ,
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0 ; fromwksInfo -> nDataPoints = 1003 ;
+* ) rtP . FromWorkspace_Data0 ; fromwksInfo -> nDataPoints = 5011 ;
 fromwksInfo -> time = ( NULL ) ; rtDW . e1dw0gdlsu . TimePtr = fromwksInfo ->
 time ; rtDW . e1dw0gdlsu . DataPtr = fromwksInfo -> data ; rtDW . e1dw0gdlsu
 . RSimInfoPtr = fromwksInfo ; } rtDW . gvmkanlbst . PrevIndex = - 1 ; } {
@@ -198,7 +198,7 @@ sizeof ( FWksInfo ) ) ) == ( NULL ) ) { ssSetErrorStatus ( rtS ,
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0_erdsjhbktd ; fromwksInfo -> nDataPoints = 1002
+* ) rtP . FromWorkspace_Data0_erdsjhbktd ; fromwksInfo -> nDataPoints = 5010
 ; fromwksInfo -> time = ( NULL ) ; rtDW . loho3tdcc3 . TimePtr = fromwksInfo
 -> time ; rtDW . loho3tdcc3 . DataPtr = fromwksInfo -> data ; rtDW .
 loho3tdcc3 . RSimInfoPtr = fromwksInfo ; } rtDW . e0x50jtzxz . PrevIndex = -
@@ -208,7 +208,7 @@ loho3tdcc3 . RSimInfoPtr = fromwksInfo ; } rtDW . e0x50jtzxz . PrevIndex = -
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0_irypaqsgbf ; fromwksInfo -> nDataPoints = 1002
+* ) rtP . FromWorkspace_Data0_irypaqsgbf ; fromwksInfo -> nDataPoints = 5010
 ; fromwksInfo -> time = ( NULL ) ; rtDW . b1pf4c5bw1 . TimePtr = fromwksInfo
 -> time ; rtDW . b1pf4c5bw1 . DataPtr = fromwksInfo -> data ; rtDW .
 b1pf4c5bw1 . RSimInfoPtr = fromwksInfo ; } rtDW . e0ljdij4dh . PrevIndex = -
@@ -218,7 +218,7 @@ b1pf4c5bw1 . RSimInfoPtr = fromwksInfo ; } rtDW . e0ljdij4dh . PrevIndex = -
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0_fbwrwi4aj1 ; fromwksInfo -> nDataPoints = 1003
+* ) rtP . FromWorkspace_Data0_fbwrwi4aj1 ; fromwksInfo -> nDataPoints = 5011
 ; fromwksInfo -> time = ( NULL ) ; rtDW . ejxqv5alzd . TimePtr = fromwksInfo
 -> time ; rtDW . ejxqv5alzd . DataPtr = fromwksInfo -> data ; rtDW .
 ejxqv5alzd . RSimInfoPtr = fromwksInfo ; } rtDW . aeaptdbisy . PrevIndex = -
@@ -228,7 +228,7 @@ ejxqv5alzd . RSimInfoPtr = fromwksInfo ; } rtDW . aeaptdbisy . PrevIndex = -
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0_elsudc4efs ; fromwksInfo -> nDataPoints = 1002
+* ) rtP . FromWorkspace_Data0_elsudc4efs ; fromwksInfo -> nDataPoints = 5010
 ; fromwksInfo -> time = ( NULL ) ; rtDW . d4sbxigd01 . TimePtr = fromwksInfo
 -> time ; rtDW . d4sbxigd01 . DataPtr = fromwksInfo -> data ; rtDW .
 d4sbxigd01 . RSimInfoPtr = fromwksInfo ; } rtDW . mhiwfrfp0y . PrevIndex = -
@@ -238,7 +238,7 @@ d4sbxigd01 . RSimInfoPtr = fromwksInfo ; } rtDW . mhiwfrfp0y . PrevIndex = -
 fromwksInfo -> origWorkspaceVarName = "s" ; fromwksInfo -> origDataTypeId = 0
 ; fromwksInfo -> origIsComplex = 0 ; fromwksInfo -> origWidth = 1 ;
 fromwksInfo -> origElSize = sizeof ( real_T ) ; fromwksInfo -> data = ( void
-* ) rtP . FromWorkspace_Data0_a2gi03qt2b ; fromwksInfo -> nDataPoints = 1002
+* ) rtP . FromWorkspace_Data0_a2gi03qt2b ; fromwksInfo -> nDataPoints = 5010
 ; fromwksInfo -> time = ( NULL ) ; rtDW . pc2nyef1qt . TimePtr = fromwksInfo
 -> time ; rtDW . pc2nyef1qt . DataPtr = fromwksInfo -> data ; rtDW .
 pc2nyef1qt . RSimInfoPtr = fromwksInfo ; } rtDW . imsjzof1gf . PrevIndex = -
@@ -425,13 +425,13 @@ return data ; } void MdlInitializeSizes ( void ) { ssSetNumContStates ( rtS ,
 4 ) ; ssSetNumPeriodicContStates ( rtS , 0 ) ; ssSetNumY ( rtS , 0 ) ;
 ssSetNumU ( rtS , 0 ) ; ssSetDirectFeedThrough ( rtS , 0 ) ;
 ssSetNumSampleTimes ( rtS , 2 ) ; ssSetNumBlocks ( rtS , 35 ) ;
-ssSetNumBlockIO ( rtS , 16 ) ; ssSetNumBlockParams ( rtS , 6023 ) ; } void
+ssSetNumBlockIO ( rtS , 16 ) ; ssSetNumBlockParams ( rtS , 30071 ) ; } void
 MdlInitializeSampleTimes ( void ) { ssSetSampleTime ( rtS , 0 , 0.0 ) ;
 ssSetSampleTime ( rtS , 1 , 0.001 ) ; ssSetOffsetTime ( rtS , 0 , 0.0 ) ;
 ssSetOffsetTime ( rtS , 1 , 0.0 ) ; } void raccel_set_checksum ( ) {
-ssSetChecksumVal ( rtS , 0 , 4013739573U ) ; ssSetChecksumVal ( rtS , 1 ,
-2881433035U ) ; ssSetChecksumVal ( rtS , 2 , 648399044U ) ; ssSetChecksumVal
-( rtS , 3 , 1936786602U ) ; }
+ssSetChecksumVal ( rtS , 0 , 369493394U ) ; ssSetChecksumVal ( rtS , 1 ,
+1671298009U ) ; ssSetChecksumVal ( rtS , 2 , 1762336114U ) ; ssSetChecksumVal
+( rtS , 3 , 3939211091U ) ; }
 #if defined(_MSC_VER)
 #pragma optimize( "", off )
 #endif
@@ -474,24 +474,23 @@ PIDTrajectory_InitializeDataMapInfo ( ) ; ssSetIsRapidAcceleratorActive ( rtS
 , true ) ; ssSetRootSS ( rtS , rtS ) ; ssSetVersion ( rtS ,
 SIMSTRUCT_VERSION_LEVEL2 ) ; ssSetModelName ( rtS , "PIDTrajectory" ) ;
 ssSetPath ( rtS , "PIDTrajectory" ) ; ssSetTStart ( rtS , 0.0 ) ; ssSetTFinal
-( rtS , 1.0010000000000001 ) ; ssSetStepSize ( rtS , 0.001 ) ;
-ssSetFixedStepSize ( rtS , 0.001 ) ; { static RTWLogInfo rt_DataLoggingInfo ;
-rt_DataLoggingInfo . loggingInterval = ( NULL ) ; ssSetRTWLogInfo ( rtS , &
-rt_DataLoggingInfo ) ; } { { static int_T rt_LoggedStateWidths [ ] = { 1 , 1
-, 1 , 1 } ; static int_T rt_LoggedStateNumDimensions [ ] = { 1 , 1 , 1 , 1 }
-; static int_T rt_LoggedStateDimensions [ ] = { 1 , 1 , 1 , 1 } ; static
-boolean_T rt_LoggedStateIsVarDims [ ] = { 0 , 0 , 0 , 0 } ; static
-BuiltInDTypeId rt_LoggedStateDataTypeIds [ ] = { SS_DOUBLE , SS_DOUBLE ,
-SS_DOUBLE , SS_DOUBLE } ; static int_T rt_LoggedStateComplexSignals [ ] = { 0
-, 0 , 0 , 0 } ; static RTWPreprocessingFcnPtr
-rt_LoggingStatePreprocessingFcnPtrs [ ] = { ( NULL ) , ( NULL ) , ( NULL ) ,
-( NULL ) } ; static const char_T * rt_LoggedStateLabels [ ] = { "CSTATE" ,
-"CSTATE" , "CSTATE" , "CSTATE" } ; static const char_T *
-rt_LoggedStateBlockNames [ ] = { "PIDTrajectory/Processo/Integrator" ,
-"PIDTrajectory/Processo/Integrator2" , "PIDTrajectory/Processo/Integrator1" ,
-"PIDTrajectory/Processo/Integrator3" } ; static const char_T *
-rt_LoggedStateNames [ ] = { "" , "" , "" , "" } ; static boolean_T
-rt_LoggedStateCrossMdlRef [ ] = { 0 , 0 , 0 , 0 } ; static
+( rtS , 5.009 ) ; ssSetStepSize ( rtS , 0.001 ) ; ssSetFixedStepSize ( rtS ,
+0.001 ) ; { static RTWLogInfo rt_DataLoggingInfo ; rt_DataLoggingInfo .
+loggingInterval = ( NULL ) ; ssSetRTWLogInfo ( rtS , & rt_DataLoggingInfo ) ;
+} { { static int_T rt_LoggedStateWidths [ ] = { 1 , 1 , 1 , 1 } ; static
+int_T rt_LoggedStateNumDimensions [ ] = { 1 , 1 , 1 , 1 } ; static int_T
+rt_LoggedStateDimensions [ ] = { 1 , 1 , 1 , 1 } ; static boolean_T
+rt_LoggedStateIsVarDims [ ] = { 0 , 0 , 0 , 0 } ; static BuiltInDTypeId
+rt_LoggedStateDataTypeIds [ ] = { SS_DOUBLE , SS_DOUBLE , SS_DOUBLE ,
+SS_DOUBLE } ; static int_T rt_LoggedStateComplexSignals [ ] = { 0 , 0 , 0 , 0
+} ; static RTWPreprocessingFcnPtr rt_LoggingStatePreprocessingFcnPtrs [ ] = {
+( NULL ) , ( NULL ) , ( NULL ) , ( NULL ) } ; static const char_T *
+rt_LoggedStateLabels [ ] = { "CSTATE" , "CSTATE" , "CSTATE" , "CSTATE" } ;
+static const char_T * rt_LoggedStateBlockNames [ ] = {
+"PIDTrajectory/Processo/Integrator" , "PIDTrajectory/Processo/Integrator2" ,
+"PIDTrajectory/Processo/Integrator1" , "PIDTrajectory/Processo/Integrator3" }
+; static const char_T * rt_LoggedStateNames [ ] = { "" , "" , "" , "" } ;
+static boolean_T rt_LoggedStateCrossMdlRef [ ] = { 0 , 0 , 0 , 0 } ; static
 RTWLogDataTypeConvert rt_RTWLogDataTypeConvert [ ] = { { 0 , SS_DOUBLE ,
 SS_DOUBLE , 0 , 0 , 0 , 1.0 , 0 , 0.0 } , { 0 , SS_DOUBLE , SS_DOUBLE , 0 , 0
 , 0 , 1.0 , 0 , 0.0 } , { 0 , SS_DOUBLE , SS_DOUBLE , 0 , 0 , 0 , 1.0 , 0 ,
@@ -537,9 +536,9 @@ ssSetModelUpdate ( rtS , MdlUpdate ) ; ssSetModelDerivatives ( rtS ,
 MdlDerivatives ) ; ssSetTNextTid ( rtS , INT_MIN ) ; ssSetTNext ( rtS ,
 rtMinusInf ) ; ssSetSolverNeedsReset ( rtS ) ; ssSetNumNonsampledZCs ( rtS ,
 0 ) ; ssSetContStateDisabled ( rtS , contStatesDisabled ) ; }
-ssSetChecksumVal ( rtS , 0 , 4013739573U ) ; ssSetChecksumVal ( rtS , 1 ,
-2881433035U ) ; ssSetChecksumVal ( rtS , 2 , 648399044U ) ; ssSetChecksumVal
-( rtS , 3 , 1936786602U ) ; { static const sysRanDType rtAlwaysEnabled =
+ssSetChecksumVal ( rtS , 0 , 369493394U ) ; ssSetChecksumVal ( rtS , 1 ,
+1671298009U ) ; ssSetChecksumVal ( rtS , 2 , 1762336114U ) ; ssSetChecksumVal
+( rtS , 3 , 3939211091U ) ; { static const sysRanDType rtAlwaysEnabled =
 SUBSYS_RAN_BC_ENABLE ; static RTWExtModeInfo rt_ExtModeInfo ; static const
 sysRanDType * systemRan [ 1 ] ; gblRTWExtModeInfo = & rt_ExtModeInfo ;
 ssSetRTWExtModeInfo ( rtS , & rt_ExtModeInfo ) ;

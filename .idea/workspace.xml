@@ -6,60 +6,38 @@
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="TODO: fix nullpointer on robot observers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PIDTrajectory.slxc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/MatlabClasses/samples/runsimulationSample1.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/MatlabClasses/samples/runsimulationSample1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PIDTrajectory.slxc" beforeDir="false" afterPath="$PROJECT_DIR$/PIDTrajectory.slxc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/matfiles/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/matfiles/mapg.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/matfiles/path.mat" beforeDir="false" afterPath="$PROJECT_DIR$/matfiles/path.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/slprj/sim/varcache/PIDTrajectory/varInfo.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/MatlabUDP.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PIDTrajectory.slxc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution/MyAppInstaller_web.exe" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution/MyAppInstaller_web.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/MatlabUtility.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_redistribution_files_only/MatlabUtility.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility.jar" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtility.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtility.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityMCRFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityMCRFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityRemote.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/MatlabUtility/MatlabUtilityRemote.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtility.ctf" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtility.ctf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtilityMCRFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/classes/MatlabUtility/MatlabUtilityMCRFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/unresolvedSymbols.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/MatlabUtility/for_testing/unresolvedSymbols.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.c" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.exe" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.h" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.obj" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_capi.c" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_capi.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_capi.obj" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_capi.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_data.obj" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_data.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_dt.h" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_dt.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_get_checksum.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_get_checksum.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_targ_data_map.m" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/PIDTrajectory_targ_data_map.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/buildInfo.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/buildInfo.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_ext_inputs.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_ext_inputs.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_initial_state.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_initial_state.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_rtp.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/build_rtp.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/codedescriptor.dmr" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/codedescriptor.dmr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/compileInfo.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/compileInfo.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/ext_input_settings.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/ext_input_settings.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/rs_raccel.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/rs_raccel.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/rtwtypeschksum.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/rtwtypeschksum.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/template_dataset.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/template_dataset.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/PIDTrajectory_TgtConnMgr.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/PIDTrajectory_TgtConnMgr.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/binfo.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/binfo.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/minfo.mat" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/raccel/PIDTrajectory/tmwinternal/minfo.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slprj/sim/_sharedutils/shared_file.dmr" beforeDir="false" afterPath="$PROJECT_DIR$/slprj/sim/_sharedutils/shared_file.dmr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/PIDTrajectory.slxc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/adjmatrix.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/adjmatrix.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGenerationSample1.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapg.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path_generator.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path_generator.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path_generatorSample1.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runsimulation.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runsimulation.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runsimulationSample1.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runsimulationSample2.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/tmwinternal/simulink_cache.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/slprj/sim/varcache/PIDTrajectory/varInfo.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/UDPMatlab.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/PIDTrajectory.slxc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/mapg.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/path.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/Visione/slprj/sim/varcache/PIDTrajectory/varInfo.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/readUDPData.m" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/slprj/sim/varcache/PIDTrajectory/checksumOfCache.mat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/slprj/sim/varcache/PIDTrajectory/tmwinternal/simulink_cache.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/slprj/sim/varcache/PIDTrajectory/varInfo.mat" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/Matlab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/Matlab.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/path.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/path.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/sysout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/MATLAB/sysout.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/P3DMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -254,7 +232,7 @@
       <workItem from="1660204384030" duration="359000" />
       <workItem from="1660205271830" duration="1827000" />
       <workItem from="1660207473270" duration="8729000" />
-      <workItem from="1660216815885" duration="20851000" />
+      <workItem from="1660216815885" duration="23296000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>

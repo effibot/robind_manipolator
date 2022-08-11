@@ -236,33 +236,32 @@ public class SceneController implements Initializable, Observer {
     private void setUpStage(ActionEvent finish) {
             // open 3D map
             P3DMap sketchmap = new P3DMap(obsList);
-            sketchmap.setsysout(matlabInstance.getSysout());
-
             this.setSketch(sketchmap);
-
             sketchmap.setJavaFX(this);
             double[][] pos = matlabInstance.getPath().q();
             sketchmap.setInitPos(pos[0]);
             sketch.run(sketch.getClass().getSimpleName());
             ((Main)app).setSketch(sketchmap);
             matlabInstance.runsimulation(10,200);
-            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
-            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
-            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
-            map.setImage(imgs.get(0));
-            Timeline timeLine = new Timeline();
-            Collection<KeyFrame> frames = timeLine.getKeyFrames();
-            Duration frameGap = Duration.millis(150);
-            Duration frameTime = Duration.ZERO;
-            int sz = imgs.size();
-            for (int i = 0;i<sz;i++) {
-                frameTime = frameTime.add(frameGap);
-                Image imgi = imgs.get(i);
-                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
-            }
-            timeLine.setCycleCount(1);
-    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
-            timeLine.play();
+            sketchmap.setsysout(matlabInstance.getSysout());
+
+//            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
+//            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
+//            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
+//            map.setImage(imgs.get(0));
+//            Timeline timeLine = new Timeline();
+//            Collection<KeyFrame> frames = timeLine.getKeyFrames();
+//            Duration frameGap = Duration.millis(150);
+//            Duration frameTime = Duration.ZERO;
+//            int sz = imgs.size();
+//            for (int i = 0;i<sz;i++) {
+//                frameTime = frameTime.add(frameGap);
+//                Image imgi = imgs.get(i);
+//                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
+//            }
+//            timeLine.setCycleCount(1);
+//    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
+//            timeLine.play();
 
 
     }

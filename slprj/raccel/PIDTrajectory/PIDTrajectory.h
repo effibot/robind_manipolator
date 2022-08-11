@@ -69,12 +69,12 @@ cuvdeofxzs ; } XDot ; typedef struct { boolean_T bvq1aeovgd ; boolean_T
 pybolimsew ; boolean_T p405gjuf1q ; boolean_T cuvdeofxzs ; } XDis ; typedef
 struct { rtwCAPI_ModelMappingInfo mmi ; } DataMapInfo ; struct P_ { real_T
 v0x ; real_T v0y ; real_T x0 ; real_T y0 ; int32_T Fa ; int32_T Kd ; int32_T
-Kp ; real_T FromWorkspace_Data0 [ 1003 ] ; real_T
-FromWorkspace_Data0_erdsjhbktd [ 1002 ] ; real_T Gain1_Gain ; real_T
-FromWorkspace_Data0_irypaqsgbf [ 1002 ] ; real_T
-FromWorkspace_Data0_fbwrwi4aj1 [ 1003 ] ; real_T
-FromWorkspace_Data0_elsudc4efs [ 1002 ] ; real_T Gain1_Gain_ipqblw4zv4 ;
-real_T FromWorkspace_Data0_a2gi03qt2b [ 1002 ] ; } ; extern const char *
+Kp ; real_T FromWorkspace_Data0 [ 5011 ] ; real_T
+FromWorkspace_Data0_erdsjhbktd [ 5010 ] ; real_T Gain1_Gain ; real_T
+FromWorkspace_Data0_irypaqsgbf [ 5010 ] ; real_T
+FromWorkspace_Data0_fbwrwi4aj1 [ 5011 ] ; real_T
+FromWorkspace_Data0_elsudc4efs [ 5010 ] ; real_T Gain1_Gain_ipqblw4zv4 ;
+real_T FromWorkspace_Data0_a2gi03qt2b [ 5010 ] ; } ; extern const char *
 RT_MEMORY_ALLOCATION_ERROR ; extern B rtB ; extern X rtX ; extern DW rtDW ;
 extern P rtP ; extern mxArray * mr_PIDTrajectory_GetDWork ( ) ; extern void
 mr_PIDTrajectory_SetDWork ( const mxArray * ssDW ) ; extern mxArray *

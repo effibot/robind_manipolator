@@ -2,12 +2,21 @@ package com.effibot.robind_manipolator.MATLAB;
 
 import java.awt.image.BufferedImage;
 
-public record sysout(double[][] q, double[][] dq, double[][] ddq, double[][] e, BufferedImage[] mappid) {
-    public sysout(double[][] q, double[][] dq, double[][] ddq, double[][] e, BufferedImage[] mappid){
+public record sysout(double[][] q, double[][] dq, double[][] ddq, double[][] e) {
+//    private static BufferedImage[] mappid = null ;
+//
+//    public sysout(double[][] q, double[][] dq, double[][] ddq, double[][] e, BufferedImage[] mappid){
+//        this.q = q;
+//        this.dq=dq;
+//        this.ddq = ddq;
+//        this.e = e;
+//        this.mappid=mappid;
+//    }
+
+    public sysout(double[][] q, double[][] dq, double[][] ddq, double[][] e) {
         this.q = q;
         this.dq=dq;
         this.ddq = ddq;
         this.e = e;
-        this.mappid=mappid;
     }
 }

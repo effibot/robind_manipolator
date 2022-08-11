@@ -228,14 +228,14 @@ public class P3DMap extends ProcessingBase{
         }
         if(this.sys==null){
             translate((float) 0, (float) 0, dz+9.5f);
-        } else {
+        } else if(this.sys!=null && i!=this.sys.q().length) {
             double[][] position = this.sys.q();
             translate(-512,-512,dx);
             if (i<position.length) {
 
                 translate((float) position[i][0], (float) position[i][1], dz + 9.5f);
                 i = i + 1;
-            }else{i=position.length;}
+            }
         }
         pushMatrix();
         r.drawLink();
