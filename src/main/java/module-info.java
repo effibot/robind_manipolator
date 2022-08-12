@@ -14,6 +14,7 @@ module com.effibot.robind_manipolator {
     requires java.desktop;
     requires engine;
     requires javafx.swing;
+    requires commons.math3;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;

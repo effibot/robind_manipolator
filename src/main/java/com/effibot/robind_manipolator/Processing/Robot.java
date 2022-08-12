@@ -1,13 +1,13 @@
 package com.effibot.robind_manipolator.Processing;
+
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import processing.core.PShape;
-import processing.core.PVector;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
-
 import static java.lang.Math.*;
 import static processing.core.PConstants.PI;
 
@@ -50,24 +50,8 @@ public class Robot {
     private float scaleFactor;
 
     // Processing reference
-    private final ProcessingBase p3d;
+    private ProcessingBase p3d;
     // Observers
-
-
-    // posizione desiderata
-    private float xdes, ydes, zdes = 0;
-    // orientamento desideratp
-    private float roll, pitch, yaw = 0;
-    // posizione del polso desiderata
-    private double xh = xdes - d6*cos(roll)*sin(pitch);
-    private double yh = ydes - d6*sin(roll)*cos(pitch);
-    private double zh = - d6*cos(pitch);
-    // variabile per il gomito
-    private int elbow = 1;
-    // setups for calculations
-    private double A = elbow*sqrt(pow(xh,2)+pow(yh,2));
-    private double B = zh-d1;
-
     public Robot(ProcessingBase p3d) {
         this.p3d = p3d;
         this.shapeList.add(loadLink(0));
@@ -200,4 +184,74 @@ public class Robot {
         return this.shapeList;
     }
 
+
+    private float xdes, ydes, zdes = 0;
+    private float roll, pitch, yaw = 0;
+    private double[] inverseKinematics(int elbow) {
+        /* inversa di posizione */
+        // posizione del polso
+        double xh = xdes + d6*cos(roll)*sin(pitch);
+        double yh = ydes - d6*sin(roll)*cos(pitch);
+        double zh = - d6*cos(pitch);
+        // setups for next calculations
+        double A = elbow*sqrt(pow(xh,2)+pow(yh,2));
+        double B = zh-d1;
+        // sin(q[3])
+        double ds3 = 2*a2*d4;
+        double ns3 = pow(B,2)+pow(yh,2)+pow(xh,2)-pow(a2,2)-pow(d4,2);
+        double s3 = -(ns3)/ds3;
+        // cos(q[3])
+        double c3 = elbow*sqrt(1-pow(s3,2));
+        // q[3]
+        double q3 = atan2(s3,c3);
+        // setups for next calculations
+        double C = a2-d4*s3;
+        double D = d4*c3;
+        double det = pow(C,2)+pow(D,2);
+        // cos(q[2])
+        double c2 = (D*B+A*C)/det;
+        // sin(q[2])
+        double s2 = (-D*A+C*B)/det;
+        // q[2]
+        double q2 = atan2(s2,c2);
+        // another setup
+        double k = a2*c2-d4*sin(q2+q3);
+        // cos(q[1])
+        double c1 = xh/k;
+        // sin(q[1])
+        double s1 = yh/k;
+        // q[1]
+        double q1 = atan2(s1,c1);
+        /* inversa di orientamento */
+        // Setup for next calculations
+        RealMatrix zRoll = MatrixUtils.createRealMatrix(rotateZm(roll));
+        RealMatrix zPitch = MatrixUtils.createRealMatrix(rotateYm(pitch));
+        RealMatrix zYaw = MatrixUtils.createRealMatrix(rotateZm(yaw));
+        RealMatrix R = zRoll.multiply(zPitch).multiply(zYaw);
+        // q[5]
+        double c5 = R.getEntry(3,3);
+        double s5 = elbow*sqrt(1-pow(c5,2));
+        double q5 = atan2(s5,c5);
+        // q[4]
+        double c4 = -R.getEntry(1,3)/s5;
+        double s4 = -R.getEntry(2,3)/s5;
+        double q4 = atan2(s4,c4);
+        // q[6]
+        double c6 = R.getEntry(3,1)/s5;
+        double s6 = -R.getEntry(3,2)/s5;
+        double q6 = atan2(s6,c6);
+
+        return new double[]{q1,q2,q3,q4,q5,q6};
+    }
+
+    private double [][] rotateZm(double theta){
+        return new double[][]{{cos(theta), sin(theta), 0},
+                            {sin(-theta), cos(theta), 0},
+                            {0d, 0d, -1d}};
+    }
+    private double [][] rotateYm(double theta){
+        return new double[][]{{cos(theta), 0, sin(theta)},
+                {0d, -1d, 0d},
+                {-sin(theta),0, cos(theta)}};
+    }
 }
