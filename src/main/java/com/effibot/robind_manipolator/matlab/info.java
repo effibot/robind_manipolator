@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.MATLAB;
+package com.effibot.robind_manipolator.matlab;
 
 import java.awt.image.BufferedImage;
 

@@ -8,11 +8,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Utils {
-    public Utils(){}
+private static final Random random = new Random();
 
-    public double[][] Obs2List(List<Obstacle> obsList) {
+    public Utils(){/* Default Constructor */}
+
+    public double[][] obs2List(List<Obstacle> obsList) {
 
         double[][] col = new double[obsList.size()][];
         for(int i = 0;i<obsList.size();i++){
@@ -46,11 +49,20 @@ public class Utils {
         return image;
     }
 
-    public ArrayList<Image> makeImage(BufferedImage[] buffimg)  {
-        ArrayList<Image> imgviews = new ArrayList<Image>();
+    public List<Image> makeImage(BufferedImage[] buffimg)  {
+        ArrayList<Image> imgviews = new ArrayList<>();
         for(BufferedImage im: buffimg){
             imgviews.add(SwingFXUtils.toFXImage(im,null));
         }
         return  imgviews;
+    }
+        public List<String> randomSequence(int n){
+        ArrayList<String> list = new ArrayList<>(n);
+
+        for (int i = 0; i < n; i++)
+        {
+            list.add(String.valueOf(random.nextInt(1000)));
+        }
+        return list;
     }
 }
