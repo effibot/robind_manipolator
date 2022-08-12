@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import static java.lang.Math.*;
 import static processing.core.PConstants.PI;
 
 public class Robot {
@@ -52,6 +53,20 @@ public class Robot {
     private final ProcessingBase p3d;
     // Observers
 
+
+    // posizione desiderata
+    private float xdes, ydes, zdes = 0;
+    // orientamento desideratp
+    private float roll, pitch, yaw = 0;
+    // posizione del polso desiderata
+    private double xh = xdes - d6*cos(roll)*sin(pitch);
+    private double yh = ydes - d6*sin(roll)*cos(pitch);
+    private double zh = - d6*cos(pitch);
+    // variabile per il gomito
+    private int elbow = 1;
+    // setups for calculations
+    private double A = elbow*sqrt(pow(xh,2)+pow(yh,2));
+    private double B = zh-d1;
 
     public Robot(ProcessingBase p3d) {
         this.p3d = p3d;
