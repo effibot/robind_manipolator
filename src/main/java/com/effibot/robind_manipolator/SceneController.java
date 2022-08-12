@@ -1,17 +1,13 @@
 package com.effibot.robind_manipolator;
-import com.effibot.robind_manipolator.MATLAB.Matlab;
-import com.effibot.robind_manipolator.MATLAB.info;
+import com.effibot.robind_manipolator.matlab.Matlab;
+import com.effibot.robind_manipolator.matlab.info;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
-import com.mathworks.toolbox.javabuilder.MWException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -20,17 +16,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
-import javafx.util.StringConverter;
 import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
-import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
-
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
 public class SceneController implements Initializable, Observer {
@@ -89,27 +82,31 @@ public class SceneController implements Initializable, Observer {
     @FXML
     private TabPane tabPane;
     @FXML
-    private Tab setupTab, infoTab;
+    private Tab setupTab;
+    @FXML
+    private Tab infoTab;
     @FXML
     private List<Obstacle> obsList;
     @FXML
-    private RadioButton paraRadio, quinticRadio, cubicRadio;
+    private RadioButton paraRadio;
+    @FXML
+    private RadioButton quinticRadio;
+    @FXML
+    private RadioButton cubicRadio;
     private ToggleGroup radioGroup;
     private ToggleGroup shapeGroup;
-    private final ObservableList<String> methods = FXCollections.observableArrayList("Parabolic", "Quintic", "Cubic");
-    private float roll, pitch, yaw;
     private ArrayList<Integer> sequence;
-    private Vector<Integer> startPosition;
     private static  Matlab matlabInstance= Matlab.getInstance();
     private static List<String> greenId= new ArrayList<>();
     private static final Utils util= new Utils();
+
     @FXML
-    public void onContinueButtonClick() throws MWException {
+    public void onContinueButtonClick() throws ExecutionException, InterruptedException {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
-            double[][] obslist = util.Obs2List(obsList);
+            double[][] obslist = util.obs2List(obsList);
             double[] dim = {1024.0,1024.0};
             matlabInstance.mapgeneration(obslist,dim);
             DecimalFormat format = new DecimalFormat("0.#");
@@ -127,7 +124,7 @@ public class SceneController implements Initializable, Observer {
 //                    256d, 256d, true, true);
             basicMap.setImage(SwingFXUtils.toFXImage(ids.bw(),null));
 
-            ArrayList<Image> imgs = util.makeImage(ids.mapwk());
+            ArrayList<Image> imgs = (ArrayList<Image>) util.makeImage(ids.mapwk());
             // disable setup tab and select info tab
             map.setImage(imgs.get(0));
             Timeline timeLine = new Timeline();
@@ -141,7 +138,7 @@ public class SceneController implements Initializable, Observer {
                 frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
             }
             timeLine.setCycleCount(1);
-            timeLine.setOnFinished((finish)->{map.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));});
+            timeLine.setOnFinished(finish->map.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null)));
             timeLine.play();
 
             setupTab.setClosable(true);
@@ -192,26 +189,27 @@ public class SceneController implements Initializable, Observer {
                     sequence.removeIf(t -> t == 2);
                 }
                 break;
+            default:
+                break;
         }
     }
     @FXML
-    public void onStartAction(ActionEvent actionEvent) throws MWException {
-        DecimalFormat format = new DecimalFormat("0.#");
-        roll = Float.parseFloat(rollField.getText());
-        pitch = Float.parseFloat(pitchField.getText());
-        yaw = Float.parseFloat(yawField.getText());
-        boolean condition = sequence.isEmpty() ||
-                rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
+    public void onStartAction(ActionEvent actionEvent) throws ExecutionException, InterruptedException {
+        float roll = Float.parseFloat(rollField.getText());
+        float pitch = Float.parseFloat(pitchField.getText());
+        float yaw = Float.parseFloat(yawField.getText());
+//        boolean condition = sequence.isEmpty() ||
+//                rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
         double startid = Double.parseDouble(startPos.getValue());
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
-        if (!condition) {
+//        if (!condition) {
             double[][] shapepositions = matlabInstance.getInfo().shapepos();
             double[] obspos = {shapepositions[(int)selectedShape][1],shapepositions[(int)selectedShape][2]};
             matlabInstance.pathgeneration((int) startid,obspos ,method);
             // load images
             basicMap.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));
-            ArrayList<Image> imgs = util.makeImage(matlabInstance.getPath().mapsimimg());
+            ArrayList<Image> imgs =(ArrayList<Image>)  util.makeImage(matlabInstance.getPath().mapsimimg());
             map.setImage(imgs.get(0));
             Timeline timeLine = new Timeline();
             Collection<KeyFrame> frames = timeLine.getKeyFrames();
@@ -224,19 +222,26 @@ public class SceneController implements Initializable, Observer {
                 frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
             }
             timeLine.setCycleCount(1);
-            timeLine.setOnFinished((finish)-> setUpStage(finish));
+            timeLine.setOnFinished(finish-> {
+                try {
+                    setUpStage();
+                } catch (ExecutionException | InterruptedException e) {
+
+                    Thread.currentThread().interrupt();
+                }
+            });
             timeLine.play();
 
 
-        }
+//        }
 
 
     }
 
-    private void setUpStage(ActionEvent finish) {
+    private void setUpStage() throws ExecutionException, InterruptedException {
             // open 3D map
             P3DMap sketchmap = new P3DMap(obsList);
-            this.setSketch(sketchmap);
+            SceneController.setSketch(sketchmap);
             sketchmap.setJavaFX(this);
             double[][] pos = matlabInstance.getPath().q();
             sketchmap.setInitPos(pos[0]);
@@ -294,10 +299,6 @@ public class SceneController implements Initializable, Observer {
         // setup label control
         controlTab.setClosable(true);
         controlTab.setDisable(true);
-        // setup robot start position combobox
-//        greenId = randomSequence(10);
-        //! this is for dummy usage
-        //! -----------------------------
         startPos.setVisibleRowCount(5);
         startPos.getEditor().setTextFormatter(new TextFormatter<>(c -> {
             if (c.getControlNewText().matches("\\d*") && greenId.contains(c.getText()))
@@ -327,19 +328,10 @@ public class SceneController implements Initializable, Observer {
         sequence = new ArrayList<>();
         startBtn.setDisable(false);
     }
-    private List<String> randomSequence(int n){
-        ArrayList<String> list = new ArrayList<>(n);
-        Random random = new Random();
 
-        for (int i = 0; i < n; i++)
-        {
-            list.add(String.valueOf(random.nextInt(1000)));
-        }
-        return list;
-    }
 
     // Processing 2D setup
-    public ProcessingBase sketch;
+    private static ProcessingBase sketch;
     Application app;
 
 
@@ -347,8 +339,8 @@ public class SceneController implements Initializable, Observer {
         app = jfxApp;
     }
 
-    public void setSketch(ProcessingBase sketch) {
-        this.sketch = sketch;
+    public static void setSketch(ProcessingBase sketch) {
+        SceneController.sketch = sketch;
     }
 
     @Override

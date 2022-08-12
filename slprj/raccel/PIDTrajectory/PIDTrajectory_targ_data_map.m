@@ -79,31 +79,31 @@
 
                     ;% rtP.FromWorkspace_Data0_erdsjhbktd
                     section.data(2).logicalSrcIdx = 10;
-                    section.data(2).dtTransOffset = 5011;
+                    section.data(2).dtTransOffset = 2005;
 
                     ;% rtP.Gain1_Gain
                     section.data(3).logicalSrcIdx = 11;
-                    section.data(3).dtTransOffset = 10021;
+                    section.data(3).dtTransOffset = 4009;
 
                     ;% rtP.FromWorkspace_Data0_irypaqsgbf
                     section.data(4).logicalSrcIdx = 13;
-                    section.data(4).dtTransOffset = 10022;
+                    section.data(4).dtTransOffset = 4010;
 
                     ;% rtP.FromWorkspace_Data0_fbwrwi4aj1
                     section.data(5).logicalSrcIdx = 15;
-                    section.data(5).dtTransOffset = 15032;
+                    section.data(5).dtTransOffset = 6014;
 
                     ;% rtP.FromWorkspace_Data0_elsudc4efs
                     section.data(6).logicalSrcIdx = 17;
-                    section.data(6).dtTransOffset = 20043;
+                    section.data(6).dtTransOffset = 8019;
 
                     ;% rtP.Gain1_Gain_ipqblw4zv4
                     section.data(7).logicalSrcIdx = 18;
-                    section.data(7).dtTransOffset = 25053;
+                    section.data(7).dtTransOffset = 10023;
 
                     ;% rtP.FromWorkspace_Data0_a2gi03qt2b
                     section.data(8).logicalSrcIdx = 20;
-                    section.data(8).dtTransOffset = 25054;
+                    section.data(8).dtTransOffset = 10024;
 
             nTotData = nTotData + section.nData;
             paramMap.sections(3) = section;
@@ -370,8 +370,8 @@
     ;%
 
 
-    targMap.checksum0 = 369493394;
-    targMap.checksum1 = 1671298009;
-    targMap.checksum2 = 1762336114;
-    targMap.checksum3 = 3939211091;
+    targMap.checksum0 = 4154123614;
+    targMap.checksum1 = 163089457;
+    targMap.checksum2 = 1205527867;
+    targMap.checksum3 = 1954355689;
 

@@ -1,24 +1,17 @@
 package com.effibot.robind_manipolator;
-import com.effibot.robind_manipolator.MATLAB.Matlab;
+import com.effibot.robind_manipolator.matlab.Matlab;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
-import com.mathworks.engine.MatlabEngine;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import com.mathworks.toolbox.javabuilder.*;
-
 import java.io.IOException;
-import java.util.List;
 
 public class Main extends Application {
     private ProcessingBase sketch;
-    private static final String addr="127.0.0.1";
-    private static final int portRx = 12345;
-    private static final int portTx = 12346;
     public void setSketch(ProcessingBase sketch){
         this.sketch = sketch;
     }
@@ -54,12 +47,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-//        try {
-//            Matlab.getInstance();
-//        } catch (MWException e) {
-//            throw new RuntimeException(e);
-//        }
-        MatlabEngine eng = Matlab.getInstance().getEngine();
+        Matlab.getInstance().getEngine();
         launch();
     }
 }

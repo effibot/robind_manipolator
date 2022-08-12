@@ -1,9 +1,7 @@
 package com.effibot.robind_manipolator.Processing;
 
-import com.effibot.robind_manipolator.MATLAB.Matlab;
-import com.effibot.robind_manipolator.MATLAB.path;
-import com.effibot.robind_manipolator.MATLAB.sysout;
-import com.mathworks.toolbox.javabuilder.MWException;
+import com.effibot.robind_manipolator.matlab.Matlab;
+import com.effibot.robind_manipolator.matlab.SysOut;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
@@ -26,9 +24,9 @@ public class P3DMap extends ProcessingBase{
     private int i = (6) + 48;
     private boolean showPlots=false;
 
-    private sysout sim;
+    private SysOut sim;
     private ArrayList<Plot2D> plots = new ArrayList<>();
-    private sysout sys;
+    private SysOut sys;
     private int symindex = 0;
     private double x0=0;
     private double y0=0;
@@ -273,7 +271,7 @@ public class P3DMap extends ProcessingBase{
         pgl.viewport(x, y, w, h);
     }
 
-    public void setsysout(sysout sys){
+    public void setsysout(SysOut sys){
         this.sys = sys;
     }
 
