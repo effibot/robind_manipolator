@@ -235,7 +235,7 @@ public class Robot {
         // q[4]
         double c4 = -R.getEntry(1,3)/s5;
         double s4 = -R.getEntry(2,3)/s5;
-        double q4 = atan2(s4,c4);
+           double q4 = atan2(s4,c4);
         // q[6]
         double c6 = R.getEntry(3,1)/s5;
         double s6 = -R.getEntry(3,2)/s5;

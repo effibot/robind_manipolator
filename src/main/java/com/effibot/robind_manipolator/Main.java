@@ -24,7 +24,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scene.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 516, 768);
-        stage.setTitle("Find Object Manipolator");
+        stage.setTitle("Find Object Manipulator");
         stage.setScene(scene);
         stage.setResizable(false);
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -32,7 +32,7 @@ public class Main extends Application {
         stage.setY(  ((primScreenBounds.getHeight() - stage.getHeight()) / 2)   );
         stage.show();
         SceneController controller = fxmlLoader.getController();
-        controller.setSketch(sketch);
+        SceneController.setSketch(sketch);
         sketch.registerObserver(controller);
         controller.setJavafxApp(this);
         sketch.setJavaFX(controller);
