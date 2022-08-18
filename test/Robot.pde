@@ -93,7 +93,7 @@ public class Robot {
         pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
-        
+        show(0,dx,0,true);
         rotateY(-PI/2);
         rotateZ(PI);
         translate(0, -25, 0);
@@ -233,9 +233,9 @@ public class Robot {
         // Setup for next calculations
         RealMatrix zRoll = MatrixUtils.createRealMatrix(rotateZm(roll));
         RealMatrix yPitch = MatrixUtils.createRealMatrix(rotateYm(pitch));
-        //RealMatrix zYaw = MatrixUtils.createRealMatrix(rotateZm(yaw));
-        RealMatrix xYaw = MatrixUtils.createRealMatrix(rotateXm(yaw));
-        RealMatrix R = zRoll.multiply(yPitch).multiply(xYaw);
+        RealMatrix zYaw = MatrixUtils.createRealMatrix(rotateZm(yaw));
+        //RealMatrix xYaw = MatrixUtils.createRealMatrix(rotateXm(yaw));
+        RealMatrix R = zRoll.multiply(yPitch).multiply(zYaw);
         printR(R);
         // q[5]
         float c5 = (float)R.getEntry(2,2);
@@ -271,6 +271,31 @@ public class Robot {
       "[%f,%f,%f]\n[%f,%f,%f]\n[%f,%f,%f]",
       R.getEntry(0,0),R.getEntry(0,1),R.getEntry(0,2),R.getEntry(1,0),R.getEntry(1,1),R.getEntry(1,2),R.getEntry(2,0),R.getEntry(2,1),R.getEntry(2,2))
       );
+    }
+    public double [][] translateM(float x, float y, float z){
+        return new double[][]{{x},{y},{z}};
+    }
+    public double[][] rotor(String axis, float theta, float d){
+        float theta_r = radians(theta);
+        double[][] av = new double[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
+        double[][] R = new double[][]{};
+        double[][] T= new double[][]{};
+        if(axis.equals("x")) {
+          R = rotateXm(theta_r);
+          T = translateM(d,0,0);          
+        } else if (axis.equals("z")){
+          R = rotateZm(theta_r);
+          T = translateM(0,0,d);   
+        }
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+              av[i][j] = R[i][j];
+            }
+          }
+          for(int k = 0; k < 3; k++){
+            av[k][3] = T[0][k];
+          }
+       return av;
     }
     public void printEF(){
       

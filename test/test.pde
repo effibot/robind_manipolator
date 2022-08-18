@@ -98,7 +98,7 @@ void draw(){
 float px= 30;
 float py= -50;
 float pz = 30;
-
+int dx = 0;
 void keyPressed(){
   switch(key){
     case 'a': px +=1; break;
@@ -137,7 +137,15 @@ void keyPressed(){
         if (key=='e'){
           yaw+=yaw+0.2;
         }
-  r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,1));
+        if(key == 'm'){
+          dx = dx+1;
+          println(dx);
+        } 
+        if (key == 'n'){
+          dx = dx-1;
+          println(dx);
+        }
+  //r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,1));
   
 }
 int box_size = 10;
@@ -183,7 +191,7 @@ public void draw3Drobot(PeasyCam cam){
         stroke(0);
         strokeWeight(3);
         pushMatrix();
-        show(0,0,96,true);
+        //show(0,0,96+dx,true);
         translate(px,-py,pz);
         rotateZ(roll);
         rotateY(pitch);
