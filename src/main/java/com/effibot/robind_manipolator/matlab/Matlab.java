@@ -1,8 +1,8 @@
 package com.effibot.robind_manipolator.matlab;
 
 import com.effibot.robind_manipolator.Utils;
+import com.mathworks.engine.EngineException;
 import com.mathworks.engine.MatlabEngine;
-
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -10,7 +10,8 @@ import java.util.concurrent.Future;
 
 public class Matlab extends MatlabEngine {
     private static Matlab matlab = null;
-    private static final Future<MatlabEngine> engine = MatlabEngine.startMatlabAsync();
+    private static final String[] options = {"-noFigureWindows","-nosplash","-noawt","-singleCompThread","-nouserjavapath"};
+    private static final Future<MatlabEngine> engine = MatlabEngine.startMatlabAsync(options);
     private static MatlabEngine eng;
 
 
@@ -28,14 +29,17 @@ public class Matlab extends MatlabEngine {
     }
 
     public void mapgeneration(double[][] obslist, double[] dim) throws ExecutionException, InterruptedException {
-
+            eng = Matlab.getEngine();
             Object[] results = eng.feval(5,"mapGeneration",obslist,dim);
             double[] idlist =  (double[]) results[0];
             double[][] shapepos =(double[][]) results[1];
 
             byte[][][] mapimg=(byte[][][]) results[2];
-            BufferedImage bw = util.createImage(mapimg);
+        long st1=System.currentTimeMillis();
 
+        BufferedImage bw = util.createImage(mapimg);
+        long end1 = System.currentTimeMillis();
+        System.out.println("Image Processing...Elapsed Time in milli seconds: "+ (end1-st1));
             byte[][][][] mapwork=(byte[][][][]) results[3];
             BufferedImage[] mapwk =   new BufferedImage[mapwork.length];
             for(int i = 0; i<mapwork.length;i++){
@@ -45,12 +49,12 @@ public class Matlab extends MatlabEngine {
             byte[][][] mapgraph=(byte[][][]) results[4];
             BufferedImage graph = util.createImage(mapgraph);
             setInfo(new info(idlist,shapepos,bw,mapwk,graph));
-
+            eng.close();
 
     }
 
     public void pathgeneration(int startid, double[] obspos, String method) throws ExecutionException, InterruptedException {
-
+            eng =  Matlab.getEngine();
             Object[] results = eng.feval(4,"path_generator",startid,obspos,method);
             double[][] qr =  (double[][]) results[0];
             double[][] dqr =(double[][]) results[1];
@@ -62,6 +66,7 @@ public class Matlab extends MatlabEngine {
                 mapsimimg[i] = util.createImage(tmp);
             }
             setPath(new path(qr,dqr,ddqr,mapsimimg));
+             eng.close();
 
 
     }
@@ -72,13 +77,6 @@ public class Matlab extends MatlabEngine {
             double[][] dqr =(double[][]) results[1];
             double[][] ddqr =(double[][]) results[2];
             double[][] e =(double[][]) results[3];
-//            byte[][][][] mapPID=(byte[][][][]) results[4];
-//            BufferedImage[] mappid =   new BufferedImage[mapPID.length];
-//            for(int i = 0; i<mapPID.length;i++){
-//                byte[][][] tmp = mapPID[i];
-//                mappid[i] = util.createImage(tmp);
-//            }
-//            setSysout(new sysout(qr,dqr,ddqr,e,mappid));
             setSysout(new SysOut(qr,dqr,ddqr,e));
 
             eng.close();
@@ -125,9 +123,9 @@ public class Matlab extends MatlabEngine {
         Matlab.ik = ik;
     }
 
-    public static MatlabEngine getEngine(){
+    public static MatlabEngine getEngine() throws EngineException {
         if(engine == null){
-           eng= Matlab.getEngine();
+           eng= Matlab.getCurrentMatlab();
         }
         return eng;
     }

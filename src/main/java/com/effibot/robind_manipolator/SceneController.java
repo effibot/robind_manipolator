@@ -108,7 +108,10 @@ public class SceneController implements Initializable, Observer {
         if (obsList != null) {
             double[][] obslist = util.obs2List(obsList);
             double[] dim = {1024.0,1024.0};
+            long st1=System.currentTimeMillis();
             matlabInstance.mapgeneration(obslist,dim);
+            long end1 = System.currentTimeMillis();
+            System.out.println("Elapsed Time in milli seconds: "+ (end1-st1));
             DecimalFormat format = new DecimalFormat("0.#");
 
             info ids = matlabInstance.getInfo();
