@@ -93,7 +93,7 @@ public class Robot {
         pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
-        show(0,dx,0,true);
+        //show(0,dx,0,true);
         rotateY(-PI/2);
         rotateZ(PI);
         translate(0, -25, 0);
@@ -172,7 +172,8 @@ public class Robot {
     }
     public void setJoint(int rIndex, float qNew) {
         Vector<Float> tempRow = getDHrow(rIndex);
-        tempRow.set(0, tempRow.get(0)+qNew);
+        //tempRow.set(0, tempRow.get(0)+qNew);
+        tempRow.set(0,qNew);
         this.dhTable.set(rIndex, tempRow);
     }
     public void setDistance(int rIndex, int cIndex, float dNew) {
@@ -198,44 +199,65 @@ public class Robot {
         /* inversa di posizione */
         // posizione del polso
         float xh = xdes - d6*cos(roll)*sin(pitch);
-        float yh =- (ydes - d6*sin(roll)*sin(pitch));
+        float yh =(ydes - d6*sin(roll)*sin(pitch));
         float zh = zdes - d6*cos(pitch);
         // setups for next calculations
-        float A = elbow*sqrt(pow(xh,2)+pow(yh,2));
-        float B = zh-d1;
+        float B2 = -elbow*sqrt(pow(xh,2)+pow(yh,2));
+        float B1 = d1-zh;
+
         // sin(q[3])
         float ds3 = 2*a2*d4;
-        float ns3 = pow(B,2)+pow(yh,2)+pow(xh,2)-pow(a2,2)-pow(d4,2);
+        float ns3 = pow(B1,2)+pow(yh,2)+pow(xh,2)-pow(a2,2)-pow(d4,2);
         float s3 = (ns3)/ds3;
         // cos(q[3])
         float c3 = elbow*sqrt(1-pow(s3,2));
         // q[3]
-        float q3 = atan2(s3,c3);
+        float q3 = atan2((s3),(c3));
         // setups for next calculations
-        float C = a2+d4*s3;
-        float D = d4*c3;
-        float det = pow(C,2)+pow(D,2);
-        // cos(q[2])
-        float c2 = (D*B+A*C)/det;
-        // sin(q[2])
-        float s2 = (D*A-C*B)/det;
-        // q[2]
+        //float A12 =( a2+d4*s3);
+        //float A11 = -d4*c3;
+        //float det = pow(A11,2)-pow(A12,2);
+        //// cos(q[2])
+        ////float c2 = -(B2*A12-A11*B1)/det;
+        //// sin(q[2])
+
+        //float c2  = (d2*elbow*sqrt(pow(xh,2)+pow(yh,2))-d1*d4*c3+d4*zh*c3+d4*s3*B2)/
+        //(pow(a2,2)+2*s3*a2*a4+pow(d4,2));
+        //float s2 = (d1*a2-a2*zh-d4*zh*s3+d1*d4*s3+d4*c3*B2)/( pow(a2,2)+2*s3*a2*a4+pow(d4,2));
+        //// q[2]
+        //float q2 = atan2((s2),(c2));
+        float A11 = -d4*c3;
+        float A12 = a2+d4*s3;
+        float A21 = -A12;
+        float A22 = A11;
+        float det = A11*A22-A12*A21;
+        float c2 = -(A12*B2-A22*B1)/det ;
+        float s2 = (A11*B2-A21*B1)/det;
         float q2 = atan2(s2,c2);
-        // another setup
-        float k = a2*c2+d4*sin(q2+q3);
+        //// another setup
+        //float k = a2*c2+d4*sin(q2+q3);
+        float k = a2*c2+d4*(s2*c3+c2*s3);
         // cos(q[1])
         float c1 = xh/k;
         // sin(q[1])
         float s1 = yh/k;
         // q[1]
-        float q1 = atan2(s1,c1);
+        float q1 = atan2((s1),(c1));
         /* inversa di orientamento */
         // Setup for next calculations
         RealMatrix zRoll = MatrixUtils.createRealMatrix(rotateZm(roll));
         RealMatrix yPitch = MatrixUtils.createRealMatrix(rotateYm(pitch));
         RealMatrix zYaw = MatrixUtils.createRealMatrix(rotateZm(yaw));
         //RealMatrix xYaw = MatrixUtils.createRealMatrix(rotateXm(yaw));
-        RealMatrix R = zRoll.multiply(yPitch).multiply(zYaw);
+        RealMatrix Rdes = zRoll.multiply(yPitch).multiply(zYaw);
+        Vector<Vector<Float>> dh03 = new Vector<Vector<Float>>();
+        dh03.add(getDhTable().get(0));
+        dh03.add(getDhTable().get(1));
+        dh03.add(getDhTable().get(2));
+        double[][] dhValue = dhValue(dh03);
+        RealMatrix Q03 = MatrixUtils.createRealMatrix(dhValue);
+        RealMatrix R03T = Q03.getSubMatrix(0,2,0,2).transpose();
+        RealMatrix R = R03T.multiply(Rdes);
         printR(R);
         // q[5]
         float c5 = (float)R.getEntry(2,2);
@@ -244,13 +266,13 @@ public class Robot {
         // q[4]
         float c4 =  (float)R.getEntry(0,2)/s5;
         float s4 =  (float)R.getEntry(1,2)/s5;
-           float q4 = atan2(s4,c4);
+        float q4 = atan2(s4,c4);
         // q[6]
         float c6 =  (float)-R.getEntry(2,0)/s5;
         float s6 =  (float)R.getEntry(2,1)/s5;
         float q6 = atan2(s6,c6);
         println(new float[]{q1,q2,q3,q4,q5,q6});
-        return new float[]{q1,q2,q3,q4,q5,q6}; //<>//
+        return new float[]{q1,q2,q3,q4,q5,q6};
     }
 
     private double [][] rotateZm(float theta){
@@ -276,7 +298,7 @@ public class Robot {
         return new double[][]{{x},{y},{z}};
     }
     public double[][] rotor(String axis, float theta, float d){
-        float theta_r = radians(theta);
+        float theta_r = (theta); //<>//
         double[][] av = new double[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
         double[][] R = new double[][]{};
         double[][] T= new double[][]{};
@@ -293,9 +315,28 @@ public class Robot {
             }
           }
           for(int k = 0; k < 3; k++){
-            av[k][3] = T[0][k];
+            av[k][3] = T[k][0];
           }
        return av;
+    }
+  public double[][] dhValue(Vector<Vector<Float>> dhTable){
+        double[][] value = new double[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
+        RealMatrix Q = MatrixUtils.createRealIdentityMatrix(4);
+        for (Vector<Float> dhRow : dhTable) {
+            float q = dhRow.get(0);
+            float d = dhRow.get(1);
+            float alpha = dhRow.get(2);
+            float a = dhRow.get(3);
+            double[][] Qzi = rotor("z", q, d);
+            double[][] Qxi = rotor("x", alpha, a);
+            RealMatrix Qzim = MatrixUtils.createRealMatrix(Qzi);
+            RealMatrix Qxim = MatrixUtils.createRealMatrix(Qxi);
+            Q = Q.multiply(Qzim).multiply(Qxim);
+        }
+        for(int i =0; i < 4; i++){
+            value[i] = Q.getRow(i);
+        }
+        return value;
     }
     public void printEF(){
       

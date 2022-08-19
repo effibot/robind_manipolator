@@ -76,6 +76,7 @@ public PeasyCam setupScene(PeasyCam cam,int id) {
         //!! End camera setup
         return cam;
     }
+    float th = 0;
 void draw(){
    setGLGraphicsViewport(0, 0, width, height);
         background(153,204,153);
@@ -93,12 +94,10 @@ void draw(){
             popMatrix();
             popStyle();
         }
+        
 }
 
-float px= 30;
-float py= -50;
-float pz = 30;
-int dx = 0;
+
 void keyPressed(){
   switch(key){
     case 'a': px +=1; break;
@@ -126,17 +125,17 @@ void keyPressed(){
         if (key == '6') {
             r.setJoint(5,0.2f);
         }
-        if (key=='q'){
-          roll+=roll+0.2;
-        }
+        //if (key=='q'){
+        //  roll =roll+0.2;
+        //}
         
-        if (key=='w'){
-          pitch+=pitch+0.2;
-        }
+        //if (key=='w'){
+        //  pitch =pitch+0.2;
+        //}
         
-        if (key=='e'){
-          yaw+=yaw+0.2;
-        }
+        //if (key=='e'){
+        //  yaw =yaw+0.2;
+        //}
         if(key == 'm'){
           dx = dx+1;
           println(dx);
@@ -145,8 +144,9 @@ void keyPressed(){
           dx = dx-1;
           println(dx);
         }
-  //r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,1));
-  
+        if(key == 'e'){
+          elbow = -elbow;
+        }  
 }
 int box_size = 10;
 public void show(float x, float y, float z, boolean show) {
@@ -180,26 +180,47 @@ public void show(float x, float y, float z, boolean show) {
     }
      float roll = -PI/4;
      float pitch = PI/3;
-     float yaw = 0;
+     float yaw = PI/4;
+     //     float roll =0;
+     //float pitch = 0;
+     //float yaw = 0;
+     float px= 0;
+float py= 80f;
+float pz = 50f;
+int dx = 0;
+int elbow = 1;
 public void draw3Drobot(PeasyCam cam){
         //show(0,0,0,true);
-        pushMatrix();
-         r.drawLink();
-        popMatrix();
-        int nPoints = 300;
+        //th = th+0.02;
+        //pushMatrix();
+        //rotateY(th);
+        //show(0,0,0,true);
+        //popMatrix();
+         
         fill(255);
         stroke(0);
         strokeWeight(3);
         pushMatrix();
-        //show(0,0,96+dx,true);
-        translate(px,-py,pz);
+        translate(px,py,pz);
+        //show(0,0,96+dx,true);    
         rotateZ(roll);
         rotateY(pitch);
-        rotateX(yaw);
-        //box(5);.
+        rotateZ(yaw);
+        show(0,0,0,true);
+        box(5);
         //show(0,0,63,true);
         popMatrix();
         noStroke();
+        
+        
+        //translate(0,0,-32);
+          r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,elbow));
+
+        pushMatrix();
+         r.drawLink();
+         show(0,0,0,true);
+        popMatrix();
+       
         cam.beginHUD();
 
 
