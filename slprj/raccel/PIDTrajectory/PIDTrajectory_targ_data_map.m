@@ -79,31 +79,31 @@
 
                     ;% rtP.FromWorkspace_Data0_erdsjhbktd
                     section.data(2).logicalSrcIdx = 10;
-                    section.data(2).dtTransOffset = 2005;
+                    section.data(2).dtTransOffset = 3007;
 
                     ;% rtP.Gain1_Gain
                     section.data(3).logicalSrcIdx = 11;
-                    section.data(3).dtTransOffset = 4009;
+                    section.data(3).dtTransOffset = 6013;
 
                     ;% rtP.FromWorkspace_Data0_irypaqsgbf
                     section.data(4).logicalSrcIdx = 13;
-                    section.data(4).dtTransOffset = 4010;
+                    section.data(4).dtTransOffset = 6014;
 
                     ;% rtP.FromWorkspace_Data0_fbwrwi4aj1
                     section.data(5).logicalSrcIdx = 15;
-                    section.data(5).dtTransOffset = 6014;
+                    section.data(5).dtTransOffset = 9020;
 
                     ;% rtP.FromWorkspace_Data0_elsudc4efs
                     section.data(6).logicalSrcIdx = 17;
-                    section.data(6).dtTransOffset = 8019;
+                    section.data(6).dtTransOffset = 12027;
 
                     ;% rtP.Gain1_Gain_ipqblw4zv4
                     section.data(7).logicalSrcIdx = 18;
-                    section.data(7).dtTransOffset = 10023;
+                    section.data(7).dtTransOffset = 15033;
 
                     ;% rtP.FromWorkspace_Data0_a2gi03qt2b
                     section.data(8).logicalSrcIdx = 20;
-                    section.data(8).dtTransOffset = 10024;
+                    section.data(8).dtTransOffset = 15034;
 
             nTotData = nTotData + section.nData;
             paramMap.sections(3) = section;
@@ -370,8 +370,8 @@
     ;%
 
 
-    targMap.checksum0 = 4154123614;
-    targMap.checksum1 = 163089457;
-    targMap.checksum2 = 1205527867;
-    targMap.checksum3 = 1954355689;
+    targMap.checksum0 = 961222241;
+    targMap.checksum1 = 206567005;
+    targMap.checksum2 = 110899405;
+    targMap.checksum3 = 2976414090;
 

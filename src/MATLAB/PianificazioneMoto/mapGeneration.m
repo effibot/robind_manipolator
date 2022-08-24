@@ -1,9 +1,5 @@
 function [gid,shapepos,mapimg,mapworking,mapgraph]=mapGeneration(obs,dim)
-% addpath(genpath('.\')); 
-delete('.\mapgenerationimg\generated\*.png');
-delete('.\mapgenerationimg\constructing\*.png');
-delete('.\mapgenerationimg\generatedsim\*.png');
-delete('.\mapgenerationimg\originalsim\*.png');
+import java.awt.*
 mapimg = uint8.empty;
 robotsize=50;
 map = makeMap(obs,dim);
@@ -35,5 +31,5 @@ for i = 1:3
         end
     shapepos(i,:) = [form,pos];
 end
-save matfiles/mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
+save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
 end

@@ -1,7 +1,5 @@
 package com.effibot.robind_manipolator.Processing;
 
-import com.effibot.robind_manipolator.matlab.Matlab;
-import com.effibot.robind_manipolator.matlab.SysOut;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
@@ -24,9 +22,7 @@ public class P3DMap extends ProcessingBase{
     private int i = (6) + 48;
     private boolean showPlots=false;
 
-    private SysOut sim;
     private ArrayList<Plot2D> plots = new ArrayList<>();
-    private SysOut sys;
     private int symindex = 0;
     private double x0=0;
     private double y0=0;
@@ -203,7 +199,6 @@ public class P3DMap extends ProcessingBase{
 
     public void draw3Dmap(PeasyCam cam) {
         int zeroH = -300;
-        this.sys = Matlab.getInstance().getSysout();
         // scene objects
         pushMatrix();
         translate(0, 0, zeroH);  // translate to a nicer vertical position
@@ -224,17 +219,8 @@ public class P3DMap extends ProcessingBase{
             box(obs.getR(), obs.getR(), obs.getH());
             popMatrix();
         }
-        if(this.sys==null){
             translate((float) 0, (float) 0, dz+9.5f);
-        } else if(this.sys!=null && i!=this.sys.q().length) {
-            double[][] position = this.sys.q();
-            translate(-512,-512,dx);
-            if (i<position.length) {
 
-                translate((float) position[i][0], (float) position[i][1], dz + 9.5f);
-                i = i + 1;
-            }
-        }
         pushMatrix();
         r.drawLink();
         popMatrix();
@@ -269,10 +255,6 @@ public class P3DMap extends ProcessingBase{
         pgl.enable(PGL.SCISSOR_TEST);
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
-    }
-
-    public void setsysout(SysOut sys){
-        this.sys = sys;
     }
 
     private void resetSymindex(){

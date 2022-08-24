@@ -3,6 +3,7 @@ package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.Processing.Obstacle;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -64,5 +65,14 @@ private static final Random random = new Random();
             list.add(String.valueOf(random.nextInt(1000)));
         }
         return list;
+    }
+
+    public ArrayList<double[]> toArrayDoubleList(Double[][] darr){
+        ArrayList<double[]> arr = new ArrayList<>();
+        int i = 0;
+        for(Double[] d:darr){
+           arr.add(ArrayUtils.toPrimitive(d));
+        }
+        return arr;
     }
 }

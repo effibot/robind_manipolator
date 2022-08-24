@@ -12,14 +12,14 @@ module com.effibot.robind_manipolator {
     requires core;
     requires jogl.all;
     requires java.desktop;
-    requires engine;
     requires javafx.swing;
     requires commons.math3;
+    requires commons.lang;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;
     opens com.effibot.robind_manipolator.Processing to javafx.fxml;
-    exports com.effibot.robind_manipolator.matlab;
-    opens com.effibot.robind_manipolator.matlab to javafx.fxml;
+    exports com.effibot.robind_manipolator.TCP;
+    opens com.effibot.robind_manipolator.TCP to javafx.fxml;
 
 }
