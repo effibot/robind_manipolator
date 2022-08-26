@@ -12,9 +12,7 @@ import java.io.IOException;
 
 public class Main extends Application {
     private ProcessingBase sketch;
-    private static final int permits = 1;
-    private static final String addr = "localhost";
-    private static final int port = 3030;
+
     public void setSketch(ProcessingBase sketch){
         this.sketch = sketch;
     }
@@ -50,11 +48,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        double[] dim ={1024,1024};
-//        Packet pck = new Packet.PacketBuilder("MAP").doubleArr(dim).build();
-
-        TCPFacade tcpManager = TCPFacade.getInstance();
-        tcpManager.startTCPComunication(addr,port,permits);
         launch();
     }
 }

@@ -107,9 +107,10 @@ public class SceneController implements Initializable, Observer {
             msg.put("PROC","MAP");
             msg.put("DIM", dim);
             msg.put("OBSLIST", obslist);
+
             tcp.sendMsg(msg);
-            tcp.releaseSendingSemaphore();
-            tcp.receiveMsg();
+
+            ArrayList<HashMap> arr = tcp.receiveMsg();
 
 //            long end1 = System.currentTimeMillis();
 //            System.out.println("Elapsed Time in milli seconds: "+ (end1-st1));

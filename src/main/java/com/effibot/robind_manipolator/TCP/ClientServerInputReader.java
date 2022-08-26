@@ -12,14 +12,17 @@ public class ClientServerInputReader extends Thread{
     private static Semaphore semaphore;
     private static HashMap toSend=null;
     private static ObjectOutputStream output;
-    private static ClientServerInputReader instance = null;
     @Override
     public synchronized void run(){
             try {
+                if(toSend==null||!(toSend instanceof HashMap)) {
+                    System.out.println("Releasing Semaphore");
+                    semaphore.release();
+                }else {
                     semaphore.acquire();
                     System.out.println("Input acquiring Semaphore");
-                System.out.println("InputReader gets a permit.");
-                if(toSend!=null){
+                    System.out.println("InputReader gets a permit.");
+
                     System.out.println("Sending message...");
 
                     OutputStream outsocket = socket.getOutputStream();
@@ -32,36 +35,25 @@ public class ClientServerInputReader extends Thread{
                     output.flush();
                     output.close();
                     outsocket.write(msg);
-                    outsocket.close();
-                    }
-                    else{releaseSemaphore();}
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+
+                    System.out.println("Releasing Semaphore");
+                    toSend = null;
+                    semaphore.release();
+                }
+            }
+            catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
     }
     public void setToSend(HashMap toSend) {
             this.toSend=toSend;
-    }
-
-
-    public Socket getSocket() {
-        return socket;
     }
 
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
 
-    public Semaphore getSemaphore() {
-        return semaphore;
-    }
-
-    public void releaseSemaphore(){
-        System.out.println("Releasing Semaphore");
-        semaphore.release();
-    }
     public void setSemaphore(Semaphore semaphore) {
         this.semaphore = semaphore;
     }

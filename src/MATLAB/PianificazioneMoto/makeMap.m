@@ -7,8 +7,8 @@ function node = makeMap(obstacleList, dim)
         y = obstacleList(i,2);
         r = obstacleList(i,3);
         img(x,y,:) = 0;
-        img(fix(-r/2)+x-1:fix(r/2)+x+1,...
-            fix(-r/2)+y-1:fix(r/2)+y+1,:)=0;
+        img(fix(-r/2)+x+1:fix(r/2)+x,...
+            fix(-r/2)+y+1:fix(r/2)+y,:)=0;
     end
     bc = dim/2;
     lc = [1 1];

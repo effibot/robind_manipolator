@@ -1,5 +1,4 @@
 function [gid,shapepos,mapimg,mapworking,mapgraph]=mapGeneration(obs,dim)
-import java.awt.*
 mapimg = uint8.empty;
 robotsize=50;
 map = makeMap(obs,dim);

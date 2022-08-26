@@ -6,9 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="feat: inverse kinematics complete.&#10;TODO: implement IK calculuation into the robo">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/makeMap.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/makeMap.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/Server.asv" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Server.asv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/Server.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Server.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/mapg.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Processing/Robot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/inversa.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/ClientServerInputReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/ClientServerInputReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/ClientServerOutputReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/ClientServerOutputReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/TCPFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/TCPFacade.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,6 +220,8 @@
       <workItem from="1660321310713" duration="2689000" />
       <workItem from="1660508063740" duration="3774000" />
       <workItem from="1660829278313" duration="2492000" />
+      <workItem from="1661414533299" duration="25277000" />
+      <workItem from="1661498685217" duration="34214000" />
     </task>
     <task id="LOCAL-00001" summary="@feat: processing initializing">
       <created>1658881132568</created>
@@ -293,11 +303,26 @@
           <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="9" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java</url>
+          <line>148</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/TCPFacade.java</url>
+          <line>87</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/ClientServerOutputReader.java</url>
+          <line>47</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="m.DISPOSE_MCR_INSTANCE" />
+        <watch expression="socket" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

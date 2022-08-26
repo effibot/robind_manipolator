@@ -2,38 +2,55 @@ package com.effibot.robind_manipolator.TCP;
 
 import com.effibot.robind_manipolator.Utils;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
-public class ClientServerOutputReader extends Thread{
-    private static   Socket socket;
+import org.apache.commons.io.*;
+public class ClientServerOutputReader extends Thread {
+    private static Socket socket;
     private static Semaphore semaphore;
-    private static  ArrayList<double[]> arrayDoubbleList ;
+    public  static  ArrayList<HashMap> arrayHash = new ArrayList<>();
     private static ClientServerOutputReader instance = null;
     private static final Utils utils = new Utils();
-
+    private int stop = 0;
     @Override
-    public  void run(){
-        try {
-            System.out.println("Output acquiring Semaphore");
-            semaphore.drainPermits();
-            System.out.println("OutputReader receiving message...");
-            ObjectInputStream dis = new ObjectInputStream(socket.getInputStream());
-            Object obj = dis.readObject();
-            while (obj !=null) {
-                HashMap pck = (HashMap) obj;
-            }
-            System.out.println("No message to read");
-            System.out.println("Releasing Semaphore");
-            semaphore.release();
+    public synchronized void run() {
 
+        try {
+
+
+            while (socket.isConnected()) {
+                if(socket.getInputStream().available()>0) {
+                    System.out.println("OutputReader receiving message...");
+
+                    InputStream ski = socket.getInputStream();
+                    ObjectInputStream dis = new ObjectInputStream(ski);
+                    Object obj = dis.readObject();
+                    if (obj != null) {
+                        HashMap pck = (HashMap) obj;
+                        System.out.println("Message read...");
+
+                        if((double) pck.get("FINISH")==1) {
+
+
+                            return;
+                        }
+                        arrayHash.add(pck);
+
+                    }
+                }
+            }
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }finally {
+            semaphore.release();
+
+
         }
     }
+
     public static Socket getSocket() {
         return socket;
     }
@@ -50,7 +67,7 @@ public class ClientServerOutputReader extends Thread{
         ClientServerOutputReader.semaphore = semaphore;
     }
 
-    public ArrayList<double[]> getParsedMessage() {
-        return arrayDoubbleList;
+    public ArrayList<HashMap> getParsedMessage() {
+        return arrayHash;
     }
 }

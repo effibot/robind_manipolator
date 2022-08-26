@@ -2,45 +2,75 @@ clc
 clear
 close all
 %%
-javaclasspath
-javaaddpath(fullfile('C:\Users\loren\OneDrive\Desktop\robind_manipolator\src'))
-javaclasspath
 import java.util.*
-[M,X,J] = inmem
-%%
-
-% u = udpport("datagram","LocalPort",3030);
-% configureCallback(u,"datagram",1,@readUDPData);
-% 
+import java.awt.image.BufferedImage
+import java.awt.image.*
+addpath(genpath('./'))
 server = tcpserver("127.0.0.1",3030);
 server.UserData=0;
 configureCallback(server,"byte",1,@readData)
 
 %%
 function readData(src,~)
-    src.UserData = src.UserData + 1;
-    disp("Callback Call Count: " + num2str(src.UserData))
-    % data = read(src,src.NumDatagramsAvailable,"uint8");
-    if(src.NumBytesAvailable~=0)
-        disp("Message Received");
-        data = read(src,src.NumBytesAvailable,"uint8");
-        hashmap = deserialize(data);
-        procedure = hashmap.get("PROC");
-        switch(procedure)
-            case "MAP"
-                obs = hashmap.get("OBSLIST");
-                dim = hashmap.get("DIM");
-                [gid,shapepos,mapimg,mapanimation,mapgraph]=mapGeneration(obs,dim);
-                msg = javaObject('java.util.HashMap');
-                msg.put("GREENID",gid);
-                msg.put("SHAPEPOS",shapepos);
-                msg.put("MAPIMG",mapimg);
-                msg.put("MAPANIMATION",mapanimation);
-                msg.put("MAPGRAPH",mapgraph);
-                
+src.UserData = src.UserData + 1;
+disp("Callback Call Count: " + num2str(src.UserData))
+% data = read(src,src.NumDatagramsAvailable,"uint8");
+if(src.NumBytesAvailable~=0)
+    disp("Message Received");
+    data = read(src,src.NumBytesAvailable,"uint8");
+    hashmap = deserialize(data);
+    procedure = hashmap.get("PROC");
+    switch(procedure)
+        case "MAP"
+            obs = hashmap.get("OBSLIST");
+            dim = hashmap.get("DIM");
+            tic
+            [gid,shapepos,mapimg,mapanimation,mapgraph]=mapGeneration(obs,dim');
+            toc
+            msg = buildMessage(0,"I",gid);
+            msg = buildMessage(msg,"S",gid);
+%             msg.put("I",gid);
+%             msg.put("S",shapepos);
+%             toSend = serialize(msg);
+%             write(src,toSend,"int8");
+            sendMessage(src,msg);
+           
+            tic
+%             msg = javaObject('java.util.HashMap');
+            msg = buildMessage(0,"BW",squeeze(mapimg));
+            sendMessage(src,msg);
+            toc
+%             toSend = serialize(msg);
+%             write(src,toSend,"uint8");
+%             msg = javaObject('java.util.HashMap');
+            sz = size(mapanimation);
+            num = sz(1);
+            row = sz(2);
+            col =sz(3);
+%             mapcol = @(i,j,k) reshape(mapanimation(i,j,k,:),1,[]);
+            tic
+%             buffimage = createImage(mapanimation(1,:,:,:));
+%             msg.put("MAPANIMATION",buffimage);
+            animationList = zeros(num,row,col);
+           for i = 1: num
+                msg = buildMessage(0,createImage(squeeze(mapanimation(i,:,:,:))));
+                sendMessage(src,msg);
+           end
+           toc
+           msg.put("A",animationList);
+            for i = 1:sz(1)
+                msg.put("MAPANIMATION"+i,squeeze(mapanimation(i,:,:,:)));
+%                 toSend = serialize(msg);
+%                 write(src,toSend,"uint8");
+            end
+%             msg = javaObject('java.util.HashMap');
 
-        end
+            msg.put("G",createImage(squeeze(mapgraph)));
+            toSend = serialize(msg);
+            write(src,toSend,"int8");
+
     end
+end
 %     tosend = magic(10);
 %     row = size(tosend,1);
 %     for i = 1:row
@@ -48,11 +78,21 @@ function readData(src,~)
 %     %     write(src,typecast(serialize(tosend(i,:)),"uint8"),"uint8");
 %     msg = serialize(tosend(i,:));
 %         write(src,msg,"int8");
-%     
-%     
+%
+%
 %     end
 %     msg = serialize(0);
 %     write(src,msg,"int8");
+end
+function sendMessage(src,msg)
+   toSend = serialize(msg);
+   write(src,toSend,"int8");
+end
+function msg = buildMessage(msg,key,val)
+    if msg == 0
+        msg = javaObject('java.util.HashMap');
+    end
+    msg.put(key,val);
 end
 
 function r = deserialize(data)
@@ -66,6 +106,24 @@ end
 function p = serialize(data)
 byteOutputStream = java.io.ByteArrayOutputStream();
 dataOutputStream = java.io.ObjectOutputStream(byteOutputStream);
-dataOutputStream.writeObject(matrixdata);
+dataOutputStream.writeObject(data);
+dataOutputStream.flush();
 p = byteOutputStream.toByteArray();
+byteOutputStream.close();
+end
+
+function r = createImage(byteImg)
+dim = size(byteImg);
+row = dim(1);
+col = dim(2);
+r =zeros(row,col);
+for x = 1:row
+    for y = 1:col
+        color =  getIntFromColor(byteImg(x,y,1),byteImg(x,y,2),byteImg(x,y,3));
+        r(x,y) = color;
+    end
+end
+end
+function col = getIntFromColor(R,G,B)
+col = (R*65536)+(G*256)+B ;
 end
