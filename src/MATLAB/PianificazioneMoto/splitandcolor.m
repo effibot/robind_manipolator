@@ -1,6 +1,8 @@
 function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
     % graphically split the map and return the list of all nodes also.
+    tic
     decomp(map, robotsize, 0.9);
+    toc
     dim = size(map.value);
     currdim = dim(1)/2;
     M = 255 * repmat(uint8(map.value), 1, 1, 3);
@@ -11,7 +13,8 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
     saving=@(gcf)frame2im(getframe(gcf));
 
     figure('visible','off')
-    imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
+%     imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
+    imageList = uint8.empty(numel(nodeList),0,0,0);
     k = 1;
     while(currdim >= robotsize)
         mapList = findobj(nodeList, 'dim', currdim);
@@ -39,33 +42,33 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
            
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3),3)=color(3);
             %         Mtemp(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=0;
-            
             M(corner(1,1):corner(1,2),corner(2,1),:)=0;
-            Mtemp(corner(1,1):corner(1,2),corner(2,1))=0;
+%             Mtemp(corner(1,1):corner(1,2),corner(2,1))=0;
             M(corner(1,1),corner(2,1):corner(2,3),:)=0;
-            Mtemp(corner(1,1),corner(2,1):corner(2,3))=0;
-            %
+%             Mtemp(corner(1,1),corner(2,1):corner(2,3))=0;
+            
             M(corner(1,3):corner(1,4),corner(2,3),:)=0;
-            Mtemp(corner(1,3):corner(1,4),corner(2,3))=0;
+%             Mtemp(corner(1,3):corner(1,4),corner(2,3))=0;
             M(corner(1,2),corner(2,2):corner(2,4),:)=0;
-            Mtemp(corner(1,2),corner(2,2):corner(2,4))=0;
+%             Mtemp(corner(1,2),corner(2,2):corner(2,4))=0;
 
-            if corner(2,3)==dim(1)
-                M(corner(1,1):corner(1,2),corner(2,3),:)=0;
-                Mtemp(corner(1,1):corner(1,2),corner(2,3))=0;
-            end
-            if corner(1,2) == dim(1)
-                M(corner(1,2),corner(2,1):corner(2,3),:)=0;
-                Mtemp(corner(1,2),corner(2,1):corner(2,3))=0;
-            end
+%             if corner(2,3)==dim(1)
+%                 M(corner(1,1):corner(1,2),corner(2,3),:)=0;
+% %                 Mtemp(corner(1,1):corner(1,2),corner(2,3))=0;
+%             end
+%             if corner(1,2) == dim(1)
+%                 M(corner(1,2),corner(2,1):corner(2,3),:)=0;
+% %                 Mtemp(corner(1,2),corner(2,1):corner(2,3))=0;
+%             end
             if toSave
 %                 imwrite(M,filename,'jpg');
-%                 showimage(M);
-%                 fm = saving(gcf);
+                showimage(M);
+                fm = saving(gcf);
 % 
 %                 images(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 %                 saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
-            imageList(k,:,:,:) = M;
+%                 imageList(k,:,:,:) = M;
+                imageList(k,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
                 k = k+1;
             end
         end

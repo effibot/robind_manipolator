@@ -18,9 +18,11 @@ function decomp(node, minDim, thresh)
     child = rectNode.empty(0,1);
     grid = node.value;
     % max value
-    maximum = grid(find(ismember(grid,max(grid(:))),1));
+%     maximum = grid(find(ismember(grid,max(grid(:))),1));
+    maximum = max(max(grid,[],1),[],2);    
     % min value
-    minimum = grid(find(ismember(grid, min(grid(:))),1));
+%     minimum = grid(find(ismember(grid, min(grid(:))),1));
+    minimum = min(min(grid,[],1),[],2);
 
     newDim = size(grid,1)/2;
     if abs(minimum-maximum) > thresh && newDim >= minDim
