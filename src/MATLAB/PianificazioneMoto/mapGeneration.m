@@ -12,6 +12,9 @@ toShow = false;
 %% QT-Decomp
 [M, nodeList,mapworking] = splitandcolor(map, robotsize, toSave);
 % mapImg = imshow(M);
+colormat = mapworking(80,:,:,:);
+save colormat.mat  colormat
+
 %% Adjiacency Matrix
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);
 G=graph(A);
@@ -20,7 +23,6 @@ nobs = size(obs,1);
 shapepos = zeros(3,3);
 for i = 1:3
     form = i-1;
-    
     obb = randi(nobs,1);
     pos = obs(obb,1:2);
         while ~isempty(find(ismember(shapepos(:,2:3),pos,'rows'), 1))

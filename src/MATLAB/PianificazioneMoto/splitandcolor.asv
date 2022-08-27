@@ -1,6 +1,6 @@
-function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
-    % graphically split the map and return the list of all nodes also.
-    decomp(map, robotsize, 0.9);
+function [M, nodeList,images] = splitandcolor(map, robotsize, toSave)
+    % graphically split the map and return the list of all nodes also.    
+    decomp(map, robotsize, 0.9);    
     dim = size(map.value);
     currdim = dim(1)/2;
     M = 255 * repmat(uint8(map.value), 1, 1, 3);
@@ -11,8 +11,7 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
     saving=@(gcf)frame2im(getframe(gcf));
 
     figure('visible','off')
-    imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
-    k = 1;
+    imageList = zeros(numel(nodeList), dim(1), dim(2));
     while(currdim >= robotsize)
         mapList = findobj(nodeList, 'dim', currdim);
         for i = 1:size(mapList,1)
@@ -59,14 +58,12 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
                 Mtemp(corner(1,2),corner(2,1):corner(2,3))=0;
             end
             if toSave
-%                 imwrite(M,filename,'jpg');
+%                 imwrite(M,filename,'jpg');                
 %                 showimage(M);
-%                 fm = saving(gcf);
-% 
-%                 images(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
+%                 fm = saving(gcf);                
+%                 images(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;                  
 %                 saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
-            imageList(k,:,:,:) = M;
-                k = k+1;
+                imageList();
             end
         end
         currdim = currdim/2;
