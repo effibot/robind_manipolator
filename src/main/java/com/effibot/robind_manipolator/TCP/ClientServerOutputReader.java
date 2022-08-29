@@ -1,73 +1,77 @@
 package com.effibot.robind_manipolator.TCP;
 
-import com.effibot.robind_manipolator.Utils;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
-import org.apache.commons.io.*;
+
 public class ClientServerOutputReader extends Thread {
-    private static Socket socket;
-    private static Semaphore semaphore;
-    public  static  ArrayList<HashMap> arrayHash = new ArrayList<>();
-    private static ClientServerOutputReader instance = null;
-    private static final Utils utils = new Utils();
-    private int stop = 0;
+    private InputStream ski;
+    private ObjectInputStream dis;
+    private  Socket socket;
+    private  Semaphore semaphore;
+    public  ArrayList<HashMap> arrayHash = new ArrayList<>();
+    private static int stop = 0;
+
+
     @Override
     public synchronized void run() {
-
+        System.out.println("Thread Reading is running...");
         try {
+            if(this.socket!=null) {
+                ski = this.socket.getInputStream();
+                while (stop != 1) {
+                    if (ski.available() > 0) {
+                        semaphore.acquire();
+                        System.out.println("Output acquiring Semaphore");
+                        dis = new ObjectInputStream(ski);
+
+                        System.out.println("Receiving message...");
+                        Object obj = dis.readObject();
+                        if (obj != null) {
+                            HashMap pck = (HashMap) obj;
+                            System.out.println("Message received.");
+                            arrayHash.add(pck);
+                            if ((double) pck.get("FINISH") == 1.0) {
+                                stop = 1;
+                            }
 
 
-            while (socket.isConnected()) {
-                if(socket.getInputStream().available()>0) {
-                    System.out.println("OutputReader receiving message...");
-
-                    InputStream ski = socket.getInputStream();
-                    ObjectInputStream dis = new ObjectInputStream(ski);
-                    Object obj = dis.readObject();
-                    if (obj != null) {
-                        HashMap pck = (HashMap) obj;
-                        System.out.println("Message read...");
-
-                        if((double) pck.get("FINISH")==1) {
-
-
-                            return;
                         }
-                        arrayHash.add(pck);
-
                     }
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
             throw new RuntimeException(e);
         }finally {
             semaphore.release();
 
-
         }
     }
 
-    public static Socket getSocket() {
-        return socket;
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 
-    public static void setSocket(Socket socket) {
-        ClientServerOutputReader.socket = socket;
-    }
-
-    public static Semaphore getSemaphore() {
+    public  Semaphore getSemaphore() {
         return semaphore;
     }
 
-    public static void setSemaphore(Semaphore semaphore) {
-        ClientServerOutputReader.semaphore = semaphore;
+    public  void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
     }
 
     public ArrayList<HashMap> getParsedMessage() {
         return arrayHash;
+    }
+
+    public void setStop(int toRecv) {
+        this.stop = toRecv;
+    }
+
+    public void resetBuffer() {
+        arrayHash = new ArrayList<>();
     }
 }

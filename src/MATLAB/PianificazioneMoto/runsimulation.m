@@ -3,7 +3,7 @@ function [qr,dqr,ddqr,e]=runsimulation(M,alpha)
 Fa = 10*M;
 Kp = alpha^2;
 Kd = 2*alpha;
-load matfiles/path.mat
+load path.mat
 step=1e-3;
 time = 0:step:(size(p,1)-1)/1000;
 pidm = 'PIDTrajectory';
@@ -23,7 +23,7 @@ assignin(mdlWks,'Kp',Kp);
 assignin(mdlWks,'Kd',Kd);
 assignin(mdlWks,'step',step);
 assignin(mdlWks,'Fa',Fa);
-simout=sim(pidm,time);
+simout=sim(pidm,[time(1) time(end)]);
 qr=simout.get('p');
 dqr=simout.get('v');
 ddqr=simout.get('a');

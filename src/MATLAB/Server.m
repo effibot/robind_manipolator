@@ -1,78 +1,112 @@
 clc
-clear
+clear server
+clear 
 close all
 %%
 import java.util.*
 import java.awt.image.BufferedImage
 import java.awt.image.*
 addpath(genpath('./'))
-server = tcpserver("127.0.0.1",3030);
-server.UserData=0;
-server.Timeout=10000;
-configureCallback(server,"byte",1,@readData)
+server = tcpserver("127.0.0.1",3030,"ConnectionChangedFcn",@connectionFcn);
+configureTerminator(server,255);
+configureCallback(server,"terminator",@readData);
 
 %%
 function readData(src,~)
-src.UserData = src.UserData + 1;
-disp("Callback Call Count: " + num2str(src.UserData))
-% data = read(src,src.NumDatagramsAvailable,"uint8");
 if(src.NumBytesAvailable~=0)
     disp("Message Received");
-    data = read(src,src.NumBytesAvailable,"uint8");
+    data = read(src,src.NumBytesAvailable,"int8");
     hashmap = deserialize(data);
+
     procedure = hashmap.get("PROC");
     switch(procedure)
         case "MAP"
             obs = hashmap.get("OBSLIST");
             dim = hashmap.get("DIM");
-            tic
+
             [gid,shapepos,mapimg,mapanimation,mapgraph]=mapGeneration(obs,dim');
-            toc
+
             msg = buildMessage(0,"I",gid);
             msg = buildMessage(msg,"S",shapepos);
-            msg = buildMessage(msg,"FINISH",0);
+            msg = buildMessage(msg,"FINISH",1);
 
             sendMessage(src,msg);
-            flush(src);
 
-            tic
-            msg = buildMessage(0,"BW",createImage(squeeze(mapimg)));
-            msg = buildMessage(msg,"FINISH",0);
+          
+%             msg = buildMessage(0,"BW",createImage(squeeze(mapimg)));
+%             msg = buildMessage(msg,"FINISH",0);
+% 
+%             sendMessage(src,msg);
+% 
+%             sz = size(mapanimation);
+%             num = sz(1);
+%             for i = 1: num
+%                 msg = buildMessage(0,"ANIMATION"+i,createImage(squeeze(mapanimation(i,:,:,:))));
+%                 msg = buildMessage(msg,"FINISH",0);
+%                 sendMessage(src,msg);
+%                 flush(src);
+%             end
+%             msg = buildMessage(0,"GRAPH",createImage(squeeze(mapgraph)));
+%             msg = buildMessage(msg,"FINISH",0);
+%             sendMessage(src,msg);
 
-            sendMessage(src,msg);
-            flush(src);
+           
 
-            toc
-            sz = size(mapanimation);
-            num = sz(1);
-            %             row = sz(2);
-            %             col =sz(3);
-            %             mapcol = @(i,j,k) reshape(mapanimation(i,j,k,:),1,[]);
-            tic
-            for i = 1: num
-                tic
-                msg = buildMessage(0,"ANIMATION"+i,createImage(squeeze(mapanimation(i,:,:,:))));
-                msg = buildMessage(msg,"FINISH",0);
-
+        case "PATH"
+            start = hashmap.get("START");
+            endp = hashmap.get("END");
+            method = hashmap.get("METHOD");
+            [p,dp,ddp,images,error]=path_generator(start,endp',method);
+            if error == 0
+                msg = buildMessage(0,"Q",p);
+                msg = buildMessage(msg,"dQ",dp);
+                msg = buildMessage(msg,"ddQ",ddp);
+                msg = buildMessage(msg,"FINISH",1);
                 sendMessage(src,msg);
-                flush(src);
-                toc
+             
+            else
+                msg = buildMessage(0,"ERROR",1);
+                msg = buildMessage(msg,"FINISH",1);
+                sendMessage(src,msg);
             end
-            toc
-            msg = buildMessage(0,"GRAPH",createImage(squeeze(mapgraph)));
-            msg = buildMessage(msg,"FINISH",0);
 
+        case "SYM"
+            mass = hashmap.get("M");
+            alpha = hashmap.get("ALPHA");
+            [qr,dqr,ddqr,e]=runsimulation(mass,alpha);
+            msg = buildMessage(0,"Q",qr);
+            msg = buildMessage(msg,"dQ",dqr);
+            msg = buildMessage(msg,"ddQ",ddqr);
+            msg = buildMessage(msg,"E",e);
+            msg = buildMessage(msg,"FINISH",1);
             sendMessage(src,msg);
-            flush(src);
-
-            msg = buildMessage(0,"FINISH",1);
+        case "IK"
+            xdes = hashmap.get("X");
+            ydes = hashmap.get("Y");
+            zdes = hashmap.get("Z");
+            roll = hashmap.get("ROLL");
+            pitch = hashmap.get("PITCH");
+            yaw = hashmap.get("YAW");
+            [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw);
+            msg = buildMessage(0,"Q",qik);
+            msg = buildMessage(msg,"FINISH",1);
             sendMessage(src,msg);
-            flush(src);
-
-
+        case "VIS"
+            shape = hashmap.get("SHAPE");
+            [objArea,objPerim,objShape,ang,frame]=visione(shape);
+            msg = buildMessage(0,"AREA",objArea);
+            msg = buildMessage(msg,"PERIM",objPerim);
+            msg = buildMessage(msg,"FORMA",objShape);
+            msg = buildMessage(msg,"ORIENT",ang);
+%             msg = buildMessage(msg,"IMG",frame);
+            msg = buildMessage(msg,"FINISH",1);
+            sendMessage(src,msg);
     end
 end
+            flush(src);
+
 end
+
 function sendMessage(src,msg)
 toSend = serialize(msg);
 write(src,toSend,"int8");
@@ -98,6 +132,7 @@ byteOutputStream = java.io.ByteArrayOutputStream();
 dataOutputStream = java.io.ObjectOutputStream(byteOutputStream);
 dataOutputStream.writeObject(data);
 dataOutputStream.flush();
+byteOutputStream.flush();
 p = byteOutputStream.toByteArray();
 byteOutputStream.close();
 end

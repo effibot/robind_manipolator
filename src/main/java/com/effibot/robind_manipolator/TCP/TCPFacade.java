@@ -4,15 +4,16 @@ import com.effibot.robind_manipolator.Utils;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 public class TCPFacade {
-    private static ClientServerOutputReader out;
+    private  ClientServerOutputReader out;
 
-    private static ClientServerInputReader in;
-    private static Socket socket;
+    private  ClientServerInputReader in;
+    private  Socket socket;
     private static TCPFacade instance = null;
 
     private static  Utils utils;
@@ -24,30 +25,24 @@ public class TCPFacade {
     private static final int port = 3030;
 
     private TCPFacade(){
-        try {
-            socket = new Socket(hostAddr, port);
+
             semaphore =new Semaphore(permits,true);
             out = new ClientServerOutputReader();
             in=  new ClientServerInputReader();
             utils = new Utils();
             in.setSemaphore(semaphore);
-            in.setSocket(socket);
-            out.setSocket(socket);
             out.setSemaphore(semaphore);
             in.start();
             out.start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
 
-    public static ClientServerOutputReader getOut() {
-        return out;
+    public ClientServerOutputReader getOut() {
+        return this.out;
     }
 
-    public static ClientServerInputReader getIn() {
+    public ClientServerInputReader getIn() {
         return in;
     }
 
@@ -64,42 +59,67 @@ public class TCPFacade {
         return instance;
     }
 
-    public void sendMsg(HashMap p) {
-        in.setToSend(p);
+    public ArrayList<HashMap> sendMsg(HashMap p) {
         try {
+            Thread.sleep(5000);
+            socket = new Socket(hostAddr, port);
+            socket.setTcpNoDelay(true);
+            in.setSocket(socket);
+            out.setSocket(socket);
+            in.setToSend(p);
             in.run();
             in.join();
-
-
+            out.setStop(0);
+            out.run();
+            out.join();
+            socket.close();
+            return  out.getParsedMessage();
         } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
 
     }
-    public ArrayList<HashMap> receiveMsg(){
+//    public ArrayList<HashMap> receiveMsg(){
+//        try {
+//            semaphore.acquire();
+//            System.out.println("Output acquiring Semaphore");
+//            ArrayList<HashMap> msg = null;
+//            out.run();
+//            out.join();
+//            socket.close();
+//            msg = out.getParsedMessage();
+//            return msg;
+//        } catch (InterruptedException | IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//            semaphore.release();
+//
+//        }
+//        return null;
+//    }
+
+    public  void waitResponse(){
         try {
-            semaphore.acquire();
-            System.out.println("Output acquiring Semaphore");
-            int stop = 0;
-            ArrayList<HashMap> msg = null;
-            out.run();
-            out.join();
-            msg = out.getParsedMessage();
-
-            return msg;
-        } catch ( InterruptedException e) {
-            e.printStackTrace();
+            this.out.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+    }
+    public  void setOut(ClientServerOutputReader out) {
+        this.out = out;
     }
 
-    public static void setOut(ClientServerOutputReader out) {
-        TCPFacade.out = out;
+    public  void setIn(ClientServerInputReader in) {
+        this.in = in;
     }
 
-    public static void setIn(ClientServerInputReader in) {
-        TCPFacade.in = in;
-    }
 
+    public void flushBuffer() {
+        out.resetBuffer();
+    }
 }

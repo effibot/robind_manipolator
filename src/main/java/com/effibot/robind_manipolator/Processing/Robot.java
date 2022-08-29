@@ -40,6 +40,8 @@ public class Robot {
     private final float[] a = new float[]{a1, a2, a3, a4, a5, a6};
     // displacement for first link
     private final float offset1 = 29.0f;
+//    Base point
+    private Vector<Float> startingPoints = new Vector<>();
     // DH Table
     private Vector<Vector<Float>> dhTable = new Vector<>();
     // Model storage

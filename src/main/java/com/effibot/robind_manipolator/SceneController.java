@@ -1,4 +1,5 @@
 package com.effibot.robind_manipolator;
+import com.effibot.robind_manipolator.TCP.GameState;
 import com.effibot.robind_manipolator.TCP.TCPFacade;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
@@ -15,6 +16,7 @@ import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
@@ -89,10 +91,9 @@ public class SceneController implements Initializable, Observer {
     private ToggleGroup radioGroup;
     private ToggleGroup shapeGroup;
     private ArrayList<Integer> sequence;
-//    private static  Matlab matlabInstance= Matlab.getInstance();
     private static List<String> greenId= new ArrayList<>();
     private static final Utils util= new Utils();
-
+    private static GameState gm= GameState.getInstance();
     private static final TCPFacade tcp = TCPFacade.getInstance();
     @FXML
     public void onContinueButtonClick()  {
@@ -108,22 +109,22 @@ public class SceneController implements Initializable, Observer {
             msg.put("DIM", dim);
             msg.put("OBSLIST", obslist);
 
-            tcp.sendMsg(msg);
+            ArrayList<HashMap> arr =tcp.sendMsg(msg);
 
-            ArrayList<HashMap> arr = tcp.receiveMsg();
+            tcp.flushBuffer();
+            HashMap<String,Object> mapinfos = arr.get(0);
+            double[] gId = (double[]) mapinfos.get("I");
+            double[][] shapePos = (double[][]) mapinfos.get("S");
 
-//            long end1 = System.currentTimeMillis();
-//            System.out.println("Elapsed Time in milli seconds: "+ (end1-st1));
-//            DecimalFormat format = new DecimalFormat("0.#");
-//
-//            info ids = matlabInstance.getInfo();
-//            while (ids==null){ids = matlabInstance.getInfo();}
-//            for (Double id : ids.gids()){
-//
-//                greenId.add(format.format(id));
-//            }
-//            startPos.getItems().addAll(greenId);   //? replace gids with the sequence list from the map
-//
+            DecimalFormat format = new DecimalFormat("0.#");
+
+            for (double id : gId){
+
+                greenId.add(format.format(id));
+            }
+            startPos.getItems().addAll(greenId);
+            gm.setGreenId(gId);
+            gm.setObslist(obslist);
 //            // load images
 ////            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
 ////                    256d, 256d, true, true);
@@ -199,19 +200,40 @@ public class SceneController implements Initializable, Observer {
         }
     }
     @FXML
-    public void onStartAction(ActionEvent actionEvent) throws ExecutionException, InterruptedException {
+    public void onStartAction(ActionEvent actionEvent) {
         float roll = Float.parseFloat(rollField.getText());
         float pitch = Float.parseFloat(pitchField.getText());
         float yaw = Float.parseFloat(yawField.getText());
-//        boolean condition = sequence.isEmpty() ||
-//                rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
+        boolean condition = sequence.isEmpty() ||
+                rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
         double startid = Double.parseDouble(startPos.getValue());
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
-//        if (!condition) {
-//            double[][] shapepositions = matlabInstance.getInfo().shapepos();
-//            double[] obspos = {shapepositions[(int)selectedShape][1],shapepositions[(int)selectedShape][2]};
-//            matlabInstance.pathgeneration((int) startid,obspos ,method);
+        if (!condition) {
+
+            double[] shapeposition = gm.getShapepos();
+            HashMap<String,Object> msg = new HashMap<>();
+            msg.put("PROC","PATH");
+            msg.put("START",startid);
+            msg.put("END",shapeposition);
+            msg.put("METHOD",method);
+            msg.put("FINISH",1);
+            ArrayList<HashMap> rec =tcp.sendMsg(msg);
+
+//            ArrayList<HashMap> rec = tcp.receiveMsg();
+            tcp.flushBuffer();
+            gm.setGq((double[][]) rec.get(0).get("Q"));
+            gm.setGdq((double[][]) rec.get(0).get("dQ"));
+            gm.setGddq((double[][]) rec.get(0).get("ddQ"));
+            gm.setSelectedShape(selectedShape);
+            gm.setPitch(pitch);
+            gm.setRoll(roll);
+            gm.setYaw(yaw);
+            gm.setShapepos(shapeposition);
+            gm.setXdes(shapeposition[1]);
+            gm.setYdes(shapeposition[0]);
+            gm.setZdes(80);
+
 //            // load images
 //            basicMap.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));
 //            ArrayList<Image> imgs =(ArrayList<Image>)  util.makeImage(matlabInstance.getPath().mapsimimg());
@@ -238,23 +260,31 @@ public class SceneController implements Initializable, Observer {
 //            timeLine.play();
 //
 
-//        }
+        }
 
 
     }
 
     private void setUpStage() throws ExecutionException, InterruptedException {
+
+
+            HashMap<String, Object> msg = new HashMap<>();
+            msg.put("PROC","SYM");
+            msg.put("M",10);
+            msg.put("ALPHA",200);
+            ArrayList<HashMap> rec =tcp.sendMsg(msg);
+            tcp.flushBuffer();
+        gm.setSq((double[][])rec.get(0).get("Q"));
+        gm.setSdq((double[][])rec.get(0).get("dQ"));
+        gm.setSddq((double[][])rec.get(0).get("ddQ"));
+        gm.setE((double[][])rec.get(0).get("E"));
             // open 3D map
             P3DMap sketchmap = new P3DMap(obsList);
+
             SceneController.setSketch(sketchmap);
             sketchmap.setJavaFX(this);
-//            double[][] pos = matlabInstance.getPath().q();
-//            sketchmap.setInitPos(pos[0]);
-//            sketch.run(sketch.getClass().getSimpleName());
-//            ((Main)app).setSketch(sketchmap);
-//            matlabInstance.runsimulation(10,200);
-//            sketchmap.setsysout(matlabInstance.getSysout());
-
+            sketch.run(sketch.getClass().getSimpleName());
+            ((Main)app).setSketch(sketchmap);
 //            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
 //            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
 //            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
@@ -272,7 +302,6 @@ public class SceneController implements Initializable, Observer {
 //            timeLine.setCycleCount(1);
 //    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
 //            timeLine.play();
-
 
     }
 

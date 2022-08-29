@@ -1,10 +1,13 @@
 package com.effibot.robind_manipolator.Processing;
 
+import com.effibot.robind_manipolator.TCP.GameState;
+import com.effibot.robind_manipolator.TCP.TCPFacade;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class P3DMap extends ProcessingBase{
@@ -13,6 +16,10 @@ public class P3DMap extends ProcessingBase{
     private final int NY = 1;
     private final int mapH;
     private final int bgColor = color(51,102,102);
+    private static double[][] ps;
+    private final GameState gm;
+    private final double[][] points;
+
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
     private Reference frame;
@@ -23,10 +30,11 @@ public class P3DMap extends ProcessingBase{
     private boolean showPlots=false;
 
     private ArrayList<Plot2D> plots = new ArrayList<>();
-    private int symindex = 0;
-    private double x0=0;
-    private double y0=0;
+    private final TCPFacade tcp = TCPFacade.getInstance();
 
+
+    private  int simIdx = 0;
+    private int task = 0;
     public P3DMap(List<Obstacle> obsList) {
         this.obsList = obsList;
         size = 1024;
@@ -34,6 +42,8 @@ public class P3DMap extends ProcessingBase{
         frame = new Reference(this);
         observers = new ArrayList<>();
         this.padding = 5;
+        this.gm = GameState.getInstance();
+        this.points = gm.getSq();
 
     }
 
@@ -171,7 +181,7 @@ public class P3DMap extends ProcessingBase{
         // scissors-test and viewport transformation
         setGLGraphicsViewport(x, y_inv, w, h);
         // set camera state like spinning a globe
-        cam.setYawRotationMode();
+//        cam.setYawRotationMode();
         cam.setRightDragHandler(null);
         cam.setCenterDragHandler(null);
         switch(id){
@@ -222,6 +232,36 @@ public class P3DMap extends ProcessingBase{
             translate((float) 0, (float) 0, dz+9.5f);
 
         pushMatrix();
+
+        if(simIdx<points.length-1 & task == 0) {
+            simIdx+=1;
+        }else if(simIdx == points.length-1 && task<2){
+            task = task+1;
+        }
+        if(task<2) {
+            HashMap<String, Object> msg = new HashMap<>();
+            switch (task) {
+                case 1:
+                    msg.put("PROC","IK");
+                    msg.put("X",gm.getXdes()- ps[ps.length-1][1]);
+                    msg.put("Y",gm.getYdes()- ps[ps.length-1][0]);
+                    msg.put("Z",gm.getZdes());
+                    msg.put("ROLL",gm.getRoll());
+                    msg.put("PITCH",gm.getPitch());
+                    msg.put("YAW",gm.getYaw());
+                    tcp.sendMsg(msg);
+                    task +=1;
+                    break;
+                case 2:
+                    msg.put("PROC", "VIS");
+                    msg.put("SHAPE", gm.getSelectedShape());
+                    ArrayList<HashMap> res = tcp.sendMsg(msg);
+                    task +=1;
+                    break;
+            }
+        }
+        translate((float)points[simIdx][0]-512,(float)points[simIdx][1]-512,-9.5f);
+
         r.drawLink();
         popMatrix();
         popMatrix();
@@ -257,12 +297,10 @@ public class P3DMap extends ProcessingBase{
         pgl.viewport(x, y, w, h);
     }
 
-    private void resetSymindex(){
-        this.symindex=0;
+    public void setPosition(){
+        this.ps = GameState.getInstance().getSq();
+
     }
 
-    public void setInitPos(double[] po) {
-        this.x0=po[1];
-        this.y0=po[0];
-    }
+
 }

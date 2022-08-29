@@ -2,47 +2,43 @@ package com.effibot.robind_manipolator.TCP;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public class ClientServerInputReader extends Thread{
-    private static Socket socket;
-    private static Semaphore semaphore;
-    private static HashMap toSend=null;
-    private static ObjectOutputStream output;
+    private Socket socket;
+    private  Semaphore semaphore;
+    private  OutputStream outSocket;
+
+    private  HashMap toSend=null;
+    private ObjectOutputStream output;
+
+
     @Override
     public synchronized void run(){
             try {
-                if(toSend==null||!(toSend instanceof HashMap)) {
-                    System.out.println("Releasing Semaphore");
-                    semaphore.release();
-                }else {
-                    semaphore.acquire();
+                if(toSend != null) {
+                    semaphore.drainPermits();
                     System.out.println("Input acquiring Semaphore");
-                    System.out.println("InputReader gets a permit.");
-
                     System.out.println("Sending message...");
-
-                    OutputStream outsocket = socket.getOutputStream();
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                    output = new ObjectOutputStream(out);
                     output.writeObject(toSend);
-                    byte[] msg = out.toByteArray();
 
-                    output.flush();
-                    output.close();
-                    outsocket.write(msg);
-
-                    System.out.println("Releasing Semaphore");
+                    System.out.println("Message sent.");
                     toSend = null;
-                    semaphore.release();
+                    outSocket.flush();
+                    output.flush();
+                    System.out.println("Sending Terminator");
+                    output.writeInt(255);
+                    outSocket.flush();
+                    output.flush();
                 }
+
             }
-            catch (IOException | InterruptedException e) {
+            catch (IOException  e) {
                 throw new RuntimeException(e);
+            }finally {
+                System.out.println("Releasing Semaphore.");
+                semaphore.release();
             }
 
     }
@@ -52,6 +48,13 @@ public class ClientServerInputReader extends Thread{
 
     public void setSocket(Socket socket) {
         this.socket = socket;
+        try {
+            this.outSocket = this.socket.getOutputStream();
+            this.output = new ObjectOutputStream(outSocket);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void setSemaphore(Semaphore semaphore) {

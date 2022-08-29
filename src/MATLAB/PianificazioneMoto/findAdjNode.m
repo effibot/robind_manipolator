@@ -8,5 +8,6 @@ function endid =findAdjNode(obsId,nodeList,A)
                 return
             end
         end
+        endid = 0;
     end
 end
