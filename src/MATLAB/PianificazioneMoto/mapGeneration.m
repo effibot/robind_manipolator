@@ -14,8 +14,8 @@ tic
 [M, nodeList,mapworking] = splitandcolor(map, robotsize, toSave);
 toc
 % mapImg = imshow(M);
-colormat = mapworking;
-save colormat.mat  colormat
+% colormat = mapworking;
+% save colormat.mat  colormat
 
 %% Adjiacency Matrix
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);

@@ -200,9 +200,11 @@ public class P3DMap extends ProcessingBase{
         // clear background (scissors makes sure we only clear the region we own)
 //        background(51, 102, 153);
         background(bgColor);
-        // Ruoto il mondo per settare
+        // Scalo su -y per ottenere un S.d.R. destrorso e ruoto per settare
         // Z > 0 su, X > 0 a destra, Y > 0 in avanti
-        rotateX(PI / 2);
+        scale(1,-1,1);
+        rotateX(-PI / 2);
+        rotateZ(-PI/2);
         //!! End camera setup
         return cam;
     }
