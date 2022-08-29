@@ -7,9 +7,11 @@ import org.apache.commons.lang.ArrayUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Utils {
 private static final Random random = new Random();
@@ -75,4 +77,66 @@ private static final Random random = new Random();
         }
         return arr;
     }
+    public static Double[] irle(Double[] encStream){
+        /**
+         * Inverse Run Length Encoding
+         */
+        int seqLen = 0;
+        for(int i = 0; i < encStream.length; i+=2){
+            seqLen += encStream[i];
+        }
+        List<Double> decStream = new ArrayList<>(seqLen);
+        seqLen = 0;
+        for(int i = 0; i < encStream.length; i+=2){
+            decStream.addAll(seqLen, Collections.nCopies(encStream[i].intValue(),encStream[i+1]));
+            seqLen = decStream.size();
+        }
+        return decStream.toArray(new Double[0]);
+    }
+    public static Double[][] matrixReshape(Double[][] nums, int r, int c) {
+        int totalElements = nums.length * nums[0].length;
+        if (totalElements != r * c || totalElements % r != 0) {
+            return nums;
+        }
+        final Double[][] result = new Double[r][c];
+        int newR = 0;
+        int newC = 0;
+        for (Double[] num : nums) {
+            for (Double aDouble : num) {
+                result[newR][newC] = aDouble;
+                newC++;
+                if (newC == c) {
+                    newC = 0;
+                    newR++;
+                }
+            }
+        }
+        return result;
+    }
+    public static byte[] compress(Object obj){
+        try(ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        GZIPOutputStream out = new GZIPOutputStream(baos);
+        ObjectOutputStream oos = new ObjectOutputStream(out)){
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static Object decompress(byte[] stream){
+        try(ByteArrayInputStream bais = new ByteArrayInputStream(stream);
+            GZIPInputStream in = new GZIPInputStream(bais);
+            ObjectInputStream ois = new ObjectInputStream(in)){
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+//    TODO: remove when deploy
+//    public static void main(String[] args){
+//        Double[][] dec = new Double[][]{irle(new Double[]{3d,1d,3d,10d,3d,5d,3d,1d})};
+//
+//        Double[][] M = matrixReshape(dec, 12,1);
+//        System.out.println(Arrays.toString(M));
+//    }
 }

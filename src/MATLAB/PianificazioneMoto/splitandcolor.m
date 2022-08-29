@@ -13,8 +13,8 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
     saving=@(gcf)frame2im(getframe(gcf));
 
     figure('visible','off')
-%     imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
-    imageList = uint8.empty(numel(nodeList),0,0,0);
+    imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
+%     imageList = uint8.empty(numel(nodeList),0,0,0);
     k = 1;
     while(currdim >= robotsize)
         mapList = findobj(nodeList, 'dim', currdim);
@@ -26,11 +26,11 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
             color=[];
             switch mapList(i).prop
                 case 'y'
-                    color = [255, 160, 0];
+                    color = [1, 1, 0];
                 case 'g'
-                    color = [0,255,0];
+                    color = [0,1,0];
                 case 'r'
-                    color = [255,0,0];
+                    color = [1,0,0];
             end
             M(corner(1,1):corner(1,2),corner(2,1):corner(2,3)) = mapList(i).value;
            
@@ -62,13 +62,13 @@ function [M, nodeList,imageList] = splitandcolor(map, robotsize, toSave)
 %             end
             if toSave
 %                 imwrite(M,filename,'jpg');
-                showimage(M);
-                fm = saving(gcf);
-% 
+%                 showimage(M);
+%                 fm = saving(gcf);
+% imageList(k,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 %                 images(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 %                 saveimage(gcf,'.\mapgenerationimg\constructing\',filename)
-%                 imageList(k,:,:,:) = M;
-                imageList(k,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
+                imageList(k,:,:,:) = M;
+                
                 k = k+1;
             end
         end

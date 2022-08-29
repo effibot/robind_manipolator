@@ -2,11 +2,11 @@ function [gid,shapepos,mapimg,mapworking,mapgraph]=mapGeneration(obs,dim)
 mapimg = uint8.empty;
 robotsize=50;
 map = makeMap(obs,dim);
-% showimage(map.value);
-% % saveimage(gcf,'.\mapgenerationimg\generated\','bw.png');
-% saving=@(gcf)frame2im(getframe(gcf));
-% fm = saving(gcf);
-% mapimg(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
+showimage(map.value);
+% saveimage(gcf,'.\mapgenerationimg\generated\','bw.png');
+saving=@(gcf)frame2im(getframe(gcf));
+fm = saving(gcf);
+mapimg(end+1,1:size(fm,1),1:size(fm,2),1:size(fm,3))=fm;
 toSave = true;
 toShow = false;
 %% QT-Decomp
