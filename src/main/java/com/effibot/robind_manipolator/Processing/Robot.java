@@ -23,11 +23,11 @@ public class Robot {
     private final float d6 = 12.0f;
     private final float[] d = new float[]{d1, d2, d3, d4, d5, d6};
     // Alpha
-    private final float alpha1 = PI / 2;
+    private final float alpha1 = -PI / 2;
     private final float alpha2 = 0.0f;
-    private final float alpha3 = -PI / 2;
-    private final float alpha4 = PI / 2;
-    private final float alpha5 = -PI / 2;
+    private final float alpha3 = PI / 2;
+    private final float alpha4 = -PI / 2;
+    private final float alpha5 = PI / 2;
     private final float alpha6 = 0;
     private final float[] alpha = new float[]{alpha1, alpha2, alpha3, alpha4, alpha5, alpha6};
     // a

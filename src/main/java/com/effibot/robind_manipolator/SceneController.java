@@ -164,8 +164,10 @@ public class SceneController implements Initializable, Observer {
 
     @FXML
     public void onCancelButtonClick() {
-        obsList.remove(obsList.size() - 1);
-        ((P2DMap) sketch).setObstacleList((ArrayList<Obstacle>) obsList);
+        if(!obsList.isEmpty()){
+            obsList.remove(obsList.size() - 1);
+            ((P2DMap) sketch).setObstacleList((ArrayList<Obstacle>) obsList);
+        }
     }
 
     @FXML
