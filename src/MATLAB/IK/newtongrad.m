@@ -1,4 +1,4 @@
-function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw)
+function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
     qik = double.empty(6,0);
     pend= [xdes;ydes;zdes];
     P=[pend(1);pend(2);pend(3);roll;pitch;yaw];
@@ -58,6 +58,9 @@ function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw)
             end
         end
     end
+    msg = src.UserData.buildMessage(0,"Q",qik);
+    msg = src.UserData.buildMessage(msg,"FINISH",1);
+    src.UserData.sendMessage(src,msg);
 end
 
 

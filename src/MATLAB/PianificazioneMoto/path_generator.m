@@ -1,4 +1,4 @@
-function [p,dp,ddp,images,error]=path_generator(startId,shape,method)
+function [p,dp,ddp,images,error]=path_generator(startId,shape,method,src)
 load mapg.mat
 redObsbc = reshape([findobj(nodeList, 'prop', 'r').bc]',2,[]);
 [id,~]=dsearchn(redObsbc',shape);
@@ -14,8 +14,14 @@ end
 P = shortestpath(G, startId, endId(1));
 rbclist = getbcprop(nodeList, 'r');
 [p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, rbclist,method);
-images = 0;
-% images=runonmap(M,p,rbclist,nodeList,robotsize);
+msg =src.UserData.buildMessage(0,"Q",p);
+msg =src.UserData.buildMessage(msg,"dQ",dp);
+msg =src.UserData.buildMessage(msg,"ddQ",ddp);
+msg =src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+runonmap(M,p,rbclist,nodeList,robotsize,src);
+msg =src.UserData.buildMessage(0,"FINISH",1);
+src.UserData.sendMessage(src,msg);
 save path.mat p dp ddp M rbclist nodeList robotsize
 end
 

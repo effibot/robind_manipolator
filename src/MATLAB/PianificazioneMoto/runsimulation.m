@@ -1,4 +1,4 @@
-function [qr,dqr,ddqr,e]=runsimulation(M,alpha)
+function [qr,dqr,ddqr,e]=runsimulation(M,alpha,src)
 % time = 0:step:(size(p,1)-1)/1000;
 Fa = 10*M;
 Kp = alpha^2;
@@ -28,7 +28,15 @@ qr=simout.get('p');
 dqr=simout.get('v');
 ddqr=simout.get('a');
 e=simout.get('e');
+msg = buildMessage(0,"Q",qr);
+msg = buildMessage(msg,"dQ",dqr);
+msg = buildMessage(msg,"ddQ",ddqr);
+msg = buildMessage(msg,"E",e);
+msg = buildMessage(msg,"FINISH",0);
+sendMessage(src,msg);
 save_system('PIDTrajectory');
 close_system('PIDTrajectory');
-%img=runonmap(M,qr,rbclist,nodeList,robotsize);
+runonmap(M,qr,rbclist,nodeList,robotsize,src);
+msg = buildMessage(0,"FINISH",1);
+sendMessage(src,msg);
 end

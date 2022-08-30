@@ -49,39 +49,26 @@ classdef compressionUtils < handle
             bais.close();
         end
         function Output=rle(~,Input)
-            L=length(Input);
-            j=1;
-            k=1;
-            i=1;
-            while i<2*L
-                comp=1;
-                for j=j:L
-                    if j==L
-                        break
-                    end
-                    if Input(j)==Input(j+1)
-                        comp=comp+1;
-                    else
-                        break
-                    end
-                end
-                Output(k+1)=comp;
-                Output(k)=Input(j);
-                if j==L && Input(j-1)==Input(j)
-                    break
-                end
-                i=i+1;
-                k=k+2;
-                j=j+1;
-                if j==L
-                    if mod(L,2)==0
-                        Output(k+1)=1;
-                        Output(k)=Input(j);
-                    else
-                        Output(k+1)=1;
-                        Output(k)=Input(j);
-                    end
-                    break
+            countVariable =1;
+            compressData1=zeros(10,1);
+
+            r=1;
+
+            compressData1 = reshape(Input',1,[]);
+            for k=1:size(compressData1,2)
+
+                if size(compressData1,2) == k
+                    Output(1,r)=countVariable;
+                    Output(1,r+1)=compressData1(1,k);
+
+                elseif compressData1(1,k)== compressData1(1,k+1)
+                    countVariable=countVariable+1;
+
+                else
+                    Output(1,r)=countVariable;
+                    Output(1,r+1)=compressData1(1,k);
+                    countVariable=1;
+                    r=r+2;
                 end
             end
         end
@@ -100,6 +87,22 @@ classdef compressionUtils < handle
                 i=i+2;
                 s=1;
             end
+        end
+
+        function [zipdata] = compressImg(~,img)
+            sz = size(img);
+            if length(sz)==3
+            r = img(:,:,1);
+            g = img(:,:,2);
+            b = img(:,:,3);
+            rcomp = rle(r);
+            gcomp = rle(g);
+            bcomp = rle(b);
+            data = [rcomp,gcomp,bcomp];
+            else
+                data = img;
+            end
+            zipdata = compress(data);
         end
 
     end

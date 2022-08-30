@@ -85,6 +85,14 @@ frame = frame2im(gcf);
 % fprintf("Baricentro dell'Oggetto: X[bc] = %f, Y[bc] = %f\n", z(1), z(2));
 % fprintf("Orientamento dell'Oggetto: %f°\n", ang);
 % fprintf("Tempo di Processamento: %f ms\n", elapseTime);
+%%
+msg = src.UserData.buildMessage(0,"AREA",objArea);
+msg = src.UserData.buildMessage(msg,"PERIM",objPerim);
+msg = src.UserData.buildMessage(msg,"FORMA",objShape);
+msg = src.UserData.buildMessage(msg,"ORIENT",ang);
+msg = src.UserData.buildMessage(msg,"IMG",src.UserData.compressImg(frame));
+msg = src.UserData.buildMessage(msg,"FINISH",1);
+src.UserData.sendMessage(src,msg);
 end
 
 
