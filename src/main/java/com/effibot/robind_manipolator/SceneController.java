@@ -212,8 +212,8 @@ public class SceneController implements Initializable, Observer {
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
         if (!condition) {
-
-            double[] shapeposition = gm.getShapepos();
+            double[][] obsshapes =gm.getObslist();
+            double[] shapeposition = obsshapes[(int)selectedShape];
             HashMap<String,Object> msg = new HashMap<>();
             msg.put("PROC","PATH");
             msg.put("START",startid);
@@ -222,7 +222,6 @@ public class SceneController implements Initializable, Observer {
             msg.put("FINISH",1);
             ArrayList<HashMap> rec =tcp.sendMsg(msg);
 
-//            ArrayList<HashMap> rec = tcp.receiveMsg();
             tcp.flushBuffer();
             gm.setGq((double[][]) rec.get(0).get("Q"));
             gm.setGdq((double[][]) rec.get(0).get("dQ"));

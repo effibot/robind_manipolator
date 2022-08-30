@@ -56,7 +56,7 @@ if(src.NumBytesAvailable~=0)
             start = hashmap.get("START");
             endp = hashmap.get("END");
             method = hashmap.get("METHOD");
-            [p,dp,ddp,images,error]=path_generator(start,endp',method);
+            [p,dp,ddp,images,error]=path_generator(start,endp(1:2)',method);
             if error == 0
                 msg = buildMessage(0,"Q",p);
                 msg = buildMessage(msg,"dQ",dp);
