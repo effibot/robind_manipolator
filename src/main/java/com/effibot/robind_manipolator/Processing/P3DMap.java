@@ -88,7 +88,7 @@ public class P3DMap extends ProcessingBase{
         super.setup();
         surface.setTitle("Mappa 3D");
         rectMode(CENTER);
-        r = new Robot(this);
+        r = Robot.getInstance(this);
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
         int tilex = floor((width-padding) / NX);
         int tiley = floor((height-padding) / NY);

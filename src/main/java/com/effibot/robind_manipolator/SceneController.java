@@ -15,13 +15,16 @@ import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
-public class SceneController implements Initializable, Observer {
+public class SceneController implements Initializable, Observer, PropertyChangeListener {
     @FXML
     public SegmentedButton segButtonBar;
     @FXML
@@ -93,8 +96,8 @@ public class SceneController implements Initializable, Observer {
     private ArrayList<Integer> sequence;
     private static List<String> greenId= new ArrayList<>();
     private static final Utils util= new Utils();
-    private static GameState gm= GameState.getInstance();
-    private static final TCPFacade tcp = TCPFacade.getInstance();
+    private static GameState gm;
+    private static TCPFacade tcp;
     @FXML
     public void onContinueButtonClick()  {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
@@ -109,21 +112,6 @@ public class SceneController implements Initializable, Observer {
             msg.put("DIM", dim);
             msg.put("OBSLIST", obslist);
 
-            ArrayList<HashMap> arr =tcp.sendMsg(msg);
-
-            tcp.flushBuffer();
-            HashMap<String,Object> mapinfos = arr.get(0);
-            double[] gId = (double[]) mapinfos.get("I");
-            double[][] shapePos = (double[][]) mapinfos.get("S");
-
-            DecimalFormat format = new DecimalFormat("0.#");
-
-            for (double id : gId){
-
-                greenId.add(format.format(id));
-            }
-            startPos.getItems().addAll(greenId);
-            gm.setGreenId(gId);
             gm.setObslist(obslist);
 //            // load images
 ////            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
@@ -362,6 +350,10 @@ public class SceneController implements Initializable, Observer {
         // init sequence
         sequence = new ArrayList<>();
         startBtn.setDisable(false);
+        // get singletons' instances
+        gm = GameState.getInstance();
+        gm.addPropertyChangeListener(this);
+        tcp = TCPFacade.getInstance();
     }
 
 
@@ -415,5 +407,17 @@ public class SceneController implements Initializable, Observer {
         };
         txtField.setTextFormatter(
                 new TextFormatter<>(new FloatStringConverter(), 0.0f, floatFilter));
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if(propertyName.equals("ID")) {
+            // set id in the combobox
+            for(double id : gm.getGreenId()) greenId.add(String.valueOf((int)id));
+            startPos.getItems().addAll(greenId);
+        } else if(propertyName.equals("map")){
+            // start image generation and set image components
+        }
     }
 }

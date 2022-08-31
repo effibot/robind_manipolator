@@ -2,14 +2,13 @@ package com.effibot.robind_manipolator.TCP;
 
 import com.effibot.robind_manipolator.Utils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
-public class TCPFacade {
+public class TCPFacade implements Runnable {
     private  ClientServerOutputReader out;
 
     private  ClientServerInputReader in;
@@ -23,67 +22,58 @@ public class TCPFacade {
 
     private static final String hostAddr = "localhost";
     private static final int port = 3030;
+    private BlockingQueue<HashMap<String, Object>> queue;
 
+    private HashMap<String,Object> toSend;
     private TCPFacade(){
-
-            semaphore =new Semaphore(permits,true);
-            out = new ClientServerOutputReader();
-            in=  new ClientServerInputReader();
             utils = new Utils();
-            in.setSemaphore(semaphore);
-            out.setSemaphore(semaphore);
-            in.start();
-            out.start();
-
     }
-
-
-    public ClientServerOutputReader getOut() {
-        return this.out;
-    }
-
-    public ClientServerInputReader getIn() {
-        return in;
-    }
-
-    public void stopTCPCommunication(){
-        in.interrupt();
-        if (in.currentThread().isInterrupted()){in = null;}
-        out.interrupt();
-        if(out.currentThread().isInterrupted()){out = null;}
-    }
-    public  static synchronized TCPFacade getInstance(){
+    public static synchronized TCPFacade getInstance(){
         if(instance==null){
             instance = new TCPFacade();
         }
         return instance;
-    }
-
-    public ArrayList<HashMap> sendMsg(HashMap p) {
-        try {
+    }                        
+    @SuppressWarnings("unchecked")
+    public void sendReceiveMsg() {
+    try (OutputStream outSocketStream = this.socket.getOutputStream();
+         InputStream inSocketStream = this.socket.getInputStream();
+         ObjectInputStream ois = new ObjectInputStream(inSocketStream);
+         ObjectOutputStream oos = new ObjectOutputStream(outSocketStream)) {
             Thread.sleep(5000);
             socket = new Socket(hostAddr, port);
             socket.setTcpNoDelay(true);
-            in.setSocket(socket);
-            out.setSocket(socket);
-            in.setToSend(p);
-            in.run();
-            in.join();
-            out.setStop(0);
-            out.run();
-            out.join();
-            socket.close();
-            return  out.getParsedMessage();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+            System.out.println("Sending message...");
+            oos.writeObject(toSend);
+            System.out.println("Message sent.");
+            outSocketStream.flush();
+            oos.flush();
+            System.out.println("Sending Terminator");
+            oos.writeInt(255);
+            outSocketStream.flush();
+            oos.flush();
+            while (true) {
+                if (inSocketStream.available() > 0) {
+                    System.out.println("Receiving message...");
+                    Object obj = ois.readObject();
+                    if (obj != null) {
+                        HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
+                        System.out.println("Message received.");
+//                        GameState.getInstance().setPkt(pkt);
+                        queue.put(pkt);
+                        if ((double) pkt.get("FINISH") == 1.0) {
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (InterruptedException | IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-
     }
+
+
+
 //    public ArrayList<HashMap> receiveMsg(){
 //        try {
 //            semaphore.acquire();
@@ -122,4 +112,28 @@ public class TCPFacade {
     public void flushBuffer() {
         out.resetBuffer();
     }
+
+    public void setQueue(BlockingQueue<HashMap<String, Object>> queue) {
+        this.queue = queue;
+    }
+    public BlockingQueue<HashMap<String, Object>> getQueue() {
+        return queue;
+    }
+
+    public HashMap<String, Object> getToSend() {
+        return toSend;
+    }
+
+    public void setToSend(HashMap<String, Object> toSend) {
+        this.toSend = toSend;
+    }
+    @Override
+    public void run() {
+        if(toSend != null) {
+            sendReceiveMsg();
+        } else {
+            System.out.println("Fill the message to send");
+        }
+    }
+
 }

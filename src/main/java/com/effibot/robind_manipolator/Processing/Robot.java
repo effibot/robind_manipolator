@@ -54,7 +54,8 @@ public class Robot {
     // Processing reference
     private ProcessingBase p3d;
     // Observers
-    public Robot(ProcessingBase p3d) {
+    private static Robot instance = null;
+    private Robot(ProcessingBase p3d) {
         this.p3d = p3d;
         this.shapeList.add(loadLink(0));
         for (int i = 0; i < 6; i++) {
@@ -65,7 +66,9 @@ public class Robot {
             dhTable.add(dhRow);
         }
     }
-
+    public static synchronized Robot getInstance(ProcessingBase p3d){
+        return instance == null? instance = new Robot(p3d) : instance;
+    }
     public void dh(float theta, float d, float alpha, float a) {
         p3d.rotateZ(theta);
         p3d.translate(0, 0, d);

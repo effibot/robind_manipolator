@@ -1,5 +1,9 @@
 package com.effibot.robind_manipolator.TCP;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
+
 public class GameState {
     private static GameState instance;
     private  double[] greenId;
@@ -8,30 +12,37 @@ public class GameState {
     private  double[][] gq;
     private  double[][] gdq;
     private  double[][] gddq;
-
     private  double[][] sq;
     private  double[][] sdq;
     private  double[][] sddq;
     private double[][] e;
     private double selectedShape;
-
     private double roll;
     private double pitch;
     private double yaw;
     private double xdes;
     private double ydes;
     private double zdes;
-
+    private byte[] byteStream;
+    private HashMap<String, Object> pkt;
+    private final PropertyChangeSupport changes;
     private GameState( ){
-
+        changes = new PropertyChangeSupport(this);
+    }
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        changes.addPropertyChangeListener(l);
     }
 
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        changes.removePropertyChangeListener(l);
+    }
     public double[] getGreenId() {
         return greenId;
     }
 
     public void setGreenId(double[] greenId) {
         this.greenId = greenId;
+        changes.firePropertyChange("ID",this.greenId, greenId);
     }
 
     public double[][] getObslist() {
@@ -168,5 +179,14 @@ public class GameState {
 
     public void setZdes(double zdes) {
         this.zdes = zdes;
+    }
+    public void setPkt(HashMap<String,Object> pkt) { this.pkt = pkt; }
+    public HashMap<String, Object> getPkt() { return pkt; }
+    public byte[] getByteStream() {
+        return byteStream;
+    }
+
+    public void setByteStream(byte[] byteStream) {
+        this.byteStream = byteStream;
     }
 }
