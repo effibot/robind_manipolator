@@ -40,14 +40,14 @@ while(currdim >= robotsize)
         M(corner(1,3):corner(1,4),corner(2,3),:)=0;
         M(corner(1,2),corner(2,2):corner(2,4),:)=0;
 
-        msg = src.UserData.buildMessage(0,"ANIMATION"+k,...
+        msg = src.UserData.buildMessage(0,"ANIMATION",...
             src.UserData.compressImg(M));
         msg = src.UserData.buildMessage(msg,"FINISH",0);
         src.UserData.sendMessage(src,msg);
     end
     currdim = currdim/2;
 end
-        msg = src.UserData.buildMessage(0,"ANIMATION"+k,...
+        msg = src.UserData.buildMessage(0,"ANIMATION",...
             src.UserData.compressImg(M));
         msg = src.UserData.buildMessage(msg,"FINISH",0);
         src.UserData.sendMessage(src,msg);

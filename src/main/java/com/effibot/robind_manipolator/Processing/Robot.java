@@ -67,7 +67,9 @@ public class Robot {
         }
     }
     public static synchronized Robot getInstance(ProcessingBase p3d){
-        return instance == null? instance = new Robot(p3d) : instance;
+        if( instance == null)
+            instance = new Robot(p3d);
+        return instance;
     }
     public void dh(float theta, float d, float alpha, float a) {
         p3d.rotateZ(theta);

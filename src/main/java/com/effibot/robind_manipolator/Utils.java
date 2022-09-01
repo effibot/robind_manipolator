@@ -1,6 +1,9 @@
 package com.effibot.robind_manipolator;
 
 import com.effibot.robind_manipolator.Processing.Obstacle;
+import com.squareup.gifencoder.FloydSteinbergDitherer;
+import com.squareup.gifencoder.GifEncoder;
+import com.squareup.gifencoder.ImageOptions;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.apache.commons.lang.ArrayUtils;
@@ -10,14 +13,22 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Utils {
 private static final Random random = new Random();
+private static final String GIF_PATH = "src/main/resources/com/effibot/robind_manipolator/img/test.gif";
+private static GifEncoder genc;
+private static final ImageOptions opt = new ImageOptions();
+private static FileOutputStream out;
+    public Utils(){
+        opt.setDelay(100, TimeUnit.MILLISECONDS);
+        opt.setDitherer(FloydSteinbergDitherer.INSTANCE);
+    }
 
-    public Utils(){/* Default Constructor */}
-
+    public String getGifPath(){ return GIF_PATH; }
     public double[][] obs2List(List<Obstacle> obsList) {
 
         double[][] col = new double[obsList.size()][];
@@ -131,6 +142,64 @@ private static final Random random = new Random();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static int[] arrayDoubleToArrayInt(Double[] arr) {
+        double[] array = ArrayUtils.toPrimitive(arr);
+        if (array == null)
+            return null;
+
+        final int[] result = new int[array.length];
+        final int n = array.length;
+
+        for (int i = 0; i < n; i++) {
+            result[i] = (int) array[i];
+        }
+
+        return result;
+    }
+
+
+
+    public static void stream2img(byte[] byteStream) {
+        /*
+         * The encoder must be set as follows:
+         * GifEncoder genc = new GifEncoder(out,1024,1024,1);
+         */
+
+        try{
+            if(out == null) {// checks for nullity on the output stream and the encoder
+                // if the stream is closed open it
+                Utils.setOut(new FileOutputStream(GIF_PATH));
+                setGifEncoder(new GifEncoder(Utils.getOut(),1024,1024,1));
+            }
+            // decompress incoming stream and cast to int array
+            int[] unzip = Utils.arrayDoubleToArrayInt(
+                    Utils.irle(ArrayUtils.toObject((double[])Utils.decompress(byteStream))));
+            assert unzip != null;
+            // generate gif
+            getGifEncoder().addImage(unzip, 1024, opt);
+            } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void closeStreamEnc(){
+        try {Utils.getOut().close(); setGifEncoder(null);} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static FileOutputStream getOut() {
+        return out;
+    }
+    public static void setOut(FileOutputStream out) {
+        Utils.out = out;
+    }
+    public static synchronized void setGifEncoder(GifEncoder genc){
+        Utils.genc = genc;
+    }
+    public static synchronized GifEncoder getGifEncoder() throws IOException {
+        return Utils.genc == null ?
+                Utils.genc = new GifEncoder(Utils.getOut(),1024,1024,1) :
+                Utils.genc;
     }
 //    TODO: remove when deploy
 //    public static void main(String[] args){

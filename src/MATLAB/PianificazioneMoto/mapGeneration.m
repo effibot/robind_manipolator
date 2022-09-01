@@ -35,11 +35,14 @@ for i = 1:3
     end
     shapepos(i,:) = [form,pos];
 end
-msg = src.UserData.buildMessage(0,"I",gid);
-msg = src.UserData.buildMessage(msg,"S",shapepos);
-msg = src.UserData.buildMessage(msg,"FINISH",1);
+msg = src.UserData.buildMessage(0,"ID",gid);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
-
+msg = src.UserData.buildMessage(msg,"SHAPE",shapepos);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+msg = src.UserData.buildMessage(0,"FINISH",1);
+src.UserData.sendMessage(src,msg);
 
 save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
 end

@@ -4,10 +4,8 @@ module com.effibot.robind_manipolator {
     requires javafx.web;
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
-    requires validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
     requires peasycam;
     requires core;
     requires jogl.all;
@@ -16,6 +14,7 @@ module com.effibot.robind_manipolator {
     requires commons.math3;
     requires commons.lang;
     requires commons.io;
+    requires com.squareup.gifencoder;
     opens com.effibot.robind_manipolator to javafx.fxml;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;

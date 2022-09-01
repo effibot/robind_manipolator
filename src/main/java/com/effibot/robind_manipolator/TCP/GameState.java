@@ -36,6 +36,12 @@ public class GameState {
     public void removePropertyChangeListener(PropertyChangeListener l) {
         changes.removePropertyChangeListener(l);
     }
+    public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue){
+        /*
+         * Just a wrapper for the fire property change method.
+         */
+        changes.firePropertyChange(propertyName, oldValue, newValue);
+    }
     public double[] getGreenId() {
         return greenId;
     }

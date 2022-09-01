@@ -234,35 +234,35 @@ public class P3DMap extends ProcessingBase{
             translate((float) 0, (float) 0, dz+9.5f);
 
         pushMatrix();
-
-        if(simIdx<points.length-1 & task == 0) {
-            simIdx+=1;
-        }else if(simIdx == points.length-1 && task<2){
-            task = task+1;
-        }
-        if(task<2) {
-            HashMap<String, Object> msg = new HashMap<>();
-            switch (task) {
-                case 1:
-                    msg.put("PROC","IK");
-                    msg.put("X",gm.getXdes()- ps[ps.length-1][1]);
-                    msg.put("Y",gm.getYdes()- ps[ps.length-1][0]);
-                    msg.put("Z",gm.getZdes());
-                    msg.put("ROLL",gm.getRoll());
-                    msg.put("PITCH",gm.getPitch());
-                    msg.put("YAW",gm.getYaw());
-                    tcp.sendMsg(msg);
-                    task +=1;
-                    break;
-                case 2:
-                    msg.put("PROC", "VIS");
-                    msg.put("SHAPE", gm.getSelectedShape());
-                    ArrayList<HashMap> res = tcp.sendMsg(msg);
-                    task +=1;
-                    break;
-            }
-        }
-        translate((float)points[simIdx][0]-512,(float)points[simIdx][1]-512,-9.5f);
+//
+//        if(simIdx<points.length-1 & task == 0) {
+//            simIdx+=1;
+//        }else if(simIdx == points.length-1 && task<2){
+//            task = task+1;
+//        }
+//        if(task<2) {
+//            HashMap<String, Object> msg = new HashMap<>();
+//            switch (task) {
+//                case 1:
+//                    msg.put("PROC","IK");
+//                    msg.put("X",gm.getXdes()- ps[ps.length-1][1]);
+//                    msg.put("Y",gm.getYdes()- ps[ps.length-1][0]);
+//                    msg.put("Z",gm.getZdes());
+//                    msg.put("ROLL",gm.getRoll());
+//                    msg.put("PITCH",gm.getPitch());
+//                    msg.put("YAW",gm.getYaw());
+//                    tcp.sendMsg(msg);
+//                    task +=1;
+//                    break;
+//                case 2:
+//                    msg.put("PROC", "VIS");
+//                    msg.put("SHAPE", gm.getSelectedShape());
+//                    ArrayList<HashMap> res = tcp.sendMsg(msg);
+//                    task +=1;
+//                    break;
+//            }
+//        }
+//        translate((float)points[simIdx][0]-512,(float)points[simIdx][1]-512,-9.5f);
 
         r.drawLink();
         popMatrix();

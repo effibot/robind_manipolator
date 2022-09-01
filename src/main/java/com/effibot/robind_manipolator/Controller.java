@@ -23,22 +23,25 @@ public class Controller implements Runnable {
 
 
     private Controller() {
-        semaphore = new Semaphore(1, true);
+        semaphore = new Semaphore(0, true);
+        bean = GameState.getInstance();
         tcp = TCPFacade.getInstance();
         queue = new LinkedBlockingQueue<>();
         tcp.setQueue(queue);
     }
 
     public static synchronized Controller getInstance() {
-        return instance == null ? instance = new Controller() : instance;
+        if(instance == null)
+            instance = new Controller();
+        return instance;
     }
 
-    public void setBean(GameState bean) {
-        this.bean = bean;
+    public synchronized int getState() {
+        return state;
     }
 
-    public GameState getBean() {
-        return this.bean;
+    public synchronized void setState(int state) {
+        this.state = state;
     }
 
     @Override
@@ -59,18 +62,25 @@ public class Controller implements Runnable {
                         while (true) {
                             // set green id
                             HashMap<String, Object> pkt = queue.take();
-                            String key = (String)( pkt.keySet().toArray())[0];
+                            String key = (String) (pkt.keySet().toArray())[0];
                             switch (key) {
                                 case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
-//                                case "BW" -> bean.setBW
+                                case "BW" -> {
+                                    Utils.stream2img((byte[]) pkt.get("BW"));
+                                    bean.notifyPropertyChange("BW",false ,true);
+                                    Utils.closeStreamEnc();
+                                }
 //                                case "GRAPH" -> beam.setGraph
                                 case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
-//                                default -> makeMap();
+                                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
                             }
-                            if ((Double)pkt.get("FINISH") == 1.0) break;
+                            if ((Double) pkt.get("FINISH") == 1.0) {
+                                Utils.closeStreamEnc();
+                                bean.notifyPropertyChange("ANIMATION",false, true);
+                                break;
+                            }
                         }
                         // release -> setup to control
-                        break;
                     case 1:
                         // get data form bean
                         // while !finished
@@ -95,4 +105,7 @@ public class Controller implements Runnable {
 
     }
 
+    public Semaphore getSemaphore() {
+        return this.semaphore;
+    }
 }

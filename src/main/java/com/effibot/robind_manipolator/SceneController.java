@@ -9,19 +9,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 import java.util.function.UnaryOperator;
 
 public class SceneController implements Initializable, Observer, PropertyChangeListener {
@@ -94,29 +94,25 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private ToggleGroup radioGroup;
     private ToggleGroup shapeGroup;
     private ArrayList<Integer> sequence;
-    private static List<String> greenId= new ArrayList<>();
-    private static final Utils util= new Utils();
+    private static List<String> greenId = new ArrayList<>();
+    private static final Utils util = new Utils();
     private static GameState gm;
     private static TCPFacade tcp;
+    private Controller ctrl;
+    private Semaphore ctrlSemaphore;
     @FXML
-    public void onContinueButtonClick()  {
+    public void onContinueButtonClick() {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
-            double[][] obslist = util.obs2List(obsList);
-            double[] dim = {1024.0,1024.0};
-            HashMap<String, Object> msg = new HashMap<>();
-            // storing data in HashMap
-            msg.put("PROC","MAP");
-            msg.put("DIM", dim);
-            msg.put("OBSLIST", obslist);
+            gm.setObslist(util.obs2List(obsList));
+            ctrl.setState(0);
+            ctrlSemaphore.release(1);
 
-            gm.setObslist(obslist);
-//            // load images
-////            Image basicMapImage = new Image("file:mapgenerationimg/generated/bw.png",
-////                    256d, 256d, true, true);
-//            basicMap.setImage(SwingFXUtils.toFXImage(ids.bw(),null));
+            ctrl.run();
+
+////
 //
 //            ArrayList<Image> imgs = (ArrayList<Image>) util.makeImage(ids.mapwk());
 //            // disable setup tab and select info tab
@@ -146,13 +142,13 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             sketch.exit();
 
         } else {
-            //TODO: implements popup to specify at leas one obstacle
+            //TODO: implements popup to specify at least one obstacle
         }
     }
 
     @FXML
     public void onCancelButtonClick() {
-        if(!obsList.isEmpty()){
+        if (!obsList.isEmpty()) {
             obsList.remove(obsList.size() - 1);
             ((P2DMap) sketch).setObstacleList((ArrayList<Obstacle>) obsList);
         }
@@ -189,6 +185,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                 break;
         }
     }
+
     @FXML
     public void onStartAction(ActionEvent actionEvent) {
         float roll = Float.parseFloat(rollField.getText());
@@ -200,28 +197,28 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
         if (!condition) {
-            double[][] obsshapes =gm.getObslist();
-            double[] shapeposition = obsshapes[(int)selectedShape];
-            HashMap<String,Object> msg = new HashMap<>();
-            msg.put("PROC","PATH");
-            msg.put("START",startid);
-            msg.put("END",shapeposition);
-            msg.put("METHOD",method);
-            msg.put("FINISH",1);
-            ArrayList<HashMap> rec =tcp.sendMsg(msg);
-
-            tcp.flushBuffer();
-            gm.setGq((double[][]) rec.get(0).get("Q"));
-            gm.setGdq((double[][]) rec.get(0).get("dQ"));
-            gm.setGddq((double[][]) rec.get(0).get("ddQ"));
-            gm.setSelectedShape(selectedShape);
-            gm.setPitch(pitch);
-            gm.setRoll(roll);
-            gm.setYaw(yaw);
-            gm.setShapepos(shapeposition);
-            gm.setXdes(shapeposition[1]);
-            gm.setYdes(shapeposition[0]);
-            gm.setZdes(80);
+//            double[][] obsshapes = gm.getObslist();
+//            double[] shapeposition = obsshapes[(int) selectedShape];
+//            HashMap<String, Object> msg = new HashMap<>();
+//            msg.put("PROC", "PATH");
+//            msg.put("START", startid);
+//            msg.put("END", shapeposition);
+//            msg.put("METHOD", method);
+//            msg.put("FINISH", 1);
+//            ArrayList<HashMap> rec = tcp.sendMsg(msg);
+//
+//            tcp.flushBuffer();
+//            gm.setGq((double[][]) rec.get(0).get("Q"));
+//            gm.setGdq((double[][]) rec.get(0).get("dQ"));
+//            gm.setGddq((double[][]) rec.get(0).get("ddQ"));
+//            gm.setSelectedShape(selectedShape);
+//            gm.setPitch(pitch);
+//            gm.setRoll(roll);
+//            gm.setYaw(yaw);
+//            gm.setShapepos(shapeposition);
+//            gm.setXdes(shapeposition[1]);
+//            gm.setYdes(shapeposition[0]);
+//            gm.setZdes(80);
 
 //            // load images
 //            basicMap.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));
@@ -239,12 +236,12 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //            }
 //            timeLine.setCycleCount(1);
 //            timeLine.setOnFinished(finish-> {
-                try {
-                    setUpStage();
-                } catch (ExecutionException | InterruptedException e) {
-
-                    Thread.currentThread().interrupt();
-                }
+//            try {
+//                setUpStage();
+//            } catch (ExecutionException | InterruptedException e) {
+//
+//                Thread.currentThread().interrupt();
+//            }
 //            });
 //            timeLine.play();
 //
@@ -257,23 +254,23 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private void setUpStage() throws ExecutionException, InterruptedException {
 
 
-            HashMap<String, Object> msg = new HashMap<>();
-            msg.put("PROC","SYM");
-            msg.put("M",10);
-            msg.put("ALPHA",200);
-            ArrayList<HashMap> rec =tcp.sendMsg(msg);
-            tcp.flushBuffer();
-        gm.setSq((double[][])rec.get(0).get("Q"));
-        gm.setSdq((double[][])rec.get(0).get("dQ"));
-        gm.setSddq((double[][])rec.get(0).get("ddQ"));
-        gm.setE((double[][])rec.get(0).get("E"));
-            // open 3D map
-            P3DMap sketchmap = new P3DMap(obsList);
-
-            SceneController.setSketch(sketchmap);
-            sketchmap.setJavaFX(this);
-            sketch.run(sketch.getClass().getSimpleName());
-            ((Main)app).setSketch(sketchmap);
+//        HashMap<String, Object> msg = new HashMap<>();
+//        msg.put("PROC", "SYM");
+//        msg.put("M", 10);
+//        msg.put("ALPHA", 200);
+//        ArrayList<HashMap> rec = tcp.sendMsg(msg);
+//        tcp.flushBuffer();
+//        gm.setSq((double[][]) rec.get(0).get("Q"));
+//        gm.setSdq((double[][]) rec.get(0).get("dQ"));
+//        gm.setSddq((double[][]) rec.get(0).get("ddQ"));
+//        gm.setE((double[][]) rec.get(0).get("E"));
+//        // open 3D map
+//        P3DMap sketchmap = new P3DMap(obsList);
+//
+//        SceneController.setSketch(sketchmap);
+//        sketchmap.setJavaFX(this);
+//        sketch.run(sketch.getClass().getSimpleName());
+//        ((Main) app).setSketch(sketchmap);
 //            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
 //            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
 //            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
@@ -354,6 +351,9 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         gm = GameState.getInstance();
         gm.addPropertyChangeListener(this);
         tcp = TCPFacade.getInstance();
+        ctrl = Controller.getInstance();
+        ctrlSemaphore = ctrl.getSemaphore();
+//        ctrl.run();
     }
 
 
@@ -374,6 +374,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     public void update(Object object) {
         this.obsList = ((P2DMap) object).getObstacleList();
     }
+
     private void mySetFormatter(CustomTextField txtField) {
         // Create new text filter
         UnaryOperator<TextFormatter.Change> floatFilter = change -> {
@@ -381,7 +382,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             // if proposed change results in a valid value, return change as-is:
             if (newText.matches("-?(\\d{0,7}([\\.]\\d{0,4}))?")) {
                 return change;
-            } else if ("-".equals(change.getText()) ) {
+            } else if ("-".equals(change.getText())) {
 
                 // if user types or pastes a "-" in middle of current text,
                 // toggle sign of value:
@@ -394,13 +395,13 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                     // the caret position needs to move back one, instead of
                     // moving forward one, so we modify the proposed change to
                     // move the caret two places earlier than the proposed change:
-                    change.setCaretPosition(change.getCaretPosition()-2);
-                    change.setAnchor(change.getAnchor()-2);
+                    change.setCaretPosition(change.getCaretPosition() - 2);
+                    change.setAnchor(change.getAnchor() - 2);
                 } else {
                     // otherwise just insert at the beginning of the text:
                     change.setRange(0, 0);
                 }
-                return change ;
+                return change;
             }
             // invalid change, veto it by returning null:
             return null;
@@ -412,12 +413,24 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        if(propertyName.equals("ID")) {
-            // set id in the combobox
-            for(double id : gm.getGreenId()) greenId.add(String.valueOf((int)id));
-            startPos.getItems().addAll(greenId);
-        } else if(propertyName.equals("map")){
-            // start image generation and set image components
+        switch (propertyName) {
+            case "ID" -> {
+                // set id in the combobox
+                for (double id : gm.getGreenId()) greenId.add(String.valueOf((int) id));
+                startPos.getItems().addAll(greenId);
+            }
+            case "ANIMATION" -> {
+                // start image generation and set image components
+//                File gifFile = new File();
+                Image gifImage = new Image("file:"+util.getGifPath(),512d,512d,true, true);
+                map.setImage(gifImage);
+            }
+            case "BW" -> {
+                // set BW image
+                Image basicMapImage = new Image("file:"+util.getGifPath());
+                basicMap.setImage(basicMapImage);
+                map.setImage(basicMapImage);
+            }
         }
     }
 }

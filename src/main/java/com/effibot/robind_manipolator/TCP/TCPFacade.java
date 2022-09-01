@@ -4,14 +4,13 @@ import com.effibot.robind_manipolator.Utils;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class TCPFacade implements Runnable {
-    private  ClientServerOutputReader out;
 
-    private  ClientServerInputReader in;
     private  Socket socket;
     private static TCPFacade instance = null;
 
@@ -36,24 +35,26 @@ public class TCPFacade implements Runnable {
     }                        
     @SuppressWarnings("unchecked")
     public void sendReceiveMsg() {
-    try (OutputStream outSocketStream = this.socket.getOutputStream();
-         InputStream inSocketStream = this.socket.getInputStream();
-         ObjectInputStream ois = new ObjectInputStream(inSocketStream);
-         ObjectOutputStream oos = new ObjectOutputStream(outSocketStream)) {
-            Thread.sleep(5000);
-            socket = new Socket(hostAddr, port);
-            socket.setTcpNoDelay(true);
+        ObjectInputStream ois = null;
+        try (
+                Socket socket = new Socket(hostAddr, port);
+                OutputStream outSocketStream = socket.getOutputStream();
+                InputStream inSocketStream = socket.getInputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(outSocketStream);
+        ) {
+
             System.out.println("Sending message...");
             oos.writeObject(toSend);
             System.out.println("Message sent.");
-            outSocketStream.flush();
-            oos.flush();
-            System.out.println("Sending Terminator");
+            oos.reset();
             oos.writeInt(255);
-            outSocketStream.flush();
-            oos.flush();
+            System.out.println("Sending Terminator");
+            oos.reset();
+
+
             while (true) {
                 if (inSocketStream.available() > 0) {
+                    ois = new ObjectInputStream(inSocketStream);
                     System.out.println("Receiving message...");
                     Object obj = ois.readObject();
                     if (obj != null) {
@@ -62,6 +63,7 @@ public class TCPFacade implements Runnable {
 //                        GameState.getInstance().setPkt(pkt);
                         queue.put(pkt);
                         if ((double) pkt.get("FINISH") == 1.0) {
+                            ois.close();
                             break;
                         }
                     }
@@ -93,27 +95,10 @@ public class TCPFacade implements Runnable {
 //        return null;
 //    }
 
-    public  void waitResponse(){
-        try {
-            this.out.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public  void setOut(ClientServerOutputReader out) {
-        this.out = out;
-    }
-
-    public  void setIn(ClientServerInputReader in) {
-        this.in = in;
-    }
 
 
-    public void flushBuffer() {
-        out.resetBuffer();
-    }
 
-    public void setQueue(BlockingQueue<HashMap<String, Object>> queue) {
+    public void setQueue(java.util.concurrent.BlockingQueue<java.util.HashMap<java.lang.String,java.lang.Object>> queue) {
         this.queue = queue;
     }
     public BlockingQueue<HashMap<String, Object>> getQueue() {
