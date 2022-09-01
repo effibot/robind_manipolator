@@ -14,7 +14,7 @@ classdef serverUtils < handle
             import java.util.zip.GZIPInputStream;
             import java.util.zip.GZIPOutputStream;
         end
-        function [zipArray] = compress(~,data)
+        function zipArray= compress(~,data)
             baos = java.io.ByteArrayOutputStream();
             gzipOut = java.util.zip.GZIPOutputStream(baos);
             objectOut = java.io.ObjectOutputStream(gzipOut);
@@ -104,14 +104,14 @@ classdef serverUtils < handle
                 data.add(obj.compress(gcomp));
                 data.add(obj.compress(bcomp));
             else
-                data = data.add(obj.compress(obj.rle(img)));
+                data=obj.compress(obj.rle(img));
             end
         end
 
         function sendMessage(obj,src,msg)
             toSend = obj.serialize(msg);
             write(src,toSend,"int8");
-
+           flush(src);
         end
         function msg = buildMessage(~,msg,key,val)
             if msg == 0

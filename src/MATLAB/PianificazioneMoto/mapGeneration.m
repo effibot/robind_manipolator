@@ -3,15 +3,18 @@ robotsize=50;
 tic
 map = makeMap(obs,dim);
 toc
-msg = src.UserData.buildMessage(0,"BW",src.UserData.compressImg(map.value));
+M=map.value;
+M(M==0)=0;
+M(M==1)=256*256*255+256*255+255;
+msg = src.UserData.buildMessage(0,"BW",src.UserData.compressImg(M));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 
 %% QT-Decomp
 tic
 [M, nodeList] = splitandcolor(map, robotsize,src);
-splitandcolor(map, robotsize,src);
 toc
+
 %% Adjiacency Matrix
 tic
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);

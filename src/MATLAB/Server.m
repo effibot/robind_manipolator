@@ -3,9 +3,18 @@ clear server
 clear 
 close all
 addpath(genpath('./'))
-
 %%
+load colormat
 compressor = serverUtils;
+
+% tic
+% M=squeeze(colormat(80,:,:,:));
+% img = im2java2d(M);
+% toc
+% tic
+% a = compressor.compress(img);
+% toc
+%%
 server = tcpserver("127.0.0.1",3030,"ConnectionChangedFcn",@connectionFcn);
 server.UserData=compressor;
 configureTerminator(server,255);
@@ -17,7 +26,7 @@ if(src.NumBytesAvailable~=0)
     disp("Message Received");
     data = read(src,src.NumBytesAvailable,"int8");
     hashmap = src.UserData.deserialize(data);
-
+    flush(src);
     procedure = hashmap.get("PROC");
     switch(procedure)
         case "MAP"
@@ -31,7 +40,7 @@ if(src.NumBytesAvailable~=0)
             start = hashmap.get("START");
             endp = hashmap.get("END");
             method = hashmap.get("METHOD");
-            [p,dp,ddp,images,error]=path_generator(start,endp(1:2)',method,src);
+            path_generator(start,endp(1:2)',method,src);
 
 
         case "SYM"
