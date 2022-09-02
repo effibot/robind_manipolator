@@ -183,7 +183,11 @@ private static FileOutputStream out;
         }
     }
     public static void closeStreamEnc(){
-        try {Utils.getOut().close(); setGifEncoder(null);} catch (IOException e) {
+        try {
+            Utils.getOut().close();
+            Utils.setOut(null);
+            setGifEncoder(null);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -197,9 +201,9 @@ private static FileOutputStream out;
         Utils.genc = genc;
     }
     public static synchronized GifEncoder getGifEncoder() throws IOException {
-        return Utils.genc == null ?
-                Utils.genc = new GifEncoder(Utils.getOut(),1024,1024,1) :
-                Utils.genc;
+        if (Utils.genc == null)
+            Utils.genc = new GifEncoder(Utils.getOut(), 1024, 1024, 1);
+        return Utils.genc;
     }
 //    TODO: remove when deploy
 //    public static void main(String[] args){

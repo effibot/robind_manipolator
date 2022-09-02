@@ -1,5 +1,6 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.TCP.GameState;
+import com.effibot.robind_manipolator.TCP.Lock;
 import com.effibot.robind_manipolator.TCP.TCPFacade;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
@@ -99,7 +100,11 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private static GameState gm;
     private static TCPFacade tcp;
     private Controller ctrl;
-    private Semaphore ctrlSemaphore;
+    private Thread crtlThread;
+    private static Semaphore[] semaphore;
+    private Lock lock;
+
+
     @FXML
     public void onContinueButtonClick() {
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
@@ -108,29 +113,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         if (obsList != null) {
             gm.setObslist(util.obs2List(obsList));
             ctrl.setState(0);
-            ctrlSemaphore.release(1);
-
-            ctrl.run();
-
-////
-//
-//            ArrayList<Image> imgs = (ArrayList<Image>) util.makeImage(ids.mapwk());
-//            // disable setup tab and select info tab
-//            map.setImage(imgs.get(0));
-//            Timeline timeLine = new Timeline();
-//            Collection<KeyFrame> frames = timeLine.getKeyFrames();
-//            Duration frameGap = Duration.millis(150);
-//            Duration frameTime = Duration.ZERO;
-//            int sz = imgs.size();
-//            for (int i = 0;i<sz;i++) {
-//                frameTime = frameTime.add(frameGap);
-//                Image imgi = imgs.get(i);
-//                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
-//            }
-//            timeLine.setCycleCount(1);
-//            timeLine.setOnFinished(finish->map.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null)));
-//            timeLine.play();
-
+            semaphore[1].release();
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -197,6 +180,16 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
         if (!condition) {
+            gm.setRoll(roll);
+            gm.setPitch(pitch);
+            gm.setYaw(yaw);
+            double[][] obs = gm.getObslist();
+            gm.setShapepos(new double[]{obs[(int) selectedShape][0], obs[(int) selectedShape][1]});
+            gm.setStartId(startid);
+            gm.setMethod(method);
+            ctrl.setState(1);
+            semaphore[1].release();
+
 //            double[][] obsshapes = gm.getObslist();
 //            double[] shapeposition = obsshapes[(int) selectedShape];
 //            HashMap<String, Object> msg = new HashMap<>();
@@ -352,8 +345,17 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         gm.addPropertyChangeListener(this);
         tcp = TCPFacade.getInstance();
         ctrl = Controller.getInstance();
-        ctrlSemaphore = ctrl.getSemaphore();
-//        ctrl.run();
+        semaphore = ctrl.getSemaphore();
+        try {
+            semaphore[0].acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        crtlThread = new Thread(ctrl);
+        this.lock = ctrl.getLock();
+        ctrl.setState(3);
+        ctrl.setThread(crtlThread);
+        crtlThread.start();
     }
 
 
@@ -422,7 +424,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             case "ANIMATION" -> {
                 // start image generation and set image components
 //                File gifFile = new File();
-                Image gifImage = new Image("file:"+util.getGifPath(),512d,512d,true, true);
+                Image gifImage = new Image("file:"+util.getGifPath());
                 map.setImage(gifImage);
             }
             case "BW" -> {

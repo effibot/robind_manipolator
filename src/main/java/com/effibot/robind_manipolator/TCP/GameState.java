@@ -3,6 +3,7 @@ package com.effibot.robind_manipolator.TCP;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.concurrent.Semaphore;
 
 public class GameState {
     private static GameState instance;
@@ -26,6 +27,9 @@ public class GameState {
     private byte[] byteStream;
     private HashMap<String, Object> pkt;
     private final PropertyChangeSupport changes;
+    private double startid;
+    private String method;
+
     private GameState( ){
         changes = new PropertyChangeSupport(this);
     }
@@ -48,7 +52,7 @@ public class GameState {
 
     public void setGreenId(double[] greenId) {
         this.greenId = greenId;
-        changes.firePropertyChange("ID",this.greenId, greenId);
+        changes.firePropertyChange("ID",null, greenId);
     }
 
     public double[][] getObslist() {
@@ -195,4 +199,22 @@ public class GameState {
     public void setByteStream(byte[] byteStream) {
         this.byteStream = byteStream;
     }
+
+    public void setStartId(double startid) {
+        this.startid = startid;
+    }
+
+    public double getStartId(){
+        return startid;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getMethod(){
+        return method;
+    }
+
+
 }

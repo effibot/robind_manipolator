@@ -53,7 +53,7 @@ for i = 1 : sz(1)
         intRGBImg(i,j)=256*256*double(J(i,j,1))+256*double(J(i,j,2))+double(J(i,j,3));
     end
 end
-msg = src.UserData.buildMessage(0,"GRAPH",src.UserData.compressImg(intRGBImg));
+msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(intRGBImg));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 
 src.UserData.sendMessage(src,msg);

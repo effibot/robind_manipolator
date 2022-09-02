@@ -1,8 +1,6 @@
 function mapGeneration(obs,dim,src)
 robotsize=50;
-tic
 map = makeMap(obs,dim);
-toc
 M=map.value;
 M(M==0)=0;
 M(M==1)=256*256*255+256*255+255;
@@ -11,14 +9,10 @@ msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 
 %% QT-Decomp
-tic
 [M, nodeList] = splitandcolor(map, robotsize,src);
-toc
 
 %% Adjiacency Matrix
-tic
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);
-toc
 G=graph(A);
 gid = gPlot(nodeList, A, Amid, Aint,M,src);
 % gPlot(nodeList, A, Amid, Aint,M);

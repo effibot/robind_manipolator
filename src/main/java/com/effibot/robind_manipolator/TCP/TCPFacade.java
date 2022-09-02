@@ -43,28 +43,24 @@ public class TCPFacade implements Runnable {
                 ObjectOutputStream oos = new ObjectOutputStream(outSocketStream);
         ) {
 
-            System.out.println("Sending message...");
             oos.writeObject(toSend);
-            System.out.println("Message sent.");
             oos.reset();
             oos.writeInt(255);
-            System.out.println("Sending Terminator");
             oos.reset();
-
+            this.setToSend(null);
 
             while (true) {
                 if (inSocketStream.available() > 0) {
                     ois = new ObjectInputStream(inSocketStream);
-                    System.out.println("Receiving message...");
                     Object obj = ois.readObject();
                     if (obj != null) {
                         HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
-                        System.out.println("Message received.");
-//                        GameState.getInstance().setPkt(pkt);
+                        Thread.currentThread().sleep(1);
                         queue.put(pkt);
+
                         if ((double) pkt.get("FINISH") == 1.0) {
                             ois.close();
-                            break;
+                            return;
                         }
                     }
                 }
@@ -115,10 +111,12 @@ public class TCPFacade implements Runnable {
     @Override
     public void run() {
         if(toSend != null) {
-            sendReceiveMsg();
-        } else {
+        sendReceiveMsg();
+        System.out.println("Message Send");
+    } else {
             System.out.println("Fill the message to send");
         }
+        toSend=null;
     }
 
 }
