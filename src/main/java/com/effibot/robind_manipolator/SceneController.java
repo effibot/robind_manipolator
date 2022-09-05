@@ -1,6 +1,5 @@
 package com.effibot.robind_manipolator;
 import com.effibot.robind_manipolator.TCP.GameState;
-import com.effibot.robind_manipolator.TCP.Lock;
 import com.effibot.robind_manipolator.TCP.TCPFacade;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
@@ -13,19 +12,25 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
+import org.apache.commons.lang.ArrayUtils;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Semaphore;
-import java.util.function.UnaryOperator;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import static com.effibot.robind_manipolator.Utils.mySetFormatter;
 
 public class SceneController implements Initializable, Observer, PropertyChangeListener {
+    private static ProcessingBase sketch;
+    Application app;
+
     @FXML
     public SegmentedButton segButtonBar;
     @FXML
@@ -100,20 +105,25 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private static GameState gm;
     private static TCPFacade tcp;
     private Controller ctrl;
-    private Thread crtlThread;
-    private static Semaphore[] semaphore;
-    private Lock lock;
-
+    private int[] statecase= new int[1];
+    private Cases cases;
+    private ReentrantLock guiLock;
+    private Condition start;
 
     @FXML
     public void onContinueButtonClick() {
-//        ArrayList<Obstacle> dummy = new ArrayList<>();
-//        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
-//        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
             gm.setObslist(util.obs2List(obsList));
-            ctrl.setState(0);
-            semaphore[1].release();
+//            synchronized (cases) {
+//                cases.setCases(1);
+//                cases.notify();
+//                System.out.println("FX-CONTROLLER NOTIFY");
+//
+//            }
+            guiLock.lock();
+            gm.setCase(1);
+            start.signalAll();
+            guiLock.unlock();
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -128,6 +138,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             //TODO: implements popup to specify at least one obstacle
         }
     }
+
 
     @FXML
     public void onCancelButtonClick() {
@@ -187,9 +198,10 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             gm.setShapepos(new double[]{obs[(int) selectedShape][0], obs[(int) selectedShape][1]});
             gm.setStartId(startid);
             gm.setMethod(method);
-            ctrl.setState(1);
-            semaphore[1].release();
-
+            guiLock.lock();
+            gm.setCase(2);
+            start.signalAll();
+            guiLock.unlock();
 //            double[][] obsshapes = gm.getObslist();
 //            double[] shapeposition = obsshapes[(int) selectedShape];
 //            HashMap<String, Object> msg = new HashMap<>();
@@ -244,45 +256,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 
     }
 
-    private void setUpStage() throws ExecutionException, InterruptedException {
 
-
-//        HashMap<String, Object> msg = new HashMap<>();
-//        msg.put("PROC", "SYM");
-//        msg.put("M", 10);
-//        msg.put("ALPHA", 200);
-//        ArrayList<HashMap> rec = tcp.sendMsg(msg);
-//        tcp.flushBuffer();
-//        gm.setSq((double[][]) rec.get(0).get("Q"));
-//        gm.setSdq((double[][]) rec.get(0).get("dQ"));
-//        gm.setSddq((double[][]) rec.get(0).get("ddQ"));
-//        gm.setE((double[][]) rec.get(0).get("E"));
-//        // open 3D map
-//        P3DMap sketchmap = new P3DMap(obsList);
-//
-//        SceneController.setSketch(sketchmap);
-//        sketchmap.setJavaFX(this);
-//        sketch.run(sketch.getClass().getSimpleName());
-//        ((Main) app).setSketch(sketchmap);
-//            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
-//            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
-//            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
-//            map.setImage(imgs.get(0));
-//            Timeline timeLine = new Timeline();
-//            Collection<KeyFrame> frames = timeLine.getKeyFrames();
-//            Duration frameGap = Duration.millis(150);
-//            Duration frameTime = Duration.ZERO;
-//            int sz = imgs.size();
-//            for (int i = 0;i<sz;i++) {
-//                frameTime = frameTime.add(frameGap);
-//                Image imgi = imgs.get(i);
-//                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
-//            }
-//            timeLine.setCycleCount(1);
-//    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
-//            timeLine.play();
-
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -345,23 +319,26 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         gm.addPropertyChangeListener(this);
         tcp = TCPFacade.getInstance();
         ctrl = Controller.getInstance();
-        semaphore = ctrl.getSemaphore();
-        try {
-            semaphore[0].acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        crtlThread = new Thread(ctrl);
-        this.lock = ctrl.getLock();
-        ctrl.setState(3);
-        ctrl.setThread(crtlThread);
-        crtlThread.start();
+        this.cases = new Cases(0);
+        ctrl.setCases(cases);
+        guiLock = new ReentrantLock();
+        start = guiLock.newCondition();
+
+        ReentrantLock sendLock = new ReentrantLock();
+        ReentrantLock recLock = new ReentrantLock();
+        Condition empty = sendLock.newCondition();
+        Condition full = sendLock.newCondition();
+        Condition produced = recLock.newCondition();
+        Condition consumed = recLock.newCondition();
+        ConcurrentLinkedQueue<HashMap<String, Object>> queueSend = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<HashMap<String,Object>> queueRec = new ConcurrentLinkedQueue<>();
+        ctrl.setLock(sendLock,recLock,empty,full,queueSend,queueRec,produced,consumed,guiLock,start);
+        tcp.setLock(sendLock,recLock,empty,full,queueSend,queueRec,produced,consumed);
+        ctrl.start();
+        tcp.start();
     }
 
 
-    // Processing 2D setup
-    private static ProcessingBase sketch;
-    Application app;
 
 
     public void setJavafxApp(Application jfxApp) {
@@ -377,40 +354,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         this.obsList = ((P2DMap) object).getObstacleList();
     }
 
-    private void mySetFormatter(CustomTextField txtField) {
-        // Create new text filter
-        UnaryOperator<TextFormatter.Change> floatFilter = change -> {
-            String newText = change.getControlNewText();
-            // if proposed change results in a valid value, return change as-is:
-            if (newText.matches("-?(\\d{0,7}([\\.]\\d{0,4}))?")) {
-                return change;
-            } else if ("-".equals(change.getText())) {
-
-                // if user types or pastes a "-" in middle of current text,
-                // toggle sign of value:
-
-                if (change.getControlText().startsWith("-")) {
-                    // if we currently start with a "-", remove first character:
-                    change.setText("");
-                    change.setRange(0, 1);
-                    // since we're deleting a character instead of adding one,
-                    // the caret position needs to move back one, instead of
-                    // moving forward one, so we modify the proposed change to
-                    // move the caret two places earlier than the proposed change:
-                    change.setCaretPosition(change.getCaretPosition() - 2);
-                    change.setAnchor(change.getAnchor() - 2);
-                } else {
-                    // otherwise just insert at the beginning of the text:
-                    change.setRange(0, 0);
-                }
-                return change;
-            }
-            // invalid change, veto it by returning null:
-            return null;
-        };
-        txtField.setTextFormatter(
-                new TextFormatter<>(new FloatStringConverter(), 0.0f, floatFilter));
-    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -434,5 +377,44 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                 map.setImage(basicMapImage);
             }
         }
+    }
+    private void setUpStage() throws ExecutionException, InterruptedException {
+
+
+//        HashMap<String, Object> msg = new HashMap<>();
+//        msg.put("PROC", "SYM");
+//        msg.put("M", 10);
+//        msg.put("ALPHA", 200);
+//        ArrayList<HashMap> rec = tcp.sendMsg(msg);
+//        tcp.flushBuffer();
+//        gm.setSq((double[][]) rec.get(0).get("Q"));
+//        gm.setSdq((double[][]) rec.get(0).get("dQ"));
+//        gm.setSddq((double[][]) rec.get(0).get("ddQ"));
+//        gm.setE((double[][]) rec.get(0).get("E"));
+//        // open 3D map
+//        P3DMap sketchmap = new P3DMap(obsList);
+//
+//        SceneController.setSketch(sketchmap);
+//        sketchmap.setJavaFX(this);
+//        sketch.run(sketch.getClass().getSimpleName());
+//        ((Main) app).setSketch(sketchmap);
+//            BufferedImage[] oldpath = matlabInstance.getPath().mapsimimg();
+//            basicMap.setImage(SwingFXUtils.toFXImage(oldpath[oldpath.length],null));
+//            ArrayList<Image> imgs = util.makeImage(matlabInstance.getSysout().mappid());
+//            map.setImage(imgs.get(0));
+//            Timeline timeLine = new Timeline();
+//            Collection<KeyFrame> frames = timeLine.getKeyFrames();
+//            Duration frameGap = Duration.millis(150);
+//            Duration frameTime = Duration.ZERO;
+//            int sz = imgs.size();
+//            for (int i = 0;i<sz;i++) {
+//                frameTime = frameTime.add(frameGap);
+//                Image imgi = imgs.get(i);
+//                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
+//            }
+//            timeLine.setCycleCount(1);
+//    //        timeLine.setOnFinished((finish)-> setUpStage(finish));
+//            timeLine.play();
+
     }
 }

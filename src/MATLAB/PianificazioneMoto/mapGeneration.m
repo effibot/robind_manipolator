@@ -37,6 +37,6 @@ msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
-
+disp("FINITO")
 save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
 end

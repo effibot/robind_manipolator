@@ -1,122 +1,117 @@
 package com.effibot.robind_manipolator.TCP;
 
-import com.effibot.robind_manipolator.Utils;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.HashMap;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class TCPFacade implements Runnable {
+public class TCPFacade extends Thread {
+    private Socket socket;
+    private volatile boolean runFlag;
 
-    private  Socket socket;
     private static TCPFacade instance = null;
-
-    private static  Utils utils;
-
-    private static final int permits = 1;
-    private static Semaphore semaphore ;
 
     private static final String hostAddr = "localhost";
     private static final int port = 3030;
-    private BlockingQueue<HashMap<String, Object>> queue;
 
-    private HashMap<String,Object> toSend;
+    private GameState gm = GameState.getInstance();
+    private ReentrantLock lock1;
+    private Condition empty;
+    private Condition full;
+    private Condition produced;
+    private Condition consumed;
+    private boolean stop = false;
+
+    private ConcurrentLinkedQueue<HashMap<String, Object>> queueSend;
+    private ReentrantLock lock2;
+    private ConcurrentLinkedQueue<HashMap<String, Object>> queueReceive;
+
+
     private TCPFacade(){
-            utils = new Utils();
     }
     public static synchronized TCPFacade getInstance(){
         if(instance==null){
             instance = new TCPFacade();
         }
         return instance;
-    }                        
+    }
+
+
     @SuppressWarnings("unchecked")
-    public void sendReceiveMsg() {
-        ObjectInputStream ois = null;
-        try (
+    @Override
+    public synchronized void run() {
+        ObjectInputStream ois;
+
+        try  {
+            while (!isInterrupted()) {
+                lock1.lock();
+
+                while (queueSend.isEmpty()) {
+                    System.out.println("TCP WAIT");
+                    full.await();
+                }
+
+                lock1.unlock();
                 Socket socket = new Socket(hostAddr, port);
-                OutputStream outSocketStream = socket.getOutputStream();
                 InputStream inSocketStream = socket.getInputStream();
+                OutputStream outSocketStream = socket.getOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(outSocketStream);
-        ) {
+                oos.writeObject(queueSend.poll());
+                System.out.println("Message Sent");
+                oos.reset();
+                oos.writeInt(255);
+                oos.reset();
+                while (!gm.getStop()){
+                    lock2.lock();
+                    if (!queueReceive.isEmpty()) {
+                        System.out.println("TCP CONSUME WAIT");
+                        consumed.await();
+                    }
+                    lock2.unlock();
 
-            oos.writeObject(toSend);
-            oos.reset();
-            oos.writeInt(255);
-            oos.reset();
-            this.setToSend(null);
+                    while (inSocketStream.available() > 0) {
+                        ois = new ObjectInputStream(inSocketStream);
+                        Object obj = ois.readObject();
+                        if (obj != null) {
+                            lock2.lock();
+                            System.out.println("Receiving message");
+                            queueReceive.offer( (HashMap<String, Object>) obj);
+                            System.out.println("TCP ADD QUEUE");
+                            produced.signalAll();
 
-            while (true) {
-                if (inSocketStream.available() > 0) {
-                    ois = new ObjectInputStream(inSocketStream);
-                    Object obj = ois.readObject();
-                    if (obj != null) {
-                        HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
-                        Thread.currentThread().sleep(1);
-                        queue.put(pkt);
-
-                        if ((double) pkt.get("FINISH") == 1.0) {
-                            ois.close();
-                            return;
+                            lock2.unlock();
                         }
                     }
-                }
             }
-        } catch (InterruptedException | IOException | ClassNotFoundException e) {
+                oos.close();
+                socket.close();
+
+
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-
-//    public ArrayList<HashMap> receiveMsg(){
-//        try {
-//            semaphore.acquire();
-//            System.out.println("Output acquiring Semaphore");
-//            ArrayList<HashMap> msg = null;
-//            out.run();
-//            out.join();
-//            socket.close();
-//            msg = out.getParsedMessage();
-//            return msg;
-//        } catch (InterruptedException | IOException e) {
-//            e.printStackTrace();
-//        }finally {
-//            semaphore.release();
-//
-//        }
-//        return null;
-//    }
-
-
-
-
-    public void setQueue(java.util.concurrent.BlockingQueue<java.util.HashMap<java.lang.String,java.lang.Object>> queue) {
-        this.queue = queue;
+    public void setLock(ReentrantLock sendLock,
+                        ReentrantLock recLock, Condition empty,
+                        Condition full,
+                        ConcurrentLinkedQueue<HashMap<String, Object>> queue,
+                        ConcurrentLinkedQueue<HashMap<String, Object>> queueRec,
+                        Condition produced, Condition consumed) {
+        this.lock2 = recLock ;
+        this.queueReceive = queueRec;
+        this.lock1 = sendLock;
+        this.empty = empty;
+        this.full = full;
+        this.queueSend = queue;
+        this.produced = produced;
+        this.consumed = consumed;
     }
-    public BlockingQueue<HashMap<String, Object>> getQueue() {
-        return queue;
-    }
-
-    public HashMap<String, Object> getToSend() {
-        return toSend;
-    }
-
-    public void setToSend(HashMap<String, Object> toSend) {
-        this.toSend = toSend;
-    }
-    @Override
-    public void run() {
-        if(toSend != null) {
-        sendReceiveMsg();
-        System.out.println("Message Send");
-    } else {
-            System.out.println("Fill the message to send");
-        }
-        toSend=null;
-    }
-
 }

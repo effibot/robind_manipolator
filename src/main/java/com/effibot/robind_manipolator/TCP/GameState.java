@@ -3,7 +3,6 @@ package com.effibot.robind_manipolator.TCP;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 
 public class GameState {
     private static GameState instance;
@@ -29,6 +28,8 @@ public class GameState {
     private final PropertyChangeSupport changes;
     private double startid;
     private String method;
+    private int cases;
+    private static boolean stop;
 
     private GameState( ){
         changes = new PropertyChangeSupport(this);
@@ -217,4 +218,27 @@ public class GameState {
     }
 
 
+    public void setCase(int i) {
+        synchronized (this) {
+
+            this.cases = i;
+        }
+    }
+    public int getCase(){
+        synchronized (this) {
+
+            return this.cases;
+        }
+    }
+
+    public  void setStop(boolean b) {
+        synchronized (this) {
+            stop = b;
+        }
+    }
+    public  boolean getStop(){
+        synchronized (this) {
+            return stop;
+        }
+    }
 }
