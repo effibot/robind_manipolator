@@ -113,7 +113,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         if (obsList != null) {
             gm.setObslist(util.obs2List(obsList));
             ctrl.setState(0);
-            semaphore[1].release();
+            synchronized(ctrl.getLock()) {ctrl.getLock().notify();}
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -123,7 +123,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             sketch.noLoop();
             sketch.stop();
             sketch.exit();
-
         } else {
             //TODO: implements popup to specify at least one obstacle
         }
@@ -188,8 +187,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             gm.setStartId(startid);
             gm.setMethod(method);
             ctrl.setState(1);
-            semaphore[1].release();
-
+            synchronized(ctrl.getLock()){ctrl.getLock().notify();}
 //            double[][] obsshapes = gm.getObslist();
 //            double[] shapeposition = obsshapes[(int) selectedShape];
 //            HashMap<String, Object> msg = new HashMap<>();
@@ -343,18 +341,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         // get singletons' instances
         gm = GameState.getInstance();
         gm.addPropertyChangeListener(this);
-        tcp = TCPFacade.getInstance();
         ctrl = Controller.getInstance();
-        semaphore = ctrl.getSemaphore();
-        try {
-            semaphore[0].acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         crtlThread = new Thread(ctrl);
-        this.lock = ctrl.getLock();
-        ctrl.setState(3);
-        ctrl.setThread(crtlThread);
         crtlThread.start();
     }
 

@@ -2,22 +2,25 @@ package com.effibot.robind_manipolator.TCP;
 
 import com.effibot.robind_manipolator.Utils;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
-public class TCPFacade implements Runnable {
+public class TCPFacade implements PropertyChangeListener {
 
-    private  Socket socket;
+    private Socket clientSocket;
     private static TCPFacade instance = null;
 
     private static  Utils utils;
 
     private static final int permits = 1;
-    private static Semaphore semaphore ;
+    private static final Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
 
     private static final String hostAddr = "localhost";
     private static final int port = 3030;
@@ -32,69 +35,11 @@ public class TCPFacade implements Runnable {
             instance = new TCPFacade();
         }
         return instance;
-    }                        
-    @SuppressWarnings("unchecked")
-    public void sendReceiveMsg() {
-        ObjectInputStream ois = null;
-        try (
-                Socket socket = new Socket(hostAddr, port);
-                OutputStream outSocketStream = socket.getOutputStream();
-                InputStream inSocketStream = socket.getInputStream();
-                ObjectOutputStream oos = new ObjectOutputStream(outSocketStream);
-        ) {
-
-            oos.writeObject(toSend);
-            oos.reset();
-            oos.writeInt(255);
-            oos.reset();
-            this.setToSend(null);
-
-            while (true) {
-                if (inSocketStream.available() > 0) {
-                    ois = new ObjectInputStream(inSocketStream);
-                    Object obj = ois.readObject();
-                    if (obj != null) {
-                        HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
-                        Thread.currentThread().sleep(1);
-                        queue.put(pkt);
-
-                        if ((double) pkt.get("FINISH") == 1.0) {
-                            ois.close();
-                            return;
-                        }
-                    }
-                }
-            }
-        } catch (InterruptedException | IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
 
-//    public ArrayList<HashMap> receiveMsg(){
-//        try {
-//            semaphore.acquire();
-//            System.out.println("Output acquiring Semaphore");
-//            ArrayList<HashMap> msg = null;
-//            out.run();
-//            out.join();
-//            socket.close();
-//            msg = out.getParsedMessage();
-//            return msg;
-//        } catch (InterruptedException | IOException e) {
-//            e.printStackTrace();
-//        }finally {
-//            semaphore.release();
-//
-//        }
-//        return null;
-//    }
-
-
-
-
-    public void setQueue(java.util.concurrent.BlockingQueue<java.util.HashMap<java.lang.String,java.lang.Object>> queue) {
+    public void setQueue(BlockingQueue<HashMap<String,Object>> queue) {
         this.queue = queue;
     }
     public BlockingQueue<HashMap<String, Object>> getQueue() {
@@ -108,15 +53,32 @@ public class TCPFacade implements Runnable {
     public void setToSend(HashMap<String, Object> toSend) {
         this.toSend = toSend;
     }
-    @Override
-    public void run() {
-        if(toSend != null) {
-        sendReceiveMsg();
-        System.out.println("Message Send");
-    } else {
-            System.out.println("Fill the message to send");
-        }
-        toSend=null;
-    }
 
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        switch (propertyName){
+            case "SEND" ->{
+                try {// Checks if connection are still up
+                    if (clientSocket == null) clientSocket = new Socket(hostAddr, port);
+                    // Make new Packet to send
+                    HashMap<String, Object> pkt = (HashMap<String, Object>) evt.getNewValue();
+                    Sender sender = new Sender(sem, clientSocket);
+                    sender.setToSend(pkt);
+                    // send msg to Matlab Server
+                    new Thread(sender).start();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "RECEIVE" ->{
+                // receiver from Matlab Server
+                Receiver receiver = new Receiver(sem, clientSocket, queue);
+                new Thread(receiver).start();
+            }
+            default -> System.out.println("Unknown Property Name");
+        }
+    }
 }

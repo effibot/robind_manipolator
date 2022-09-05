@@ -6,51 +6,51 @@ import com.effibot.robind_manipolator.TCP.GameState;
 import com.effibot.robind_manipolator.TCP.Lock;
 import com.effibot.robind_manipolator.TCP.TCPFacade;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
-public class Controller implements Runnable{
+public class Controller implements Runnable {
     private static Controller instance = null;
-    private final Thread tcpThread;
     private P3DMap map;
     private Robot bot;
-    private static Semaphore[] semaphore ;
     private GameState bean;
     private int state = 0;
     private final TCPFacade tcp;
     private final BlockingQueue<HashMap<String, Object>> queue;
+    PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
-    private  final HashMap<String, Object> msg = new HashMap<>();
-    private Thread thread;
-    private static  Lock lock;
-
-    public static Lock getLock() {
-        return lock;
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        changes.addPropertyChangeListener(l);
     }
 
-    public static void setLock(Lock lock) {
-        Controller.lock = lock;
+    public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue) {
+        /*
+         * Just a wrapper for the fire property change method.
+         */
+        changes.firePropertyChange(propertyName, oldValue, newValue);
     }
+
+    private static final Lock lock = new Lock();
 
     private Controller() {
-        this.semaphore = new Semaphore[]{new Semaphore(1, true),
-                new Semaphore(0, true), new Semaphore(0, true)};
         bean = GameState.getInstance();
         tcp = TCPFacade.getInstance();
-        tcpThread = new Thread(tcp);
-        queue = new LinkedBlockingQueue<>();
+        queue = new LinkedBlockingQueue<>(1);
         tcp.setQueue(queue);
-        lock = new Lock();
-
+        addPropertyChangeListener(tcp);
+        this.state = -1;
     }
 
     public static synchronized Controller getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new Controller();
         return instance;
     }
+
     public synchronized int getStateCase() {
         return state;
     }
@@ -59,108 +59,101 @@ public class Controller implements Runnable{
         this.state = state;
     }
 
+    private void makeMap() throws InterruptedException {
+        this.state = -1;
+        HashMap<String, Object> pkt = new HashMap<>();
+        pkt.put("PROC", "MAP");
+        pkt.put("DIM", new double[]{1024.0, 1024.0});
+        pkt.put("OBSLIST", bean.getObslist());
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            System.out.println("taking");
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
+                case "BW" -> {
+                    Utils.stream2img((byte[]) pkt.get("BW"));
+                    bean.notifyPropertyChange("BW", false, true);
+                    Utils.closeStreamEnc();
+                }
+                case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
+                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
+                case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                Utils.closeStreamEnc();
+                bean.notifyPropertyChange("ANIMATION", false, true);
+                finish = true;
+            }
+        }
+    }
+
+
     @Override
     public void run() {
-        try {
-                while (true) {
-//                    semaphore[1].acquire();
-                    synchronized (lock) {
-                        if(!lock.isLock()){
-                        switch ((state)) {
-                            case 0:
-                                // get data obstacle from bean
-                                // open matlab connection and get map
-                                msg.put("PROC", "MAP");
-                                msg.put("DIM", new double[]{1024.0, 1024.0});
-                                msg.put("OBSLIST", bean.getObslist());
-                                tcp.setToSend(msg);
-                                tcpThread.start();
-                                while (!msg.isEmpty()) {
-                                    // set green id
-                                    HashMap<String, Object> pkt = queue.take();
-                                    String key = (String) (pkt.keySet().toArray())[0];
-                                    switch (key) {
-                                        case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
-                                        case "BW" -> {
-                                            Utils.stream2img((byte[]) pkt.get("BW"));
-                                            bean.notifyPropertyChange("BW", false, true);
-                                            Utils.closeStreamEnc();
-                                        }
-//                                case "GRAPH" -> beam.setGraph
-                                        case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
-                                        case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
-                                        case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
-                                    }
-                                    if ((Double) pkt.get("FINISH") == 1.0) {
-                                        msg.clear();
-                                        Utils.closeStreamEnc();
-                                        bean.notifyPropertyChange("ANIMATION", false, true);
-
-                                    }
-
-                                }
-                                semaphore[1].release();
-                            case 1:
-                                // get data form bean
-                                // open matlab connection and get map
-                                msg.put("PROC", "PATH");
-                                msg.put("START", bean.getStartId());
-                                msg.put("END", bean.getShapepos());
-                                msg.put("METHOD", bean.getMethod());
-                                tcp.setToSend(msg);
-                                while (true) {
-                                    // set green id
-                                    HashMap<String, Object> pkt = queue.take();
-                                    String key = (String) (pkt.keySet().toArray())[0];
-                                    switch (key) {
-                                        case "Q" -> bean.setGq((double[][]) pkt.get(key));
-                                        case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
-                                        case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
-                                        case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
-                                    }
-                                    if ((Double) pkt.get("FINISH") == 1.0) {
-
-                                        Utils.closeStreamEnc();
-                                        bean.notifyPropertyChange("ANIMATION", false, true);
-                                    }
-                                }
-
-
-                                // while !finished
-                                // make geometric path
-                                // function ->  // ask for simulation
-                                // set bean
-                                // release
-                                // acquire
-                                // start IK -> function
-                                // start vision -> function
-
-
-                        }
-                    }
-                }
-
+        while (true) {
+            try {
+               switch (state){
+                   case 0 -> makeMap();
+                   case 1 -> makePath();
+                   // state  == -1
+                   default -> {
+                       synchronized (lock) {
+                           lock.wait();
+                       }
+                   }
+               }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-
+        }
+//
+//                                // while !finished
+//                                // make geometric path
+//                                // function ->  // ask for simulation
+//                                // set bean
+//                                // release
+//                                // acquire
+//                                // start IK -> function
+//                                // start vision -> function
+//
 
     }
 
-    private void mapGeneration() {
-
+    private void makePath() throws InterruptedException {
+        this.state = -1;
+        // make new packet
+        HashMap<String, Object> pkt = new HashMap<>();
+        pkt.put("PROC", "PATH");
+        pkt.put("START", bean.getStartId());
+        pkt.put("END", bean.getShapepos());
+        pkt.put("METHOD", bean.getMethod());
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "Q" -> bean.setGq((double[][]) pkt.get(key));
+                case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
+                case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
+                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                Utils.closeStreamEnc();
+                bean.notifyPropertyChange("ANIMATION", false, true);
+                finish = true;
+            }
+        }
     }
 
-    public Semaphore[] getSemaphore() {
-        return this.semaphore;
-    }
-
-
-    public void setThread(Thread crtlThread) {
-        this.thread = crtlThread;
-    }
-
-    public void setSemaphore(Semaphore[] semaphore) {
-        this.semaphore=semaphore;
+    public Lock getLock() {
+        return lock;
     }
 }

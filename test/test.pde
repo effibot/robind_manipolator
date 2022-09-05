@@ -125,17 +125,17 @@ void keyPressed(){
         if (key == '6') {
             r.setJoint(5,0.2f);
         }
-        //if (key=='q'){
-        //  roll =roll+0.2;
-        //}
+        if (key=='q'){
+          roll =roll+0.2;
+        }
         
-        //if (key=='w'){
-        //  pitch =pitch+0.2;
-        //}
+        if (key=='w'){
+         pitch =pitch+0.2;
+        }
         
-        //if (key=='e'){
-        //  yaw =yaw+0.2;
-        //}
+        if (key=='e'){
+          yaw =yaw+0.2;
+        }
         if(key == 'm'){
           dx = dx+1;
           println(dx);
@@ -188,6 +188,7 @@ public void show(float x, float y, float z, boolean show) {
 float py= 80f;
 float pz = 50f;
 int dx = 0;
+Ellipsoid shape;
 int elbow = 1;
 public void draw3Drobot(PeasyCam cam){
         //show(0,0,0,true);
@@ -210,17 +211,28 @@ public void draw3Drobot(PeasyCam cam){
         box(5);
         //show(0,0,63,true);
         popMatrix();
-        noStroke();
-        
-        
+        noStroke();                
         //translate(0,0,-32);
           r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,elbow));
 
         pushMatrix();
          r.drawLink();
          show(0,0,0,true);
+         
         popMatrix();
-       
+       pushMatrix();
+
+        translate(0.0, 0.0, 33);
+        //fill(color(20,200,150));
+        stroke(0);
+        strokeWeight(2);
+        //sphere(abs(a2 - d4));
+        sphere(50+51);
+        //shape = new Ellipsoid(50+51, 50+51, 50+51, 24, 12);
+        //shape.fill(color(1,1,1, 0.5));
+        //shape.drawMode(S3D.WIRE);
+        //shape.draw(getGraphics());
+        popMatrix();
         cam.beginHUD();
 
 
