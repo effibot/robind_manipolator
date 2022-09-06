@@ -8,7 +8,7 @@ nodeAdj = arrayfun(@(x)findobj(nodeList,'id',x),goalObsNode.adj);
 greenAdj = nodeAdj(~ismember(nodeAdj,findobj(nodeAdj,'prop','r')));
 greenAdjbc = reshape([greenAdj.bc]',2,[]);
 [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
-endId = greenAdj(id);
+endId = greenAdj(id).id;
 
 % idRed = findobj(nodeList,'bc',goalObs');
 % startNode = findObj(nodeList,'id',startId);
@@ -33,7 +33,7 @@ src.UserData.sendMessage(src,msg);
 msg =src.UserData.buildMessage(0,"ddQ",ddp);
 msg =src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
-runonmap(M,p,rbclist,nodeList,robotsize,src);
+runonmap(M,p,redObsbc',nodeList,robotsize,src);
 msg =src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 save path.mat p dp ddp M rbclist nodeList robotsize

@@ -183,7 +183,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             gm.setPitch(pitch);
             gm.setYaw(yaw);
             double[][] obs = gm.getObslist();
-            gm.setShapepos(new double[]{obs[(int) selectedShape][0], obs[(int) selectedShape][1]});
+            gm.setShapepos(new double[]{obs[(int) selectedShape][1], obs[(int) selectedShape][2]});
             gm.setStartId(startid);
             gm.setMethod(method);
             ctrl.setState(1);
@@ -412,12 +412,12 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             case "ANIMATION" -> {
                 // start image generation and set image components
 //                File gifFile = new File();
-                Image gifImage = new Image("file:"+util.getGifPath());
+                Image gifImage = new Image("file:"+util.getGifPath(),512,512,true,true);
                 map.setImage(gifImage);
             }
             case "BW" -> {
                 // set BW image
-                Image basicMapImage = new Image("file:"+util.getGifPath());
+                Image basicMapImage = new Image("file:"+util.getGifPath(),256,256,true,true);
                 basicMap.setImage(basicMapImage);
                 map.setImage(basicMapImage);
             }

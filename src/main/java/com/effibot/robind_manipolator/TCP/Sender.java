@@ -23,7 +23,6 @@ public class Sender implements Runnable{
         try {
             if(!toSend.isEmpty()){
                 sem[0].acquire();
-                System.out.format("Sem0 L.\tSem[0] = %d\tSem[1] = %d\n" , sem[0].availablePermits(), sem[1].availablePermits());
                 OutputStream os = socket.getOutputStream();
                 ObjectOutputStream oos = new ObjectOutputStream(os);
                 oos.writeObject(toSend);
@@ -35,7 +34,6 @@ public class Sender implements Runnable{
             throw new RuntimeException(e);
         } finally {
             sem[1].release();
-            System.out.format("Sem1 U.\tSem[0] = %d\tSem[1] = %d\n",sem[0].availablePermits(), sem[1].availablePermits());
         }
     }
 
