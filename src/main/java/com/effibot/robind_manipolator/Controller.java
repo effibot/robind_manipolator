@@ -11,7 +11,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 
 public class Controller implements Runnable {
     private static Controller instance = null;
@@ -71,7 +70,6 @@ public class Controller implements Runnable {
         while (!finish) {
             // set green id
             pkt = queue.take();
-            System.out.println("taking");
             String key = (String) (pkt.keySet().toArray())[0];
             switch (key) {
                 case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
@@ -85,7 +83,6 @@ public class Controller implements Runnable {
                 case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
-                Utils.closeStreamEnc();
                 bean.notifyPropertyChange("ANIMATION", false, true);
                 finish = true;
             }
@@ -146,7 +143,6 @@ public class Controller implements Runnable {
                 case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
-                Utils.closeStreamEnc();
                 bean.notifyPropertyChange("ANIMATION", false, true);
                 finish = true;
             }

@@ -26,7 +26,7 @@ for j = 1:fix(size(p,1)/100):size(p,1)
     ll = line([currPoint(1), closestObs(2)],...
         [currPoint(2), closestObs(1)],...
         'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-    msg = src.UserData.buildMessage(0,"ANIMATION"+j,src.UserData.compressImg(saving(gcf)));
+    msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(saving(gcf)));
     msg = src.UserData.buildMessage(msg,"FINISH",0);
     src.UserData.sendMessage(src,msg);
     delete(h);

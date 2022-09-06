@@ -85,3 +85,6 @@ src/MATLAB/slprj/raccel/PIDTrajectory/tmwinternal/PIDTrajectory_TgtConnMgr.mat
 src/MATLAB/slprj/sim/_sharedutils/shared_file.dmr
 src/MATLAB/path.mat
 src/MATLAB/mapg.mat
+*.gif
+*.asv
+*.asv

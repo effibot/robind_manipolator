@@ -26,15 +26,13 @@ public class Receiver implements Runnable{
             sem[1].acquire();
             InputStream is = socket.getInputStream();
             while (true) {
-                ois = new ObjectInputStream(is);
                 if (is.available() > 0) {
+                    ois = new ObjectInputStream(is);
                     Object obj = ois.readObject();
                     if (obj != null) {
-                        System.out.println("Receiving");
                         HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
                         queue.put(pkt);
                         if ((Double)pkt.get("FINISH") == 1d) {
-                            System.out.println("finished");
                             break;
                         }
                     }
@@ -44,7 +42,6 @@ public class Receiver implements Runnable{
             throw new RuntimeException(e);
         } finally {
             sem[0].release();
-            System.out.println("rilascio finally");
         }
 
     }
