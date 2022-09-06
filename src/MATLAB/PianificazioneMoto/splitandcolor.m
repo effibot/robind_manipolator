@@ -3,7 +3,8 @@ function [M, nodeList] = splitandcolor(map, robotsize,src)
 decomp(map, robotsize, 0.9);
 dim = size(map.value);
 currdim = dim(1)/2;
-% M = 255 * repmat(uint8(map.value), 1, 1, 3);
+M1 = repmat(zeros(1024,1024),1,1,3);
+% M1 = map.value;
 M = map.value;
 M(M==0)=0;
 M(M==1)=256*256*255+256*255+255;
@@ -23,14 +24,24 @@ while(currdim >= robotsize)
         id = id+1;
         corner = mapList(i).corner;
         color=[];
+        color1=[];
+
         switch mapList(i).prop
             case 'y'
                 color = 256*256*255+256*255;
+                color1 = [1,1,0];
             case 'g'
                 color = 256*255;
+                color1 = [0,1,0];
+
             case 'r'
                 color = 256*256*255;
+                color1 = [1,0,0];
+
         end
+        M1(corner(1,1):corner(1,2),corner(2,1):corner(2,3),1)=color1(1);
+        M1(corner(1,1):corner(1,2),corner(2,1):corner(2,3),2)=color1(2);
+        M1(corner(1,1):corner(1,2),corner(2,1):corner(2,3),3)=color1(3);
 
         M(corner(1,1):corner(1,2),corner(2,1):corner(2,3))=color;
 

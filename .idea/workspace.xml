@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="02fa793c-3b1b-4705-b09f-3b397618a1e2" name="Changes" comment="feat: inverse kinematics complete.&#10;TODO: implement IK calculuation into the robo">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/Receiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/Sender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MATLAB/mapg.mat" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/mapg.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/SceneController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/TCPFacade.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/effibot/robind_manipolator/TCP/TCPFacade.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img/test.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/effibot/robind_manipolator/img/test.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Robot.pde" beforeDir="false" afterPath="$PROJECT_DIR$/test/Robot.pde" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test.pde" beforeDir="false" afterPath="$PROJECT_DIR$/test/test.pde" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/gPlot.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/mapGeneration.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path_generator.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/path_generator.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/runonmap.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.asv" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.asv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/PianificazioneMoto/splitandcolor.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MATLAB/Server.m" beforeDir="false" afterPath="$PROJECT_DIR$/src/MATLAB/Server.m" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

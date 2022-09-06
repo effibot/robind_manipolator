@@ -14,8 +14,8 @@ src.UserData.sendMessage(src,msg);
 %% Adjiacency Matrix
 [A, Acomp, Aint, Amid] = adjmatrix(nodeList);
 G=graph(A);
-gid = gPlot(nodeList, A, Amid, Aint,M,src);
-% gPlot(nodeList, A, Amid, Aint,M);
+[gid,M] = gPlot(nodeList, A, Amid, Aint,M,src,map.value);
+
 nobs = size(obs,1);
 shapepos = zeros(3,3);
 for i = 1:3

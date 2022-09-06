@@ -1,19 +1,29 @@
 function [p,dp,ddp,images,error]=path_generator(startId,shape,method,src)
 load mapg.mat
-redObsbc = reshape([findobj(nodeList, 'prop', 'r').bc]',2,[]);
+redListNode = findobj(nodeList, 'prop', 'r');
+redObsbc = reshape([redListNode.bc]',2,[]);
 [id,~]=dsearchn(redObsbc',shape);
-goalObs = redObsbc(:,id(1));
-goalid = findobj(nodeList,'bc',goalObs');
-endId = findAdjNode(goalid,nodeList,Acomp);
-if isempty(endId) || endId == 0
-    error = 1;
-    return;
-else
-    error = 0;
-end
-P = shortestpath(G, startId, endId(1));
-rbclist = getbcprop(nodeList, 'r');
-[p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, rbclist,method);
+goalObsNode = redListNode(id);
+nodeAdj = arrayfun(@(x)findobj(nodeList,'id',x),goalObsNode.adj);
+greenAdj = nodeAdj(~ismember(nodeAdj,findobj(nodeAdj,'prop','r')));
+greenAdjbc = reshape([greenAdj.bc]',2,[]);
+[id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
+endId = greenAdj(id);
+
+% idRed = findobj(nodeList,'bc',goalObs');
+% startNode = findObj(nodeList,'id',startId);
+% [id,~]=dsearchn(goalObs',startNode.bc);
+% goalid = findobj(nodeList,'bc',goalObs');
+% endId = findAdjNode(goalid,nodeList,Acomp);
+% if isempty(endId) || endId == 0
+%     error = 1;
+%     return;
+% else
+%     error = 0;
+% end
+P = shortestpath(G, startId, endId);
+% rbclist = getbcprop(nodeList, 'r');
+[p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, redObsbc',method);
 msg =src.UserData.buildMessage(0,"Q",p);
 msg =src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);

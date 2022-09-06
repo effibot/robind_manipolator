@@ -6,14 +6,6 @@ addpath(genpath('./'))
 %%
 compressor = serverUtils;
 
-% tic
-% M=squeeze(colormat(80,:,:,:));
-% img = im2java2d(M);
-% toc
-% tic
-% a = compressor.compress(img);
-% toc
-%%
 server = tcpserver("127.0.0.1",3030,"ConnectionChangedFcn",@connectionFcn);
 server.UserData=compressor;
 configureTerminator(server,255);

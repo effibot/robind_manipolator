@@ -1,4 +1,4 @@
-function [gids]=gPlot(nodeList, A, Amid, Aint,mapImg,src)
+function [gids,M]=gPlot(nodeList, A, Amid, Aint,mapImg,src,originalMap)
 saving=@(gcf)frame2im(getframe(gcf));
 f=figure('Visible','off');
 f.Position=[0,0,1024,1024];
@@ -47,14 +47,18 @@ end
 im = saving(gcf);
 J = imresize(im,[1024,1024],'cubic');
 sz = size(J);
-intRGBImg = zeros(1024,1024);
-for i = 1 : sz(1)
-    for j = 1 : sz(2)
-        intRGBImg(i,j)=256*256*double(J(i,j,1))+256*double(J(i,j,2))+double(J(i,j,3));
-    end
-end
+
+JJ = bsxfun(@times,J,cast(originalMap,'like',J));
+% intRGBImg = zeros(1024,1024);
+% for i = 1 : sz(1)
+%     for j = 1 : sz(2)
+%         intRGBImg(i,j)=256*256*double(JJ(i,j,1))+256*double(JJ(i,j,2))+double(JJ(i,j,3));
+%     end
+% end
+intRGBImg = uint32(256*256*double(JJ(:,:,1))+256*double(JJ(:,:,2))+double(JJ(:,:,3)));
 msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(intRGBImg));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 
 src.UserData.sendMessage(src,msg);
+M = JJ;
 end

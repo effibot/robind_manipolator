@@ -1,10 +1,9 @@
-function img = runonmap(M,p,rbclist,nodeList,robotsize,src)
+function runonmap(M,p,rbclist,nodeList,robotsize,src)
 showimage(M);
 circleColorObs=[0.623, 0.501, 0.635, 0.5];
 robotColor = [1 1 0 0.7];
 hold on
 plot(p(:,1),p(:,2),'LineWidth',3);
-img = uint8.empty;
 saving=@(gcf)frame2im(getframe(gcf));
 for j = 1:fix(size(p,1)/100):size(p,1)
     currPoint = p(j,:);
@@ -26,7 +25,20 @@ for j = 1:fix(size(p,1)/100):size(p,1)
     ll = line([currPoint(1), closestObs(2)],...
         [currPoint(2), closestObs(1)],...
         'Color','#ca64ea','LineStyle','-.','LineWidth',3);
-    msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(saving(gcf)));
+
+    im = saving(gcf);
+
+    J = imresize(im,[1024,1024],'cubic');
+%     sz = size(J);
+%     intRGBImg = zeros(1024,1024);
+%     for i = 1 : sz(1)
+%         for j = 1 : sz(2)
+%             intRGBImg(i,j)=256*256*double(J(i,j,1))+256*double(J(i,j,2))+double(J(i,j,3));
+%         end
+%     end
+    intRGBImg = uint32(256*256*double(J(:,:,1))+256*double(J(:,:,2))+double(J(:,:,3)));
+
+    msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(intRGBImg));
     msg = src.UserData.buildMessage(msg,"FINISH",0);
     src.UserData.sendMessage(src,msg);
     delete(h);
