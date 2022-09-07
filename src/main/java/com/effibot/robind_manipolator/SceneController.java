@@ -5,21 +5,25 @@ import com.effibot.robind_manipolator.TCP.TCPFacade;
 import com.effibot.robind_manipolator.Processing.*;
 import com.effibot.robind_manipolator.Processing.Observer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.FloatStringConverter;
 import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -281,6 +285,10 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //            timeLine.play();
 
     }
+    private static final int width = 1024;
+    private static final int height = 1024;
+    public  ByteBuffer buffer = ByteBuffer.allocateDirect(4*width*height);
+//    public  PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(width, height, buffer, PixelFormat.getIntArgbPreInstance());
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -335,6 +343,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         mySetFormatter(pitchField);
         yawField.setText("");
         mySetFormatter(yawField);
+
         // init sequence
         sequence = new ArrayList<>();
         startBtn.setDisable(false);
@@ -412,14 +421,31 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             case "ANIMATION" -> {
                 // start image generation and set image components
 //                File gifFile = new File();
-                Image gifImage = new Image("file:"+util.getGifPath(),512,512,true,true);
-                map.setImage(gifImage);
+
             }
+
             case "BW" -> {
                 // set BW image
-                Image basicMapImage = new Image("file:"+util.getGifPath(),256,256,true,true);
-                basicMap.setImage(basicMapImage);
-                map.setImage(basicMapImage);
+//                Image basicMapImage = new Image("file:"+util.getGifPath());
+//                basicMap.setImage(basicMapImage);
+//                map.setImage(basicMapImage);
+//                                map.setImage(gm.getAnimation());
+                PixelBuffer<ByteBuffer> pixelBuffer = new PixelBuffer<>(width, height, buffer, PixelFormat.getByteBgraPreInstance());
+                buffer.clear();
+//                System.arraycopy(gm.getRaw(),0,buffer.array(),0,1024*1024*4);
+                buffer.put(0,gm.getRaw());
+            //                byte[] pixels = buffer.array();
+//                pixels=gm.getRaw();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        pixelBuffer.updateBuffer(b-> null);
+
+                    }
+                });
+                basicMap.setImage(new WritableImage(pixelBuffer));
+
+
             }
         }
     }

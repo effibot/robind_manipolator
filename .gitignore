@@ -88,3 +88,6 @@ src/MATLAB/mapg.mat
 *.gif
 *.asv
 *.asv
+*.mat
+*.mat
+*.gif

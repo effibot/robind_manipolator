@@ -21,6 +21,7 @@ endId = greenAdj(id).id;
 % else
 %     error = 0;
 % end
+
 P = shortestpath(G, startId, endId);
 % rbclist = getbcprop(nodeList, 'r');
 [p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, redObsbc',method);

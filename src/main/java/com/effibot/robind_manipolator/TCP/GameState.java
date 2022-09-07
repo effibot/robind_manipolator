@@ -3,7 +3,6 @@ package com.effibot.robind_manipolator.TCP;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 
 public class GameState {
     private static GameState instance;
@@ -29,6 +28,8 @@ public class GameState {
     private final PropertyChangeSupport changes;
     private double startid;
     private String method;
+    private byte[] animation = null;
+    private byte[] rawImg = null;
 
     private GameState( ){
         changes = new PropertyChangeSupport(this);
@@ -54,7 +55,12 @@ public class GameState {
         this.greenId = greenId;
         changes.firePropertyChange("ID",null, greenId);
     }
+    public void setAnimation(byte[] writableImage){
+        this.animation = writableImage;
+        changes.firePropertyChange("ANIMATION",false,true);
+    }
 
+    public byte[] getAnimation(){return this.animation;}
     public double[][] getObslist() {
         return obslist;
     }
@@ -217,4 +223,10 @@ public class GameState {
     }
 
 
+    public void setRaw(byte[] imgEnanched) {
+        this.rawImg = imgEnanched;
+        changes.firePropertyChange("BW",false,true);
+    }
+
+    public byte[] getRaw(){return this.rawImg;}
 }

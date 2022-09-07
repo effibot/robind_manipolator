@@ -6,11 +6,15 @@ import com.squareup.gifencoder.GifEncoder;
 import com.squareup.gifencoder.ImageOptions;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.IntBuffer;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -205,6 +209,33 @@ private static FileOutputStream out;
             Utils.genc = new GifEncoder(Utils.getOut(), 1024, 1024, 1);
         return Utils.genc;
     }
+
+
+    public static byte[] imgEnanched(byte[] byteStream){
+        try{
+            if(out == null) {// checks for nullity on the output stream and the encoder
+                // if the stream is closed open it
+                Utils.setOut(new FileOutputStream(GIF_PATH));
+                setGifEncoder(new GifEncoder(Utils.getOut(),1024,1024,1));
+            }
+            // decompress incoming stream and cast to int array
+//            int[] unzip = Utils.arrayDoubleToArrayInt(
+//                    Utils.irle(ArrayUtils.toObject((double[])Utils.decompress(byteStream))));
+
+
+//            pixelBuffer.updateBuffer(b->null);
+//            PixelFormat<ByteBuffer> format = PixelFormat.createByteIndexedInstance(unzip);
+//            WritableImage img = new WritableImage(width, height);
+//            img.getPixelWriter().setPixels(0, 0, width, height, format, data, 0, width);
+            return (byte[])Utils.decompress(byteStream);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 //    TODO: remove when deploy
 //    public static void main(String[] args){
 //        Double[][] dec = new Double[][]{irle(new Double[]{3d,1d,3d,10d,3d,5d,3d,1d})};

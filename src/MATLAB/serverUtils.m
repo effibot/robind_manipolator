@@ -104,14 +104,16 @@ classdef serverUtils < handle
                 data.add(obj.compress(gcomp));
                 data.add(obj.compress(bcomp));
             else
-                data=obj.compress(obj.rle(img));
+%                 data=obj.compress(obj.rle(img));
+                data=obj.compress(img);
+
             end
         end
 
         function sendMessage(obj,src,msg)
             toSend = obj.serialize(msg);
             write(src,toSend,"int8");
-           flush(src);
+            flush(src);
         end
         function msg = buildMessage(~,msg,key,val)
             if msg == 0
@@ -138,6 +140,21 @@ classdef serverUtils < handle
             p = byteOutputStream.toByteArray();
             byteOutputStream.close();
         end
-
+        function [alpha, red, green, blue] = convertImage(~,M)
+            % M: matrix to convert. n x n x 3 or n x n;
+            % k: boolean for left/right shifting. 1 is left, -1 is right.
+            dim = size(M);
+            if length(dim) == 3
+                alpha = bitshift(ones(dim(1),dim(2))*255,24);
+                red = bitshift(M(:,:,1),16,'int32');
+                green = bitshift(M(:,:,2),8,'int32');
+                blue = bitshift(M(:,:,3),0,'int32');
+            else
+                alpha = 0;
+                red = bitand(bitshift(M,-16,'int32'),ones(dim(1),dim(2))*255,'int32');
+                green = bitand(bitshift(M,-8,'int32'),ones(dim(1),dim(2))*255,'int32');
+                blue = bitand(M,ones(dim(1),dim(2))*255,'int32');
+            end
+        end
     end
 end

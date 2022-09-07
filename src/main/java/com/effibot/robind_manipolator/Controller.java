@@ -74,12 +74,15 @@ public class Controller implements Runnable {
             switch (key) {
                 case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
                 case "BW" -> {
-                    Utils.stream2img((byte[]) pkt.get("BW"));
-                    bean.notifyPropertyChange("BW", false, true);
-                    Utils.closeStreamEnc();
+//                    Utils.stream2img((byte[]) pkt.get("BW"));
+//                    bean.notifyPropertyChange("BW", false, true);
+//                    Utils.closeStreamEnc();
+                    bean.setRaw(Utils.imgEnanched((byte[]) pkt.get(key)));
                 }
                 case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
-                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
+//                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
+                case "ANIMATION" -> bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
+
                 case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
@@ -140,10 +143,11 @@ public class Controller implements Runnable {
                 case "Q" -> bean.setGq((double[][]) pkt.get(key));
                 case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
                 case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
-                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
+//                 Utils.stream2img((byte[]) pkt.get(key));
+                case "ANIMATION" -> bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
-                bean.notifyPropertyChange("ANIMATION", false, true);
+//                bean.notifyPropertyChange("ANIMATION", false, true);
                 finish = true;
             }
         }

@@ -5,18 +5,10 @@ f.Position=[0,0,1024,1024];
 f.Units='points';
 nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
 gids = [findobj(nodeList,'prop','g').id];
-imm = zeros(1024,1024,3);
-for i = 1:size(mapImg,1)
-    for j = 1: size(mapImg,2)
-        colorInt = mapImg(i,j);
-        curR = floor(colorInt / (256*256));
-        curG = floor((colorInt - curR*256*256)/256);
-        curB = colorInt - curR*256*256 - curG*256;
-        imm(i,j,1)=curR;
-        imm(i,j,2)=curG;
-        imm(i,j,3)=curB;
-    end
-end
+% convert from ARGB_INT to RGB
+[~,red,green,blue] = src.UserData.convertImage(mapImg);
+imm = cat(3,red,green,blue);
+% continue
 imshow(imm,'Border','tight');
 hold on
 for i=1:size(A,1)
@@ -46,19 +38,13 @@ for i=1:size(A,1)
 end
 im = saving(gcf);
 J = imresize(im,[1024,1024],'cubic');
-sz = size(J);
-
 JJ = bsxfun(@times,J,cast(originalMap,'like',J));
-% intRGBImg = zeros(1024,1024);
-% for i = 1 : sz(1)
-%     for j = 1 : sz(2)
-%         intRGBImg(i,j)=256*256*double(JJ(i,j,1))+256*double(JJ(i,j,2))+double(JJ(i,j,3));
-%     end
-% end
-intRGBImg = uint32(256*256*double(JJ(:,:,1))+256*double(JJ(:,:,2))+double(JJ(:,:,3)));
-msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(intRGBImg));
+% [alpha, red, green, blue] = src.UserData.convertImage(JJ);
+JJ = im2double(JJ);
+KK = pow2(2,24)*255+pow2(2,16)*double(JJ(:,:,1))+pow2(2,8)*double(JJ(:,:,2))+double(JJ(:,:,3));
+% intRGBImg = alpha+red+green+blue;
+msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(KK));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
-
 src.UserData.sendMessage(src,msg);
-M = JJ;
+M = imm;
 end
