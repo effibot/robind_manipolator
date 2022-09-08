@@ -30,6 +30,7 @@ public class GameState {
     private String method;
     private byte[] animation = null;
     private byte[] rawImg = null;
+    private boolean shapeAvailable = false;
 
     private GameState( ){
         changes = new PropertyChangeSupport(this);
@@ -229,4 +230,13 @@ public class GameState {
     }
 
     public byte[] getRaw(){return this.rawImg;}
+
+    public void setShapeAvailable(boolean b) {
+        this.shapeAvailable = b;
+        changes.firePropertyChange("ERROR",false,true);
+    }
+
+    public boolean getShapeAvailable() {
+        return this.shapeAvailable;
+    }
 }

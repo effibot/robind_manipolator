@@ -1,7 +1,5 @@
 package com.effibot.robind_manipolator;
 
-import com.effibot.robind_manipolator.Processing.P3DMap;
-import com.effibot.robind_manipolator.Processing.Robot;
 import com.effibot.robind_manipolator.tcp.GameState;
 import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
@@ -77,19 +75,19 @@ public class Controller implements Runnable {
                 case "BW" -> bean.setRaw((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "SHAPE" -> bean.setObsList((double[][]) pkt.get(key));
                 case ANIMATION ->bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-                case "Q"-> bean.setGq((double[][]) pkt.get(key));
-                case "dQ"-> bean.setGdq((double[][]) pkt.get(key));
-                case "ddQ"-> bean.setGddq((double[][]) pkt.get(key));
-                case "Qs"-> bean.setSq((double[][]) pkt.get(key));
-                case "dQs"-> bean.setSdq((double[][]) pkt.get(key));
-                case "ddQs"-> bean.setSddq((double[][]) pkt.get(key));
-                case "E"-> bean.setE((double[][]) pkt.get(key));
-                default -> System.out.println("NOT MAPPED CASE");
+
+//                case "Qs"-> bean.setSq((double[][]) pkt.get(key));
+//                case "dQs"-> bean.setSdq((double[][]) pkt.get(key));
+//                case "ddQs"-> bean.setSddq((double[][]) pkt.get(key));
+//                case "E"-> bean.setE((double[][]) pkt.get(key));
+                default -> {
+                    finish = true;
+                }
             }
-            if ((Double) pkt.get("FINISH") == 1.0) {
-                bean.notifyPropertyChange(ANIMATION, false, true);
-                finish = true;
-            }
+//            if ((Double) pkt.get("FINISH") == 1.0) {
+//                bean.notifyPropertyChange(ANIMATION, false, true);
+//                finish = true;
+//            }
         }
     }
 
@@ -145,7 +143,11 @@ public class Controller implements Runnable {
                 case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
                 case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
                 case ANIMATION -> bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-                default -> System.out.println("NOT MAPPED CASE");
+                case "ERROR"-> {
+                    bean.setShapeAvailable(true);
+                    finish = true;
+                }
+                default -> finish=true;
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
                 finish = true;

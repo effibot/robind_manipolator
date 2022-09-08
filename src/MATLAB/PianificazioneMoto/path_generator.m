@@ -11,6 +11,7 @@ if ~isempty(greenAdjbc)
     [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
 else 
     msg = src.UserData.buildMessage(0,"ERROR",1);
+    msg = src.UserData.buildMessage(msg,"FINISH",1);
     src.UserData.sendMessage(src,msg);
     return
 end

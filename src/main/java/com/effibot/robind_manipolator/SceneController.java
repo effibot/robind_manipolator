@@ -20,16 +20,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.FloatStringConverter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
-
+import org.controlsfx.dialog.CommandLinksDialog;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
+import org.controlsfx.dialog.CommandLinksDialog.CommandLinksButtonType;
+
 
 public class SceneController implements Initializable, Observer, PropertyChangeListener {
     @FXML
@@ -415,7 +418,26 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 
 
             }
+            case "ERROR"->{
+                Platform.runLater(
+                        ()->{
+                            
+                            List<CommandLinksButtonType> links = Arrays.asList(
+                              new CommandLinksButtonType("Seleziona un altro ostacolo",
+                                      "Riselezione della forma da cercare con stessa mappa",false),
+                                    new CommandLinksButtonType("Ricomincia",
+                                            "Reset degli ostacoli,delle forme e creazione di una mappa nuova",true)
+                            );
+                            CommandLinksDialog dlg = new CommandLinksDialog(links);
+                            dlg.setTitle("Forma non raggiunbile");
+                            dlg.getDialogPane().setContentText("Seleziona azione da eseguire");
+                            dlg.show();
+                        }
+                );
+
+            }
             default -> System.out.println("Not Mapped Case.");
         }
     }
+
 }
