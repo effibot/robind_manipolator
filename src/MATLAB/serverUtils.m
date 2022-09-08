@@ -91,20 +91,10 @@ classdef serverUtils < handle
 
         function data = compressImg(obj,img)
             sz = size(img);
-            data = javaObject('java.util.ArrayList');
             if length(sz)==3
-                r = img(:,:,1);
-                g = img(:,:,2);
-                b = img(:,:,3);
-                rcomp = obj.rle(r);
-                gcomp = obj.rle(g);
-                bcomp = obj.rle(b);
-
-                data.add(obj.compress(rcomp));
-                data.add(obj.compress(gcomp));
-                data.add(obj.compress(bcomp));
+                M = permute(img,[3 2 1]);
+                data = obj.compress(reshape(M,1,[]));
             else
-%                 data=obj.compress(obj.rle(img));
                 data=obj.compress(img);
 
             end

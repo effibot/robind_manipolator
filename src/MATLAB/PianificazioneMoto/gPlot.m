@@ -6,10 +6,9 @@ f.Units='points';
 nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
 gids = [findobj(nodeList,'prop','g').id];
 % convert from ARGB_INT to RGB
-[~,red,green,blue] = src.UserData.convertImage(mapImg);
-imm = cat(3,red,green,blue);
-% continue
-imshow(imm,'Border','tight');
+% [~,red,green,blue] = src.UserData.convertImage(mapImg);
+% mapImg = cat(3,red,green,blue);
+imshow(mapImg(:,:,1:3),'Border','tight');
 hold on
 for i=1:size(A,1)
     % Disegno l'id del nodo
@@ -37,14 +36,13 @@ for i=1:size(A,1)
     end
 end
 im = saving(gcf);
+
 J = imresize(im,[1024,1024],'cubic');
-JJ = bsxfun(@times,J,cast(originalMap,'like',J));
-% [alpha, red, green, blue] = src.UserData.convertImage(JJ);
-JJ = im2double(JJ);
-KK = pow2(2,24)*255+pow2(2,16)*double(JJ(:,:,1))+pow2(2,8)*double(JJ(:,:,2))+double(JJ(:,:,3));
-% intRGBImg = alpha+red+green+blue;
-msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(KK));
+JJ = bsxfun(@times,J,cast(uint8(originalMap),'like',J));
+JJBGRA = cat(3,JJ,ones(1024,'uint8')*255);
+
+msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(JJBGRA));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
-M = imm;
+M = JJ;
 end

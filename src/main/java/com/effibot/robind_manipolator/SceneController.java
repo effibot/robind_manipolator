@@ -287,8 +287,14 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     }
     private static final int width = 1024;
     private static final int height = 1024;
-    public  ByteBuffer buffer = ByteBuffer.allocateDirect(4*width*height);
-//    public  PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(width, height, buffer, PixelFormat.getIntArgbPreInstance());
+    private final ByteBuffer bufferBW = ByteBuffer.allocateDirect(4*width*height);
+    private final ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4*width*height);
+    private final PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
+
+
+    private final PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+    private final WritableImage imgBW = new WritableImage(pixelBufferBW);
+    private final WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -335,7 +341,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         cubicRadio.setToggleGroup(radioGroup);
         cubicRadio.setUserData("cubic");
         radioGroup.selectToggle(paraRadio); // default value
-        //startPos.getItems().addAll(/*TODO: get list of green cells from the map and add to the choicebox*/)
+        //startPos.getItems().addAll(/*
+        // TODO: get list of green cells from the map and add to the choicebox*/)
         // Setup RPY default value
         rollField.setText("");
         mySetFormatter(rollField);
@@ -343,6 +350,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         mySetFormatter(pitchField);
         yawField.setText("");
         mySetFormatter(yawField);
+        basicMap.setImage(imgBW);
+        map.setImage(imgAnimation);
 
         // init sequence
         sequence = new ArrayList<>();
@@ -419,34 +428,20 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                 startPos.getItems().addAll(greenId);
             }
             case "ANIMATION" -> {
-                // start image generation and set image components
-//                File gifFile = new File();
-
+                bufferAnimation.clear();
+                bufferAnimation.put(0,gm.getAnimation());
+                Platform.runLater(() -> pixelBufferAnimation.updateBuffer(b-> null));
             }
 
             case "BW" -> {
-                // set BW image
-//                Image basicMapImage = new Image("file:"+util.getGifPath());
-//                basicMap.setImage(basicMapImage);
-//                map.setImage(basicMapImage);
-//                                map.setImage(gm.getAnimation());
-                PixelBuffer<ByteBuffer> pixelBuffer = new PixelBuffer<>(width, height, buffer, PixelFormat.getByteBgraPreInstance());
-                buffer.clear();
-//                System.arraycopy(gm.getRaw(),0,buffer.array(),0,1024*1024*4);
-                buffer.put(0,gm.getRaw());
-            //                byte[] pixels = buffer.array();
-//                pixels=gm.getRaw();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        pixelBuffer.updateBuffer(b-> null);
 
-                    }
-                });
-                basicMap.setImage(new WritableImage(pixelBuffer));
+                bufferBW.clear();
+                bufferBW.put(0,gm.getRaw());
+                Platform.runLater(() -> pixelBufferBW.updateBuffer(b-> null));
 
 
             }
+            default -> System.out.println("Not Mapped Case.");
         }
     }
 }

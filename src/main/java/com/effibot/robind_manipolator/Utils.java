@@ -218,15 +218,6 @@ private static FileOutputStream out;
                 Utils.setOut(new FileOutputStream(GIF_PATH));
                 setGifEncoder(new GifEncoder(Utils.getOut(),1024,1024,1));
             }
-            // decompress incoming stream and cast to int array
-//            int[] unzip = Utils.arrayDoubleToArrayInt(
-//                    Utils.irle(ArrayUtils.toObject((double[])Utils.decompress(byteStream))));
-
-
-//            pixelBuffer.updateBuffer(b->null);
-//            PixelFormat<ByteBuffer> format = PixelFormat.createByteIndexedInstance(unzip);
-//            WritableImage img = new WritableImage(width, height);
-//            img.getPixelWriter().setPixels(0, 0, width, height, format, data, 0, width);
             return (byte[])Utils.decompress(byteStream);
 
         } catch (IOException e) {

@@ -74,14 +74,17 @@ public class Controller implements Runnable {
             switch (key) {
                 case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
                 case "BW" -> {
-//                    Utils.stream2img((byte[]) pkt.get("BW"));
-//                    bean.notifyPropertyChange("BW", false, true);
-//                    Utils.closeStreamEnc();
+
                     bean.setRaw(Utils.imgEnanched((byte[]) pkt.get(key)));
+                    Utils.closeStreamEnc();
+
                 }
                 case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
-//                case "ANIMATION" -> Utils.stream2img((byte[]) pkt.get(key));
-                case "ANIMATION" -> bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
+                case "ANIMATION" -> {
+                    bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
+                    Utils.closeStreamEnc();
+
+                }
 
                 case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
             }

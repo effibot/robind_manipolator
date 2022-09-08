@@ -1,5 +1,5 @@
 function runonmap(M,p,rbclist,nodeList,robotsize,src)
-showimage(M);
+showimage(M(:,:;1:3));
 circleColorObs=[0.623, 0.501, 0.635, 0.5];
 robotColor = [1 1 0 0.7];
 hold on

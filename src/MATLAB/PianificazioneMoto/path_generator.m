@@ -10,20 +10,8 @@ greenAdjbc = reshape([greenAdj.bc]',2,[]);
 [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
 endId = greenAdj(id).id;
 
-% idRed = findobj(nodeList,'bc',goalObs');
-% startNode = findObj(nodeList,'id',startId);
-% [id,~]=dsearchn(goalObs',startNode.bc);
-% goalid = findobj(nodeList,'bc',goalObs');
-% endId = findAdjNode(goalid,nodeList,Acomp);
-% if isempty(endId) || endId == 0
-%     error = 1;
-%     return;
-% else
-%     error = 0;
-% end
-
 P = shortestpath(G, startId, endId);
-% rbclist = getbcprop(nodeList, 'r');
+
 [p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, redObsbc',method);
 msg =src.UserData.buildMessage(0,"Q",p);
 msg =src.UserData.buildMessage(msg,"FINISH",0);
