@@ -1,13 +1,9 @@
-package com.effibot.robind_manipolator.TCP;
-
-import com.effibot.robind_manipolator.Utils;
+package com.effibot.robind_manipolator.tcp;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -17,18 +13,15 @@ public class TCPFacade implements PropertyChangeListener {
     private Socket clientSocket;
     private static TCPFacade instance = null;
 
-    private static  Utils utils;
-
-    private static final int permits = 1;
     private static final Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
 
-    private static final String hostAddr = "localhost";
-    private static final int port = 3030;
+    private static final String HOST_ADDR = "localhost";
+    private static final int PORT = 3030;
     private BlockingQueue<HashMap<String, Object>> queue;
 
     private HashMap<String,Object> toSend;
     private TCPFacade(){
-            utils = new Utils();
+
     }
     public static synchronized TCPFacade getInstance(){
         if(instance==null){
@@ -62,7 +55,7 @@ public class TCPFacade implements PropertyChangeListener {
         switch (propertyName){
             case "SEND" ->{
                 try {// Checks if connection are still up
-                    if (clientSocket == null) clientSocket = new Socket(hostAddr, port);
+                    if (clientSocket == null) clientSocket = new Socket(HOST_ADDR, PORT);
                     // Make new Packet to send
                     HashMap<String, Object> pkt = (HashMap<String, Object>) evt.getNewValue();
                     Sender sender = new Sender(sem, clientSocket);

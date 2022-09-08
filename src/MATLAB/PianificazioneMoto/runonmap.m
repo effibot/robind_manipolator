@@ -1,5 +1,5 @@
 function runonmap(M,p,rbclist,nodeList,robotsize,src)
-showimage(M(:,:;1:3));
+showimage(M);
 circleColorObs=[0.623, 0.501, 0.635, 0.5];
 robotColor = [1 1 0 0.7];
 hold on
@@ -29,10 +29,8 @@ for j = 1:fix(size(p,1)/100):size(p,1)
     im = saving(gcf);
 
     J = imresize(im,[1024,1024],'cubic');
-
-    intRGBImg = uint32(256*256*double(J(:,:,1))+256*double(J(:,:,2))+double(J(:,:,3)));
-
-    msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(intRGBImg));
+    JJBGRA = cat(3,J,ones(1024,'uint8')*255);
+    msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(JJBGRA));
     msg = src.UserData.buildMessage(msg,"FINISH",0);
     src.UserData.sendMessage(src,msg);
     delete(h);

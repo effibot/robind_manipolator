@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.TCP;
+package com.effibot.robind_manipolator.tcp;
 
 public class Lock {
     private boolean lock = false;

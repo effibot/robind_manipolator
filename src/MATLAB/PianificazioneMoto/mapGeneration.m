@@ -37,5 +37,5 @@ src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 
-save mapg.mat MRGB obs dim robotsize A Aint Amid G nodeList shapepos Acomp
+save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
 end

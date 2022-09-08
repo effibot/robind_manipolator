@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.TCP;
+package com.effibot.robind_manipolator.tcp;
 
 import java.io.IOException;
 import java.io.InputStream;

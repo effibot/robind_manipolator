@@ -19,7 +19,7 @@ module com.effibot.robind_manipolator {
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.Processing;
     opens com.effibot.robind_manipolator.Processing to javafx.fxml;
-    exports com.effibot.robind_manipolator.TCP;
-    opens com.effibot.robind_manipolator.TCP to javafx.fxml;
+    exports com.effibot.robind_manipolator.tcp;
+    opens com.effibot.robind_manipolator.tcp to javafx.fxml;
 
 }

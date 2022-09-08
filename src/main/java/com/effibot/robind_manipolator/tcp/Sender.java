@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.TCP;
+package com.effibot.robind_manipolator.tcp;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -20,7 +20,7 @@ public class Sender implements Runnable{
 
     @Override
     public void run() {
-        try {
+        try{
             if(!toSend.isEmpty()){
                 sem[0].acquire();
                 OutputStream os = socket.getOutputStream();

@@ -2,9 +2,9 @@ package com.effibot.robind_manipolator;
 
 import com.effibot.robind_manipolator.Processing.P3DMap;
 import com.effibot.robind_manipolator.Processing.Robot;
-import com.effibot.robind_manipolator.TCP.GameState;
-import com.effibot.robind_manipolator.TCP.Lock;
-import com.effibot.robind_manipolator.TCP.TCPFacade;
+import com.effibot.robind_manipolator.tcp.GameState;
+import com.effibot.robind_manipolator.tcp.Lock;
+import com.effibot.robind_manipolator.tcp.TCPFacade;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -14,13 +14,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller implements Runnable {
     private static Controller instance = null;
-    private P3DMap map;
-    private Robot bot;
+
     private GameState bean;
     private int state = 0;
     private final TCPFacade tcp;
     private final BlockingQueue<HashMap<String, Object>> queue;
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
+
+    private static final String ANIMATION ="ANIMATION";
 
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener(l);
@@ -63,7 +64,7 @@ public class Controller implements Runnable {
         HashMap<String, Object> pkt = new HashMap<>();
         pkt.put("PROC", "MAP");
         pkt.put("DIM", new double[]{1024.0, 1024.0});
-        pkt.put("OBSLIST", bean.getObslist());
+        pkt.put("OBSLIST", bean.getObsList());
         notifyPropertyChange("SEND", null, pkt);
         notifyPropertyChange("RECEIVE", false, true);
         boolean finish = false;
@@ -73,23 +74,17 @@ public class Controller implements Runnable {
             String key = (String) (pkt.keySet().toArray())[0];
             switch (key) {
                 case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
-                case "BW" -> {
+                case "BW" -> bean.setRaw((byte[]) Utils.decompress((byte[]) pkt.get(key)));
 
-                    bean.setRaw(Utils.imgEnanched((byte[]) pkt.get(key)));
-                    Utils.closeStreamEnc();
+                case "SHAPE" -> bean.setObsList((double[][]) pkt.get("SHAPE"));
+                case ANIMATION ->bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
 
-                }
-                case "SHAPE" -> bean.setObslist((double[][]) pkt.get("SHAPE"));
-                case "ANIMATION" -> {
-                    bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
-                    Utils.closeStreamEnc();
 
-                }
-
-                case "OBS" -> bean.setObslist((double[][]) pkt.get("OBS"));
+                case "OBS" -> bean.setObsList((double[][]) pkt.get("OBS"));
+                default -> System.out.println("NOT MAPPED CASE");
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
-                bean.notifyPropertyChange("ANIMATION", false, true);
+                bean.notifyPropertyChange(ANIMATION, false, true);
                 finish = true;
             }
         }
@@ -133,7 +128,7 @@ public class Controller implements Runnable {
         HashMap<String, Object> pkt = new HashMap<>();
         pkt.put("PROC", "PATH");
         pkt.put("START", bean.getStartId());
-        pkt.put("END", bean.getShapepos());
+        pkt.put("END", bean.getShapePos());
         pkt.put("METHOD", bean.getMethod());
         notifyPropertyChange("SEND", null, pkt);
         notifyPropertyChange("RECEIVE", false, true);
@@ -146,11 +141,10 @@ public class Controller implements Runnable {
                 case "Q" -> bean.setGq((double[][]) pkt.get(key));
                 case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
                 case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
-//                 Utils.stream2img((byte[]) pkt.get(key));
-                case "ANIMATION" -> bean.setAnimation(Utils.imgEnanched((byte[]) pkt.get(key)));
+                case ANIMATION -> bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+                default -> System.out.println("NOT MAPPED CASE");
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
-//                bean.notifyPropertyChange("ANIMATION", false, true);
                 finish = true;
             }
         }

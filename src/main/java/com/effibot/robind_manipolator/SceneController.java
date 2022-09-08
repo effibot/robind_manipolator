@@ -1,21 +1,23 @@
 package com.effibot.robind_manipolator;
-import com.effibot.robind_manipolator.TCP.GameState;
-import com.effibot.robind_manipolator.TCP.Lock;
-import com.effibot.robind_manipolator.TCP.TCPFacade;
-import com.effibot.robind_manipolator.Processing.*;
+
 import com.effibot.robind_manipolator.Processing.Observer;
+import com.effibot.robind_manipolator.Processing.Obstacle;
+import com.effibot.robind_manipolator.Processing.P2DMap;
+import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import com.effibot.robind_manipolator.tcp.GameState;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.FloatStringConverter;
-import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 
@@ -23,10 +25,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Semaphore;
 import java.util.function.UnaryOperator;
 
 public class SceneController implements Initializable, Observer, PropertyChangeListener {
@@ -101,12 +103,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private ArrayList<Integer> sequence;
     private static List<String> greenId = new ArrayList<>();
     private static final Utils util = new Utils();
-    private static GameState gm;
-    private static TCPFacade tcp;
+    private GameState gm;
     private Controller ctrl;
-    private Thread crtlThread;
-    private static Semaphore[] semaphore;
-    private Lock lock;
 
 
     @FXML
@@ -115,9 +113,9 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
         if (obsList != null) {
-            gm.setObslist(util.obs2List(obsList));
+            gm.setObsList(util.obs2List(obsList));
             ctrl.setState(0);
-            synchronized(ctrl.getLock()) {ctrl.getLock().notify();}
+            synchronized(ctrl.getLock()) {ctrl.getLock().notifyAll();}
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
@@ -178,7 +176,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         float pitch = Float.parseFloat(pitchField.getText());
         float yaw = Float.parseFloat(yawField.getText());
         boolean condition = sequence.isEmpty() ||
-                rollField.getText().isEmpty() || pitchField.getText().isEmpty() || rollField.getText().isEmpty();
+                rollField.getText().isEmpty() || pitchField.getText().isEmpty();
         double startid = Double.parseDouble(startPos.getValue());
         double selectedShape = Double.valueOf(shapeGroup.getSelectedToggle().getUserData().toString()).intValue();
         String method = (String) radioGroup.getSelectedToggle().getUserData();
@@ -186,12 +184,12 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             gm.setRoll(roll);
             gm.setPitch(pitch);
             gm.setYaw(yaw);
-            double[][] obs = gm.getObslist();
-            gm.setShapepos(new double[]{obs[(int) selectedShape][1], obs[(int) selectedShape][2]});
+            double[][] obs = gm.getObsList();
+            gm.setShapePos(new double[]{obs[(int) selectedShape][1], obs[(int) selectedShape][2]});
             gm.setStartId(startid);
             gm.setMethod(method);
             ctrl.setState(1);
-            synchronized(ctrl.getLock()){ctrl.getLock().notify();}
+            synchronized(ctrl.getLock()){ctrl.getLock().notifyAll();}
 //            double[][] obsshapes = gm.getObslist();
 //            double[] shapeposition = obsshapes[(int) selectedShape];
 //            HashMap<String, Object> msg = new HashMap<>();
@@ -215,31 +213,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //            gm.setYdes(shapeposition[0]);
 //            gm.setZdes(80);
 
-//            // load images
-//            basicMap.setImage(SwingFXUtils.toFXImage(matlabInstance.getInfo().graph(),null));
-//            ArrayList<Image> imgs =(ArrayList<Image>)  util.makeImage(matlabInstance.getPath().mapsimimg());
-//            map.setImage(imgs.get(0));
-//            Timeline timeLine = new Timeline();
-//            Collection<KeyFrame> frames = timeLine.getKeyFrames();
-//            Duration frameGap = Duration.millis(150);
-//            Duration frameTime = Duration.ZERO;
-//            int sz = imgs.size();
-//            for (int i = 0;i<sz;i++) {
-//                frameTime = frameTime.add(frameGap);
-//                Image imgi = imgs.get(i);
-//                frames.add(new KeyFrame(frameTime, e -> map.setImage(imgi)));
-//            }
-//            timeLine.setCycleCount(1);
-//            timeLine.setOnFinished(finish-> {
-//            try {
-//                setUpStage();
-//            } catch (ExecutionException | InterruptedException e) {
-//
-//                Thread.currentThread().interrupt();
-//            }
-//            });
-//            timeLine.play();
-//
 
         }
 
@@ -285,8 +258,9 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //            timeLine.play();
 
     }
-    private static final int width = 1024;
-    private static final int height = 1024;
+
+    private static final int height=1024;
+    private static final int width=1024;
     private final ByteBuffer bufferBW = ByteBuffer.allocateDirect(4*width*height);
     private final ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4*width*height);
     private final PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
@@ -360,7 +334,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         gm = GameState.getInstance();
         gm.addPropertyChangeListener(this);
         ctrl = Controller.getInstance();
-        crtlThread = new Thread(ctrl);
+        Thread crtlThread = new Thread(ctrl);
         crtlThread.start();
     }
 

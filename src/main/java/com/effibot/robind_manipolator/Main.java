@@ -1,5 +1,4 @@
 package com.effibot.robind_manipolator;
-import com.effibot.robind_manipolator.TCP.TCPFacade;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import javafx.application.Application;

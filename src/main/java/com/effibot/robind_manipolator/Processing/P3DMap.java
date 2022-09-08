@@ -1,13 +1,12 @@
 package com.effibot.robind_manipolator.Processing;
 
-import com.effibot.robind_manipolator.TCP.GameState;
-import com.effibot.robind_manipolator.TCP.TCPFacade;
+import com.effibot.robind_manipolator.tcp.GameState;
+import com.effibot.robind_manipolator.tcp.TCPFacade;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class P3DMap extends ProcessingBase{

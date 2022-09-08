@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.TCP;
+package com.effibot.robind_manipolator.tcp;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -7,8 +7,8 @@ import java.util.HashMap;
 public class GameState {
     private static GameState instance;
     private  double[] greenId;
-    private  double[][] obslist;
-    private double[] shapepos;
+    private  double[][] obsList;
+    private double[] shapePos;
     private  double[][] gq;
     private  double[][] gdq;
     private  double[][] gddq;
@@ -61,20 +61,20 @@ public class GameState {
     }
 
     public byte[] getAnimation(){return this.animation;}
-    public double[][] getObslist() {
-        return obslist;
+    public double[][] getObsList() {
+        return obsList;
     }
 
-    public void setObslist(double[][] obslist) {
-        this.obslist = obslist;
+    public void setObsList(double[][] obsList) {
+        this.obsList = obsList;
     }
 
-    public double[] getShapepos() {
-        return shapepos;
+    public double[] getShapePos() {
+        return shapePos;
     }
 
-    public void setShapepos(double[] shapepos) {
-        this.shapepos = shapepos;
+    public void setShapePos(double[] shapePos) {
+        this.shapePos = shapePos;
     }
 
     public double[][] getGq() {
@@ -134,7 +134,7 @@ public class GameState {
     }
 
 
-    public synchronized static GameState getInstance(){
+    public static synchronized  GameState getInstance(){
         if (instance == null){
             instance = new GameState();
         }
