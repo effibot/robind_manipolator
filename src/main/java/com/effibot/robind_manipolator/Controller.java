@@ -73,14 +73,17 @@ public class Controller implements Runnable {
             pkt = queue.take();
             String key = (String) (pkt.keySet().toArray())[0];
             switch (key) {
-                case "ID" -> bean.setGreenId((double[]) pkt.get("ID"));
+                case "ID" -> bean.setGreenId((double[]) pkt.get(key));
                 case "BW" -> bean.setRaw((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-
-                case "SHAPE" -> bean.setObsList((double[][]) pkt.get("SHAPE"));
+                case "SHAPE" -> bean.setObsList((double[][]) pkt.get(key));
                 case ANIMATION ->bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-
-
-                case "OBS" -> bean.setObsList((double[][]) pkt.get("OBS"));
+                case "Q"-> bean.setGq((double[][]) pkt.get(key));
+                case "dQ"-> bean.setGdq((double[][]) pkt.get(key));
+                case "ddQ"-> bean.setGddq((double[][]) pkt.get(key));
+                case "Qs"-> bean.setSq((double[][]) pkt.get(key));
+                case "dQs"-> bean.setSdq((double[][]) pkt.get(key));
+                case "ddQs"-> bean.setSddq((double[][]) pkt.get(key));
+                case "E"-> bean.setE((double[][]) pkt.get(key));
                 default -> System.out.println("NOT MAPPED CASE");
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
@@ -106,7 +109,7 @@ public class Controller implements Runnable {
                    }
                }
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                break;
             }
         }
 //
