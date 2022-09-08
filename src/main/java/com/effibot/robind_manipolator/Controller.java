@@ -151,6 +151,7 @@ public class Controller implements Runnable {
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
                 finish = true;
+
             }
         }
     }

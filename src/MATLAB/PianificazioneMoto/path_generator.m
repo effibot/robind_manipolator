@@ -10,15 +10,24 @@ greenAdjbc = reshape([greenAdj.bc]',2,[]);
 if ~isempty(greenAdjbc)
     [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
 else 
-    msg = src.UserData.buildMessage(0,"ERROR",1);
+    msg = src.UserData.buildMessage(0,"ERROR_SHAPE",1);
     msg = src.UserData.buildMessage(msg,"FINISH",1);
     src.UserData.sendMessage(src,msg);
     return
 end
 endId = greenAdj(id).id;
-
 P = shortestpath(G, startId, endId);
-
+if P == startId 
+    msg = src.UserData.buildMessage(0,"ERROR_STID",2);
+    msg = src.UserData.buildMessage(msg,"FINISH",1);
+    src.UserData.sendMessage(src,msg);
+    return
+elseif isempty(P)
+    msg = src.UserData.buildMessage(0,"ERROR_CYCLE",3);
+    msg = src.UserData.buildMessage(msg,"FINISH",1);
+    src.UserData.sendMessage(src,msg);
+    return
+end
 [p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, redObsbc',method);
 msg =src.UserData.buildMessage(0,"Q",p);
 msg =src.UserData.buildMessage(msg,"FINISH",0);
