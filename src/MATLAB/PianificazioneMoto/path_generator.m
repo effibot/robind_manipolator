@@ -7,7 +7,13 @@ goalObsNode = redListNode(id);
 nodeAdj = arrayfun(@(x)findobj(nodeList,'id',x),goalObsNode.adj);
 greenAdj = nodeAdj(~ismember(nodeAdj,findobj(nodeAdj,'prop','r')));
 greenAdjbc = reshape([greenAdj.bc]',2,[]);
-[id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
+if ~isempty(greenAdjbc)
+    [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
+else 
+    msg = src.UserData.buildMessage(0,"ERROR",1);
+    src.UserData.sendMessage(src,msg);
+    return
+end
 endId = greenAdj(id).id;
 
 P = shortestpath(G, startId, endId);
