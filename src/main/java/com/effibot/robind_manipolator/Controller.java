@@ -13,9 +13,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Controller implements Runnable {
     private static Controller instance = null;
 
-    private GameState bean;
+    private final GameState bean;
     private int state = 0;
-    private final TCPFacade tcp;
     private final BlockingQueue<HashMap<String, Object>> queue;
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -36,7 +35,7 @@ public class Controller implements Runnable {
 
     private Controller() {
         bean = GameState.getInstance();
-        tcp = TCPFacade.getInstance();
+        TCPFacade tcp = TCPFacade.getInstance();
         queue = new LinkedBlockingQueue<>(1);
         tcp.setQueue(queue);
         addPropertyChangeListener(tcp);
@@ -75,7 +74,9 @@ public class Controller implements Runnable {
                 case "BW" -> bean.setRaw((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "SHAPE" -> bean.setObsList((double[][]) pkt.get(key));
                 case ANIMATION ->bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-
+                case "SHAPEIDS" -> {
+                    //TODO: hasmap con tre chiavi sfera cono cubo
+                }
 //                case "Qs"-> bean.setSq((double[][]) pkt.get(key));
 //                case "dQs"-> bean.setSdq((double[][]) pkt.get(key));
 //                case "ddQs"-> bean.setSddq((double[][]) pkt.get(key));
@@ -103,6 +104,7 @@ public class Controller implements Runnable {
                    default -> {
                        synchronized (lock) {
                            lock.wait();
+                           System.out.println("Controller notify");
                        }
                    }
                }
@@ -142,6 +144,7 @@ public class Controller implements Runnable {
                 case "Q" -> bean.setGq((double[][]) pkt.get(key));
                 case "dQ" -> bean.setGdq((double[][]) pkt.get(key));
                 case "ddQ" -> bean.setGddq((double[][]) pkt.get(key));
+                case "PATHIDS" -> bean.setPathLabel((double[]) pkt.get(key));
                 case ANIMATION -> bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "ERROR"-> {
                     bean.setShapeAvailable(true);

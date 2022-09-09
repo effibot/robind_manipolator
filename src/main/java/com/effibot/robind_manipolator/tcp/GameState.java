@@ -2,6 +2,7 @@ package com.effibot.robind_manipolator.tcp;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class GameState {
@@ -31,7 +32,8 @@ public class GameState {
     private byte[] animation = null;
     private byte[] rawImg = null;
     private boolean shapeAvailable = false;
-
+    private String pathLabel;
+    private boolean isFinished = false;
     private GameState( ){
         changes = new PropertyChangeSupport(this);
     }
@@ -238,5 +240,21 @@ public class GameState {
 
     public boolean getShapeAvailable() {
         return this.shapeAvailable;
+    }
+
+    public void setPathLabel(double[] ids) {
+        StringBuilder sb = new StringBuilder();
+        for(double id : ids){
+            sb.append("[").append(String.valueOf(id).split("\\.")[0]).append("]").append(" -> ");
+            if((id ==  ids[ids.length-1])){
+                sb.append("Fine");
+            }
+        }
+        notifyPropertyChange("PATHLABEL",pathLabel,sb.toString());
+        pathLabel = sb.toString();
+    }
+
+    public String getPathLabel() {
+        return pathLabel;
     }
 }

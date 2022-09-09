@@ -24,6 +24,7 @@ public class Receiver implements Runnable{
         ObjectInputStream ois;
         try {
             sem[1].acquire();
+            System.out.format("Receiver Lock.\tSem[0] = %d, Sem[1] = %d\n",sem[0].availablePermits(),sem[1].availablePermits());
             InputStream is = socket.getInputStream();
             while (true) {
                 if (is.available() > 0) {
@@ -42,6 +43,7 @@ public class Receiver implements Runnable{
             throw new RuntimeException(e);
         } finally {
             sem[0].release();
+            System.out.format("Receiver Unlock.\tSem[0] = %d, Sem[1] = %d\n",sem[0].availablePermits(),sem[1].availablePermits());
         }
 
     }

@@ -124,8 +124,8 @@
                                                 <Font name="System Bold Italic" size="13.0" />
                                              </font>
                                           </Label>
-                                          <Button fx:id="bckCtrlBtn" layoutX="57.0" layoutY="155.0" mnemonicParsing="false" text="Torna alla Control tab" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="58.20000000000002" AnchorPane.topAnchor="155.0" />
-                                          <Button fx:id="bckStpBtn" layoutX="57.0" layoutY="190.0" mnemonicParsing="false" text="Torna alla Setup tab" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="58.20000000000002" AnchorPane.topAnchor="190.0" />
+                                          <Button fx:id="bckCtrlBtn" layoutX="57.0" layoutY="155.0" mnemonicParsing="false" onAction="#onBackControlAction" text="Torna alla Control tab" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="58.20000000000002" AnchorPane.topAnchor="155.0" />
+                                          <Button fx:id="bckStpBtn" layoutX="57.0" layoutY="190.0" mnemonicParsing="false" onAction="#onBackSetupAction" text="Torna alla Setup tab" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="58.20000000000002" AnchorPane.topAnchor="190.0" />
                                        </children>
                                     </AnchorPane>
                                  </content></Tab>

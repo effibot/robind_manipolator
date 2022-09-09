@@ -207,8 +207,8 @@ public void draw3Drobot(PeasyCam cam){
         rotateZ(roll);
         rotateY(pitch);
         rotateZ(yaw);
-        show(0,0,0,true);
-        box(5);
+        //show(0,0,0,true);
+        //box(5);
         //show(0,0,63,true);
         popMatrix();
         noStroke();                
@@ -217,7 +217,7 @@ public void draw3Drobot(PeasyCam cam){
 
         pushMatrix();
          r.drawLink();
-         show(0,0,0,true);
+         //show(0,0,0,true);
          
         popMatrix();
        pushMatrix();
@@ -227,7 +227,7 @@ public void draw3Drobot(PeasyCam cam){
         stroke(0);
         strokeWeight(2);
         //sphere(abs(a2 - d4));
-        sphere(50+51);
+        //sphere(50+51);
         //shape = new Ellipsoid(50+51, 50+51, 50+51, 24, 12);
         //shape.fill(color(1,1,1, 0.5));
         //shape.drawMode(S3D.WIRE);

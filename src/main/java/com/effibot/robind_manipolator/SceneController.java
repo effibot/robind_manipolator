@@ -17,6 +17,7 @@ import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.StageStyle;
 import javafx.util.converter.FloatStringConverter;
 import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
@@ -35,8 +36,6 @@ import org.controlsfx.dialog.CommandLinksDialog.CommandLinksButtonType;
 
 
 public class SceneController implements Initializable, Observer, PropertyChangeListener {
-    @FXML
-    public SegmentedButton segButtonBar;
     @FXML
     public ComboBox<String> startPos;
     @FXML
@@ -104,7 +103,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private ToggleGroup radioGroup;
     private ToggleGroup shapeGroup;
     private ArrayList<Integer> sequence;
-    private static List<String> greenId = new ArrayList<>();
+    private static final List<String> greenId = new ArrayList<>();
     private static final Utils util = new Utils();
     private GameState gm;
     private Controller ctrl;
@@ -115,23 +114,29 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 //        ArrayList<Obstacle> dummy = new ArrayList<>();
 //        dummy.add(new Obstacle(sketch,2*(40-10),2*(40-10),50,120,100,0));
 //        ((P2DMap)sketch).setObstacleList(dummy);
-        if (!obsList.isEmpty()) {
+        if (obsList.size() >= 3) {
             gm.setObsList(util.obs2List(obsList));
             ctrl.setState(0);
             synchronized (ctrl.getLock()) {
                 ctrl.getLock().notifyAll();
+                System.out.println("Scene controller notify");
             }
             setupTab.setClosable(true);
             setupTab.setDisable(true);
             tabPane.getSelectionModel().select(controlTab);
             controlTab.setDisable(false);
             // close 2D map
-            sketch2D.removeObserver(this);
 //            sketch.noLoop();
 //            sketch.stop();
 //            sketch.exit();
         } else {
-            //TODO: implements popup to specify at least one obstacle
+            Platform.runLater(() ->{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Numero di Ostacoli Insufficienti");
+                alert.setContentText("Inserire almeno tre ostacoli sulla mappa");
+                alert.initStyle(StageStyle.UNDECORATED);
+                alert.showAndWait();
+            });
         }
     }
 
@@ -176,7 +181,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     }
 
     @FXML
-    public void onStartAction(ActionEvent actionEvent) {
+    public void onStartAction() {
 //        startBtn.setDisable(true);
         float roll = Float.parseFloat(rollField.getText());
         float pitch = Float.parseFloat(pitchField.getText());
@@ -198,6 +203,10 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
             synchronized (ctrl.getLock()) {
                 ctrl.getLock().notifyAll();
             }
+            switchTab("Info");
+            objName.setText("");
+            // set pathlabel
+
 //            double[][] obsshapes = gm.getObslist();
 //            double[] shapeposition = obsshapes[(int) selectedShape];
 //            HashMap<String, Object> msg = new HashMap<>();
@@ -273,13 +282,13 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     private ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4 * width * height);
     private PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
 
-
     private PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
     private WritableImage imgBW = new WritableImage(pixelBufferBW);
     private WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        obsList = new ArrayList<>();
         sphereBtn.setId("sphere");
         sphereBtn.setUserData(0);
         cubeBtn.setId("cube");
@@ -297,15 +306,10 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         SplitPane.Divider topDivider = topSplit.getDividers().get(0);
         double topDividerPosition = topDivider.getPosition();
         topDivider.positionProperty().addListener((observable, oldValue, newValue) -> topDivider.setPosition(topDividerPosition));
-
         // Setup delle label d'info
         objName.setText("");
         pathLabel.setText("");
-        infoTab.setClosable(true);
-        infoTab.setDisable(true);
-        // setup label control
-        controlTab.setClosable(true);
-        controlTab.setDisable(true);
+        switchTab("Setup");
         startPos.setVisibleRowCount(5);
         startPos.getEditor().setTextFormatter(new TextFormatter<>(c -> {
             if (c.getControlNewText().matches("\\d*") && greenId.contains(c.getText()))
@@ -323,8 +327,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         cubicRadio.setToggleGroup(radioGroup);
         cubicRadio.setUserData("cubic");
         radioGroup.selectToggle(paraRadio); // default value
-        //startPos.getItems().addAll(/*
-        // TODO: get list of green cells from the map and add to the choicebox*/)
         // Setup RPY default value
         rollField.setText("");
         mySetFormatter(rollField);
@@ -332,6 +334,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         mySetFormatter(pitchField);
         yawField.setText("");
         mySetFormatter(yawField);
+        // Setup Images
         basicMap.setImage(imgBW);
         map.setImage(imgAnimation);
 
@@ -344,13 +347,14 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         ctrl = Controller.getInstance();
         Thread crtlThread = new Thread(ctrl);
         crtlThread.start();
+        // add event filter to info-labels
 
     }
 
 
     // Processing 2D setup
     private static ProcessingBase sketch2D;
-    Application app;
+    private Application app;
 
 
     public void setJavafxApp(Application jfxApp) {
@@ -422,16 +426,12 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                 bufferBW.put(0, gm.getRaw());
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
-            case "ERROR_SHAPE" -> errorShapeRecovery();
             case "ERROR_STID" -> errorStartIdRecovery();
-            case "ERROR_CYCLE" -> errorCycleRecovery();
+            case "PATHLABEL" -> Platform.runLater(() ->pathLabel.setText((String) evt.getNewValue()));
             default -> System.out.println("Not Mapped Case.");
         }
     }
 
-    private void errorCycleRecovery() {
-        //TODO: cycle of obstacles that makes a green hole produce two connected graphs but jumps are forbidden.
-    }
 
     private void errorStartIdRecovery() {
         Platform.runLater(() -> {
@@ -441,8 +441,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                     new CommandLinksButtonType("ChangeId",
                             "Selezione un altro nodo verde da cui partire.", true)
             );
-
-
             CommandLinksDialog dlg = new CommandLinksDialog(links);
             dlg.setOnCloseRequest(event -> {
                         String result = dlg.getResult().getText();
@@ -460,57 +458,77 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                         }
                     }
             );
-            dlg.setTitle("Forma non raggiunbile");
+            dlg.setTitle("Il rover non necessità di spostarsi.");
             dlg.getDialogPane().setContentText("Seleziona azione da eseguire");
             dlg.showAndWait();
         });
     }
 
-    private void errorShapeRecovery() {
-        Platform.runLater(() -> {
-            List<CommandLinksButtonType> links = Arrays.asList(
-                    new CommandLinksButtonType("Redo",
-                            "Riselezione della forma da cercare con stessa mappa", false),
-                    new CommandLinksButtonType("Reset",
-                            "Reset degli ostacoli,delle forme e creazione di una mappa nuova", true)
-            );
+    private void resetP2D(){
+        sketch2D.setup();
+        greenId.clear();
+        startPos.getSelectionModel().clearSelection();
+        startPos.getItems().clear();
+        gm.setGreenId(new double[]{});
+    }
 
+    private void switchTab(String tabName){
+        for (Tab t : tabPane.getTabs()){
+            if(t.getText().equals(tabName)){
+                t.setClosable(false);
+                t.setDisable(false);
+                tabPane.getSelectionModel().select(t);
+            }else {
+                t.setDisable(true);
+                t.setClosable(true);
+            }
+        }
+    }
 
-            CommandLinksDialog dlg = new CommandLinksDialog(links);
-            dlg.setOnCloseRequest(event -> {
-                        String result = dlg.getResult().getText();
-                        switch (result) {
-                            case "Redo" -> ((Node) shapeGroup.getSelectedToggle()).setDisable(true);
-                            case "Reset" -> {
-                                sketch2D.setup();
-                                controlTab.setClosable(true);
-                                controlTab.setDisable(true);
-                                greenId.clear();
-                                startPos.getSelectionModel().clearSelection();
-                                startPos.getItems().clear();
-                                gm.setGreenId(new double[]{});
-                                sketch2D.registerObserver(this);
-                                sketch2D.notifyObservers();
-                                setupTab.setClosable(false);
-                                setupTab.setDisable(false);
-                                tabPane.getSelectionModel().select(setupTab);
-                                radioGroup.selectToggle(paraRadio);
+    private void clearAnimationBuffer(){
+        bufferBW = ByteBuffer.allocateDirect(4 * width * height);
+        bufferAnimation = ByteBuffer.allocateDirect(4 * width * height);
+        pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
+        pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+        imgBW = new WritableImage(pixelBufferBW);
+        imgAnimation = new WritableImage(pixelBufferAnimation);
+        map.setImage(imgAnimation);
+        basicMap.setImage(imgBW);
+    }
+    private void resetControlTab(){
+        radioGroup.selectToggle(paraRadio);
 
-                                bufferBW = ByteBuffer.allocateDirect(4 * width * height);
-                                bufferAnimation = ByteBuffer.allocateDirect(4 * width * height);
-                                pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
-                                pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
-                                imgBW = new WritableImage(pixelBufferBW);
-                                imgAnimation = new WritableImage(pixelBufferAnimation);
-                                map.setImage(imgAnimation);
-                                basicMap.setImage(imgBW);
-                            }
-                        }
-                    }
-            );
-            dlg.setTitle("Forma non raggiunbile");
-            dlg.getDialogPane().setContentText("Seleziona azione da eseguire");
-            dlg.showAndWait();
-        });
+    }
+    private void clearInfoTab(){
+        objName.setText("");
+        pathLabel.setText("");
+    }
+    private void clearControlTab(){
+        shapeGroup.selectToggle(null);
+        radioGroup.selectToggle(paraRadio);
+        rollField.setText("0.0");
+        yawField.setText("0.0");
+        pitchField.setText("0.0");
+//        startPos.getSelectionModel().clearSelection();
+    }
+    @FXML
+    public void onBackControlAction() {
+        // clear info tab
+        clearInfoTab();
+        // reset control tab
+        clearControlTab();
+        // switch to the control tab
+        switchTab("Control");
+    }
+    @FXML
+    public void onBackSetupAction() {
+        // reset p2d map
+        resetP2D();
+        // clear control tab
+        clearControlTab();
+        // clear images
+        clearAnimationBuffer();
+        // switch to the setup tab
+        switchTab("Setup");
     }
 }
