@@ -21,7 +21,7 @@ color = zeros(3,1,3,'uint8');
 color(1,1,:)=[246,182,41];
 color(2,1,:)= [205,117,149];
 color(3,1,:) = [88, 238, 255];
-% color = uint8([41,182,246;149,117,205;255, 238, 88]);
+msg = src.UserData.buildMessage(0,"SHAPEIDS",0);
 for i = 1:3
     form = i-1;
     obb = randi(nobs,1);
@@ -36,12 +36,25 @@ for i = 1:3
          pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
          repmat(color(i,1,:),radius,radius,1);
     shapepos(i,:) = [form,pos];
+    list(i) = findEndIds(nodeList,pos,G,i);
+    switch(i)
+        case 1
+            msg = src.UserData.buildMessage(msg,"SFERA",list(i).allid);
+        case 2
+            msg = src.UserData.buildMessage(msg,"CONO",list(i).allid);
+        case 3
+           msg = src.UserData.buildMessage(msg,"CUBO",list(i).allid);
+    end
 end
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+
 M = cat(3,M,ones(1024,'uint8')*255);
 msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(M));
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 M= M(:,:,1:3);
+
 msg = src.UserData.buildMessage(0,"ID",gid);
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
@@ -51,5 +64,5 @@ src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 
-save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp
+save mapg.mat M obs dim robotsize A Aint Amid G nodeList shapepos Acomp list
 end

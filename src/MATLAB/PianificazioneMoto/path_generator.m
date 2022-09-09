@@ -2,20 +2,9 @@ function [p,dp,ddp,images,error]=path_generator(startId,shape,method,src)
 load mapg.mat
 redListNode = findobj(nodeList, 'prop', 'r');
 redObsbc = reshape([redListNode.bc]',2,[]);
-[id,~]=dsearchn(redObsbc',shape);
-goalObsNode = redListNode(id);
-nodeAdj = arrayfun(@(x)findobj(nodeList,'id',x),goalObsNode.adj);
-greenAdj = nodeAdj(~ismember(nodeAdj,findobj(nodeAdj,'prop','r')));
-greenAdjbc = reshape([greenAdj.bc]',2,[]);
-if ~isempty(greenAdjbc)
-    [id,~]=dsearchn(greenAdjbc',goalObsNode.bc);
-else 
-    msg = src.UserData.buildMessage(0,"ERROR_SHAPE",1);
-    msg = src.UserData.buildMessage(msg,"FINISH",1);
-    src.UserData.sendMessage(src,msg);
-    return
-end
-endId = greenAdj(id).id;
+shapeposlist = reshape([list.pos]',2,[])';
+idx = find(ismember(shapeposlist,shape,'rows'));
+endId = list(idx).endid;
 P = shortestpath(G, startId, endId);
 if P == startId 
     msg = src.UserData.buildMessage(0,"ERROR_STID",2);
