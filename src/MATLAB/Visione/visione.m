@@ -1,4 +1,4 @@
-function [objArea,objPerim,objShape,ang,frame]=visione(filename)
+function [objArea,objPerim,objShape,ang,frame]=visione(obsTarget)
 % variabili simboliche
 figure('Visible','off')
 syms x rect(x,x0,y0,m) rect2p(x,x0,y0,x1,y1)  
@@ -77,8 +77,7 @@ for i =1:size(diag,2)
     fplot(eq, 'b','LineWidth', 1.5);
     hold on
 end
-saveimage(gcf,'.\mapgenerationimg\visione\Processed\','1.png');
-frame = frame2im(gcf);
+frame = frame2im(getframe(gcf));
 %% Report dell'Identificazione
 % fprintf("Area: %f, Perimetro: %f\n", objArea, objPerim);
 % fprintf("Forma dell'Oggetto: %s\n", objShape);

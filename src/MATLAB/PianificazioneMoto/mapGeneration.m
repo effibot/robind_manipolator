@@ -17,6 +17,11 @@ G=graph(A);
 
 nobs = size(obs,1);
 shapepos = zeros(3,3);
+color = zeros(3,1,3,'uint8');
+color(1,1,:)=[246,182,41];
+color(2,1,:)= [205,117,149];
+color(3,1,:) = [88, 238, 255];
+% color = uint8([41,182,246;149,117,205;255, 238, 88]);
 for i = 1:3
     form = i-1;
     obb = randi(nobs,1);
@@ -26,8 +31,17 @@ for i = 1:3
         pos = obs(obb,1:2);
 
     end
+     radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
+     M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
+         pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
+         repmat(color(i,1,:),radius,radius,1);
     shapepos(i,:) = [form,pos];
 end
+M = cat(3,M,ones(1024,'uint8')*255);
+msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(M));
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+M= M(:,:,1:3);
 msg = src.UserData.buildMessage(0,"ID",gid);
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);

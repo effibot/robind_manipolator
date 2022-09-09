@@ -28,6 +28,9 @@ elseif isempty(P)
     src.UserData.sendMessage(src,msg);
     return
 end
+msg = src.UserData.buildMessage(0, "PATHIDS",P);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 [p,dp,ddp] = pathfind(nodeList, P, Aint, Amid, redObsbc',method);
 msg =src.UserData.buildMessage(0,"Q",p);
 msg =src.UserData.buildMessage(msg,"FINISH",0);

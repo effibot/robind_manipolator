@@ -3,8 +3,8 @@ function node = makeMap(obstacleList, dim)
     %     img = ones([dim,3]);
     img = ones(dim);
     for o = obstacleList'
-    img(o(1)-fix(o(3)/2)+1:o(1)-fix(o(3)/2)+o(3),...
-        o(2)-fix(o(3)/2)+1:o(2)-fix(o(3)/2)+o(3),:) = 0;
+    img(o(1)-fix(o(3)/2)+1:o(1)+fix(o(3)/2),...
+        o(2)-fix(o(3)/2)+1:o(2)+fix(o(3)/2),:) = 0;
     end
     bc = dim/2;
     lc = [1 1];
