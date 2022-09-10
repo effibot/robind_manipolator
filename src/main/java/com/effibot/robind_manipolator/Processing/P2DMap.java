@@ -7,7 +7,7 @@ public class P2DMap extends ProcessingBase {
     private final int mapColor = color(102, 102, 102);
     private int targetColor;
     private final float targetAlpha = 80f;
-    private final float targetSize = 40.0f;
+    private final float targetSize = 32.0f;
 
     private final int colorPass = color(0, 255, 0, targetAlpha);
     private final int colorFail = color(255, 0, 0, targetAlpha);

@@ -15,35 +15,45 @@ src.UserData.sendMessage(src,msg);
 G=graph(A);
 [gid,M] = gPlot(nodeList, A, Amid, Aint,M,src,map.value);
 
-nobs = size(obs,1);
 shapepos = zeros(3,3);
 color = zeros(3,1,3,'uint8');
-color(1,1,:)=[246,182,41];
-color(2,1,:)= [205,117,149];
-color(3,1,:) = [88, 238, 255];
+color(1,1,:)=[246,182,41];  %Sfera: arancione
+color(2,1,:)= [205,117,149]; %Cono: viola
+color(3,1,:) = [88, 238, 255]; %Cubo: celeste
 msg = src.UserData.buildMessage(0,"SHAPEIDS",0);
+obstemp = obs;
 for i = 1:3
     form = i-1;
-    obb = randi(nobs,1);
-    pos = obs(obb,1:2);
-    while ~isempty(find(ismember(shapepos(:,2:3),pos,'rows'), 1))
-        obb = randi([1 nobs],1);
-        pos = obs(obb,1:2);
+
+    while  ~isempty(obstemp)
+         nobs = size(obstemp,1);
+
+        obb = randi(nobs,1);
+        pos = obstemp(obb,1:2);
+        if isempty(find(ismember(shapepos(:,2:3),pos,'rows'), 1))            
+            [listElem,boolean]= findEndIds(nodeList,pos,G,i);
+            if boolean
+                radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
+                M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
+                    pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
+                    repmat(color(i,1,:),radius,radius,1);
+                break
+            end
+        end
+        obstemp(obb,:)=[];
 
     end
-     radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
-     M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
-         pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
-         repmat(color(i,1,:),radius,radius,1);
+
     shapepos(i,:) = [form,pos];
-    list(i) = findEndIds(nodeList,pos,G,i);
+    list(i) = listElem;
+
     switch(i)
         case 1
             msg = src.UserData.buildMessage(msg,"SFERA",list(i).allid);
         case 2
             msg = src.UserData.buildMessage(msg,"CONO",list(i).allid);
         case 3
-           msg = src.UserData.buildMessage(msg,"CUBO",list(i).allid);
+            msg = src.UserData.buildMessage(msg,"CUBO",list(i).allid);
     end
 end
 msg = src.UserData.buildMessage(msg,"FINISH",0);
