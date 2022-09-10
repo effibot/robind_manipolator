@@ -104,7 +104,7 @@ public class Controller implements Runnable {
                    default -> {
                        synchronized (lock) {
                            lock.wait();
-                           System.out.println("Controller notify");
+                           System.out.println("Controller wait");
                        }
                    }
                }
