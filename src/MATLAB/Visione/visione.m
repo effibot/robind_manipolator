@@ -86,10 +86,20 @@ frame = frame2im(getframe(gcf));
 % fprintf("Tempo di Processamento: %f ms\n", elapseTime);
 %%
 msg = src.UserData.buildMessage(0,"AREA",objArea);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(msg,"PERIM",objPerim);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(msg,"FORMA",objShape);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(msg,"ORIENT",ang);
-msg = src.UserData.buildMessage(msg,"IMG",src.UserData.compressImg(frame));
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+msg = src.UserData.buildMessage(msg,"BW",src.UserData.compressImg(frame));
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(msg,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 end

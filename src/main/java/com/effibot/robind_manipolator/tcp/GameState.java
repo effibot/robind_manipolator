@@ -32,8 +32,15 @@ public class GameState {
     private byte[] animation = null;
     private byte[] rawImg = null;
     private boolean shapeAvailable = false;
-    private String pathLabel;
+    private String pathLabel=null;
     private boolean isFinished = false;
+    private double[] qik;
+    private double[] errorNewton;
+    private double area;
+    private double perim;
+    private double orient;
+    private String forma;
+
     private GameState( ){
         changes = new PropertyChangeSupport(this);
     }
@@ -250,11 +257,42 @@ public class GameState {
                 sb.append("Fine");
             }
         }
-        notifyPropertyChange("PATHLABEL",pathLabel,sb.toString());
+        changes.firePropertyChange("PATHLABEL",pathLabel,sb.toString());
         pathLabel = sb.toString();
+
     }
 
     public String getPathLabel() {
         return pathLabel;
     }
+
+    public void setQIK(double[] qik) {
+        this.qik = qik;
+    }
+
+    public double[] getQIK(){ return qik;}
+
+    public void setEnewton(double[] eNewton) {
+        this.errorNewton = eNewton;
+    }
+    
+    public double[] getEnewton(){return this.errorNewton;}
+
+    public void setArea(double area) {
+        this.area = area;
+    }
+    public double getArea(){return area;}
+    public void setPerim(double perim) {
+        this.perim = perim;
+    }
+    public double getPerim(){return perim;}
+    public void setOrient(double orient) {
+        this.orient = orient;
+    }
+    public double getOrient(){return orient;}
+
+    public void setForma(String forma) {
+        this.forma = forma;
+    }
+    public String getForma(){return forma;}
 }

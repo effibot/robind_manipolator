@@ -19,7 +19,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.StageStyle;
 import javafx.util.converter.FloatStringConverter;
-import org.controlsfx.control.SegmentedButton;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.dialog.CommandLinksDialog;
 import java.beans.PropertyChangeEvent;
@@ -117,6 +116,7 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         if (obsList.size() >= 3) {
             gm.setObsList(util.obs2List(obsList));
             ctrl.setState(0);
+            sketch2D.pause();
             synchronized (ctrl.getLock()) {
                 ctrl.getLock().notifyAll();
                 System.out.println("Scene controller notify");
@@ -276,13 +276,13 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
 
     }
 
-    private static final int height = 1024;
-    private static final int width = 1024;
-    private ByteBuffer bufferBW = ByteBuffer.allocateDirect(4 * width * height);
-    private ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4 * width * height);
-    private PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
+    private static final int HEIGHT = 1024;
+    private static final int WIDTH = 1024;
+    private ByteBuffer bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+    private ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+    private PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
 
-    private PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+    private PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
     private WritableImage imgBW = new WritableImage(pixelBufferBW);
     private WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
 
@@ -427,7 +427,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
             case "ERROR_STID" -> errorStartIdRecovery();
-            case "PATHLABEL" -> Platform.runLater(() ->pathLabel.setText((String) evt.getNewValue()));
+            case "PATHLABEL" -> Platform.runLater(()-> pathLabel.setText((String) evt.getNewValue()));
+
             default -> System.out.println("Not Mapped Case.");
         }
     }
@@ -465,6 +466,8 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     }
 
     private void resetP2D(){
+        sketch2D.resume();
+
         sketch2D.setup();
         greenId.clear();
         startPos.getSelectionModel().clearSelection();
@@ -486,18 +489,14 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
     }
 
     private void clearAnimationBuffer(){
-        bufferBW = ByteBuffer.allocateDirect(4 * width * height);
-        bufferAnimation = ByteBuffer.allocateDirect(4 * width * height);
-        pixelBufferBW = new PixelBuffer<>(width, height, bufferBW, PixelFormat.getByteBgraPreInstance());
-        pixelBufferAnimation = new PixelBuffer<>(width, height, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+        bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+        bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+        pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
+        pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
         imgBW = new WritableImage(pixelBufferBW);
         imgAnimation = new WritableImage(pixelBufferAnimation);
         map.setImage(imgAnimation);
         basicMap.setImage(imgBW);
-    }
-    private void resetControlTab(){
-        radioGroup.selectToggle(paraRadio);
-
     }
     private void clearInfoTab(){
         objName.setText("");
@@ -509,7 +508,6 @@ public class SceneController implements Initializable, Observer, PropertyChangeL
         rollField.setText("0.0");
         yawField.setText("0.0");
         pitchField.setText("0.0");
-//        startPos.getSelectionModel().clearSelection();
     }
     @FXML
     public void onBackControlAction() {

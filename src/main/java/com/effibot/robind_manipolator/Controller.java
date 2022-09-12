@@ -76,12 +76,13 @@ public class Controller implements Runnable {
                 case ANIMATION ->bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "SHAPEIDS" -> {
                     //TODO: hasmap con tre chiavi sfera cono cubo
+                    System.out.println("RICE");
                 }
 //                case "Qs"-> bean.setSq((double[][]) pkt.get(key));
 //                case "dQs"-> bean.setSdq((double[][]) pkt.get(key));
 //                case "ddQs"-> bean.setSddq((double[][]) pkt.get(key));
 //                case "E"-> bean.setE((double[][]) pkt.get(key));
-                default -> {
+                case "FINISH" -> {
                     finish = true;
                 }
             }
@@ -95,11 +96,14 @@ public class Controller implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
                switch (state){
                    case 0 -> makeMap();
                    case 1 -> makePath();
+                   case 2 -> simulate();
+                   case 3 -> ik();
+                   case 4 -> vision();
                    // state  == -1
                    default -> {
                        synchronized (lock) {
@@ -123,6 +127,97 @@ public class Controller implements Runnable {
 //                                // start vision -> function
 //
 
+    }
+
+    private void vision() throws InterruptedException{
+        this.state = -1;
+        HashMap<String,Object> pkt = new HashMap<>();
+        pkt.put("PROC","VIS");
+        pkt.put("SHAPE",bean.getSelectedShape());
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "AREA" -> bean.setArea((double) pkt.get(key));
+                case "PERIM" ->bean.setPerim((double) pkt.get(key));
+                case "FORMA" ->bean.setForma((String) pkt.get(key));
+                case "ORIENT" ->bean.setOrient((double) pkt.get(key));
+                case "BW" ->bean.setRaw((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+
+                default -> finish=true;
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                finish = true;
+
+            }
+        }
+    }
+
+    private void ik()  throws InterruptedException{
+        this.state = -1;
+
+        HashMap<String,Object> pkt = new HashMap<>();
+        pkt.put("PROC","IK");
+        pkt.put("X",bean.getXdes());
+        pkt.put("Y",bean.getYdes());
+        pkt.put("Z",bean.getZdes());
+        pkt.put("ROLL",bean.getRoll());
+        pkt.put("PITCH",bean.getPitch());
+        pkt.put("YAW",bean.getYaw());
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "Q" -> bean.setQIK((double[]) pkt.get(key));
+                case "ENEWTON" ->bean.setEnewton((double[]) pkt.get(key));
+                default -> finish=true;
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                finish = true;
+
+            }
+        }
+    }
+
+    private void simulate()  throws InterruptedException{
+        this.state = -1;
+
+        HashMap<String,Object> pkt = new HashMap<>();
+        pkt.put("PROC","SYM");
+        pkt.put("M",5);
+        pkt.put("ALPHA",300);
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "Qs" -> bean.setGq((double[][]) pkt.get(key));
+                case "dQs" -> bean.setGdq((double[][]) pkt.get(key));
+                case "ddQs" -> bean.setGddq((double[][]) pkt.get(key));
+                case "E" -> bean.setE((double[][]) pkt.get(key));
+                case ANIMATION -> bean.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+                case "ERROR"-> {
+                    bean.setShapeAvailable(true);
+                    finish = true;
+                }
+                default -> finish=true;
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                finish = true;
+
+            }
+        }
     }
 
     private void makePath() throws InterruptedException {

@@ -1,5 +1,4 @@
-function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
-    qik = double.empty(6,0);
+function newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
     pend= [xdes;ydes;zdes];
     P=[pend(1);pend(2);pend(3);roll;pitch;yaw];
     q=sym('q',[6,1]);
@@ -50,16 +49,22 @@ function [qik]=newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
 %                 q0=qG;
 %                 errnorm = errorGradient;
 %             end
-            qik(1:6,end+1)=q0;
             % Stop Criteria
             if errnorm<1e-7
-                qik(1:6,end+1)=q0;
+                msg = src.UserData.buildMessage(0,"Q",q0);
+                msg = src.UserData.buildMessage(msg,"FINISH",0);
+                src.UserData.sendMessage(src,msg);
                 break;
             end
+            msg = src.UserData.buildMessage(0,"Q",q0);
+            msg = src.UserData.buildMessage(msg,"FINISH",0);
+            src.UserData.sendMessage(src,msg);
+            msg = src.UserData.buildMessage(0,"ENEWTON",errornorm);
+            msg = src.UserData.buildMessage(msg,"FINISH",0);
+            src.UserData.sendMessage(src,msg);
         end
     end
-    msg = src.UserData.buildMessage(0,"Q",qik);
-    msg = src.UserData.buildMessage(msg,"FINISH",1);
+    msg = src.UserData.buildMessage(0,"FINISH",1);
     src.UserData.sendMessage(src,msg);
 end
 

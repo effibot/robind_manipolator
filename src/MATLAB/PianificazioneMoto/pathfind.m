@@ -20,39 +20,39 @@ end
 % figure
 % hold on
 % plot(nPoints(:,1),nPoints(:,2),'ob');
-if length(nPoints)>6
-pt = nPoints(1,:);
-pend = nPoints(end,:);
-pend1 = nPoints(end-1,:);
-pend2 = nPoints(end-2,:);
-diag = @(pt,pt1,pt2) (pt(1)~=pt1(1) || pt1(1)~=pt2(1))&&...
-    (pt(2)~=pt1(2) || pt1(2)~=pt2(2));
-rect = @(pt,pt1,pt2)  (pt(1) == pt1(1) &&...
-    pt1(2) == pt2(2) || ...
-    pt(2) == pt1(2) && ...
-    pt1(1) == pt2(1));
-while (pt(1) ~= pend(1) || pt(2)~=pend(2)) &&...
-        (pt(1) ~= pend1(1) || pt(2)~=pend1(2))&&...
-        (pt(1) ~= pend2(1) || pt(2)~=pend2(2))
-    id = find(ismember(nPoints,pt,'rows'));
-    pt1 = nPoints(id+1,:);
-    pt2 = nPoints(id+2,:);
-    %     h = plot(pt(1,1),pt(1,2),'og');
-
-    if diag(pt,pt1,pt2) && ~rect(pt,pt1,pt2)
-        pt = nPoints(id+1,:);
-    elseif ~rect(pt,pt1,pt2)
-        nPoints(ismember(nPoints,pt1,'rows'),:)=[];
-        nPoints(ismember(nPoints,pt2,'rows'),:)=[];
-        pt = nPoints(id+1,:);
-
-    else
-        pt = pt2;
-    end
-    %     plot(pt(1,1),pt(1,2),'*r');
-    %     delete(h)
-end
-end
+% if length(nPoints)>6
+% pt = nPoints(1,:);
+% pend = nPoints(end,:);
+% pend1 = nPoints(end-1,:);
+% pend2 = nPoints(end-2,:);
+% diag = @(pt,pt1,pt2) (pt(1)~=pt1(1) || pt1(1)~=pt2(1))&&...
+%     (pt(2)~=pt1(2) || pt1(2)~=pt2(2));
+% rect = @(pt,pt1,pt2)  (pt(1) == pt1(1) &&...
+%     pt1(2) == pt2(2) || ...
+%     pt(2) == pt1(2) && ...
+%     pt1(1) == pt2(1));
+% while (pt(1) ~= pend(1) || pt(2)~=pend(2)) &&...
+%         (pt(1) ~= pend1(1) || pt(2)~=pend1(2))&&...
+%         (pt(1) ~= pend2(1) || pt(2)~=pend2(2))
+%     id = find(ismember(nPoints,pt,'rows'));
+%     pt1 = nPoints(id+1,:);
+%     pt2 = nPoints(id+2,:);
+%     %     h = plot(pt(1,1),pt(1,2),'og');
+% 
+%     if diag(pt,pt1,pt2) && ~rect(pt,pt1,pt2)
+%         pt = nPoints(id+1,:);
+%     elseif ~rect(pt,pt1,pt2)
+%         nPoints(ismember(nPoints,pt1,'rows'),:)=[];
+%         nPoints(ismember(nPoints,pt2,'rows'),:)=[];
+%         pt = nPoints(id+1,:);
+% 
+%     else
+%         pt = pt2;
+%     end
+%     %     plot(pt(1,1),pt(1,2),'*r');
+%     %     delete(h)
+% end
+% end
 dim = length(nPoints);
 % tend = dim-1;
 % stepsize = 0.001;
