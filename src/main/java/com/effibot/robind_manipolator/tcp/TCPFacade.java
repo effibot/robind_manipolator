@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
@@ -17,7 +18,7 @@ public class TCPFacade implements PropertyChangeListener {
 
     private static final String HOST_ADDR = "localhost";
     private static final int PORT = 3030;
-    private BlockingQueue<HashMap<String, Object>> queue;
+    private BlockingQueue<LinkedHashMap<String, Object>> queue;
 
     private HashMap<String,Object> toSend;
     private TCPFacade(){
@@ -32,10 +33,10 @@ public class TCPFacade implements PropertyChangeListener {
 
 
 
-    public void setQueue(BlockingQueue<HashMap<String,Object>> queue) {
+    public void setQueue(BlockingQueue<LinkedHashMap<String,Object>> queue) {
         this.queue = queue;
     }
-    public BlockingQueue<HashMap<String, Object>> getQueue() {
+    public BlockingQueue<LinkedHashMap<String, Object>> getQueue() {
         return queue;
     }
 

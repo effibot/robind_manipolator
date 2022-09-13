@@ -1,11 +1,11 @@
 package com.effibot.robind_manipolator;
+import com.dlsc.workbenchfx.Workbench;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import com.effibot.robind_manipolator.modules.intro.IntroModule;
+import com.effibot.robind_manipolator.modules.setting.SettingModule;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.IOException;
 
@@ -21,21 +21,38 @@ public class Main extends Application {
         sketch = new P2DMap();
     }
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scene.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Find Object Manipulator");
-        stage.setScene(scene);
+    public void start(Stage stage) {
+//        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scene.fxml"));
+//        Scene scene = new Scene(fxmlLoader.load());
+//        stage.setTitle("Find Object Manipulator");
+//        stage.setScene(scene);
+//        stage.setResizable(false);
+//        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+//        stage.setX(  ((primScreenBounds.getWidth() - stage.getWidth()) / 2) -600 );
+//        stage.setY(  ((primScreenBounds.getHeight() - stage.getHeight()) / 2)   );
+//        stage.show();
+        IntroModule in = new IntroModule(sketch);
+        Workbench wb = Workbench.builder(
+                in
+        ).build();
+
+
+
+
+        Scene myScene = new Scene(wb);
+
+        stage.setTitle("Robind Manipolator");
+        stage.setScene(myScene);
+        stage.setWidth(1095);
+        stage.setHeight(801.5);
         stage.setResizable(false);
-        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        stage.setX(  ((primScreenBounds.getWidth() - stage.getWidth()) / 2) -600 );
-        stage.setY(  ((primScreenBounds.getHeight() - stage.getHeight()) / 2)   );
         stage.show();
-        SceneController controller = fxmlLoader.getController();
-        SceneController.setSketch(sketch);
-        sketch.registerObserver(controller);
-        controller.setJavafxApp(this);
-        sketch.setJavaFX(controller);
+        wb.openModule(in);
+//        SceneController controller = fxmlLoader.getController();
+//        SceneController.setSketch(sketch);
+//        sketch.registerObserver(controller);
+//        controller.setJavafxApp(this);
+//        sketch.setJavaFX(controller);
         sketch.run(sketch.getClass().getSimpleName());
     }
     @Override

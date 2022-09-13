@@ -30,22 +30,26 @@ for i = 1:3
 
         obb = randi(nobs,1);
         pos = obstemp(obb,1:2);
-        if isempty(find(ismember(shapepos(:,2:3),pos,'rows'), 1))            
+        condition = find(ismember(shapepos(:,2:3),pos,'rows'),1);
+        if isempty(condition) || ~condition
             [listElem,boolean]= findEndIds(nodeList,pos,G,i);
             if boolean
+
                 radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
                 M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
                     pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
                     repmat(color(i,1,:),radius,radius,1);
                 break
+            
             end
+           
         end
         obstemp(obb,:)=[];
 
     end
+    list(i) = listElem;
 
     shapepos(i,:) = [form,pos];
-    list(i) = listElem;
 
     switch(i)
         case 1
@@ -55,10 +59,11 @@ for i = 1:3
         case 3
             msg = src.UserData.buildMessage(msg,"CUBO",list(i).allid);
     end
-end
-msg = src.UserData.buildMessage(msg,"FINISH",0);
-src.UserData.sendMessage(src,msg);
 
+end
+
+    msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
 M = cat(3,M,ones(1024,'uint8')*255);
 msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(M));
 msg = src.UserData.buildMessage(msg,"FINISH",0);

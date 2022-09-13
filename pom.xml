@@ -16,23 +16,19 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.dlsc.workbenchfx</groupId>
+            <artifactId>workbenchfx-core</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>18.0.2</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>18.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>18.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
+            <artifactId>javafx-swing</artifactId>à
             <version>18.0.2</version>
         </dependency>
         <dependency>
@@ -95,6 +91,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>

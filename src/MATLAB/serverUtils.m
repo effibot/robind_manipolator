@@ -107,7 +107,7 @@ classdef serverUtils < handle
         end
         function msg = buildMessage(~,msg,key,val)
             if msg == 0
-                msg = javaObject('java.util.HashMap');
+                msg = javaObject('java.util.LinkedHashMap');
             end
             msg.put(key,val);
         end

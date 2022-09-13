@@ -13,7 +13,7 @@ public class Utils {
         * Public constructor
         * */
     }
-    public double[][] obs2List(List<Obstacle> obsList) {
+    public static double[][] obs2List(List<Obstacle> obsList) {
 
         double[][] col = new double[obsList.size()][];
         for(int i = 0;i<obsList.size();i++){

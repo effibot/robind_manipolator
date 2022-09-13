@@ -5,15 +5,16 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class Receiver implements Runnable{
     private final Semaphore[] sem;
     private final Socket socket;
-    private final BlockingQueue<HashMap<String, Object>> queue;
+    private final BlockingQueue<LinkedHashMap<String, Object>> queue;
 
-    public Receiver(Semaphore[] sem, Socket socket, BlockingQueue<HashMap<String, Object>> queue) {
+    public Receiver(Semaphore[] sem, Socket socket, BlockingQueue<LinkedHashMap<String, Object>> queue) {
         this.sem = sem;
         this.socket = socket;
         this.queue = queue;
@@ -31,7 +32,7 @@ public class Receiver implements Runnable{
                     ois = new ObjectInputStream(is);
                     Object obj = ois.readObject();
                     if (obj != null) {
-                        HashMap<String, Object> pkt = (HashMap<String, Object>) obj;
+                        LinkedHashMap<String, Object> pkt = (LinkedHashMap<String, Object>) obj;
                         queue.put(pkt);
                         if ((Double)pkt.get("FINISH") == 1d) {
                             break;
