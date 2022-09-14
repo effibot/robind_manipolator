@@ -33,6 +33,8 @@ public class SettingBean implements Serializable {
 
     private byte[] animation;
     private ArrayList<double[]> shapeIdList;
+    private boolean finish = false;
+
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener(l);
     }
@@ -161,4 +163,13 @@ public class SettingBean implements Serializable {
     public void setPathLabels(ObservableList<String> pathLabels) {
         this.pathLabels.set(pathLabels);
     }
+    public void setFinish(boolean finish) {
+        notifyPropertyChange("FINISH",this.finish, finish);
+        this.finish = finish;
+    }
+
+    public boolean getFinish(){
+        return finish;
+    }
+
 }

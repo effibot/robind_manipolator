@@ -45,9 +45,12 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
     private WritableImage imgBW = new WritableImage(pixelBufferBW);
     private WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
-    private  ImageView basicMap;
+    private ImageView basicMap;
     private ImageView map;
+
     private VBox vb;
+
+    private FormRenderer form;
     private final ObjectProperty<Double> id = new SimpleObjectProperty<>();
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
@@ -69,59 +72,54 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
 
     }
 
-    private FormRenderer setupForm(){
+    private FormRenderer setupForm() {
         // Construct control form
         /* Id e Forma */
-        Field shapeField = Field.ofSingleSelectionType(shapeName,shape)
+        Field shapeField = Field.ofSingleSelectionType(shapeName, shape)
                 .label("Forma")
                 .required(true)
-                .tooltip("Forma da raggiungere")
-                ;
+                .tooltip("Forma da raggiungere");
         shape.bindBidirectional(settingBean.selectedShapeProperty());
-        shape.addListener(change-> settingController.setIdByShape(shape.get()));
-        Field idField = Field.ofSingleSelectionType(settingBean.idListProperty(),id)
+        shape.addListener(change -> settingController.setIdByShape(shape.get()));
+        Field idField = Field.ofSingleSelectionType(settingBean.idListProperty(), id)
                 .label("Start ID")
                 .required(true)
-                .tooltip("ID di un nodo Verde")
-                ;
+                .tooltip("ID di un nodo Verde");
         id.bindBidirectional(settingBean.selectedIdProperty());
         /* Interpolante */
         Field interpField = Field.ofSingleSelectionType(methods, selectedMethod)
                 .label("Metodo").required(true)
-                .tooltip("Metodo di interpolazione del percorso")
-                ;
+                .tooltip("Metodo di interpolazione del percorso");
         selectedMethod.bindBidirectional(settingBean.selectedMethodProperty());
         /* Roll Pitch Yaw */
         Field rollField = Field.ofDoubleType(0.0)
                 .label("Roll").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d,360.0d,"Valore non ammesso"))
-                ;
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
 
         Field pitchField = Field.ofDoubleType(0.0)
                 .label("Pitch").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d,360.0d,"Valore non ammesso"))
-                ;
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
 
         Field yawField = Field.ofDoubleType(0.0)
                 .label("Yaw").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d,360.0d,"Valore non ammesso"))
-                ;
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
         Form controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
         return new FormRenderer(controlForm);
     }
 
-    private void setSquareSizes(Pane n, double size, double anchor){
+    private void setSquareSizes(Pane n, double size, double anchor) {
         n.setPrefHeight(size);
         n.setPrefWidth(size);
         n.setMinWidth(size);
         n.setMinHeight(size);
         n.setMaxWidth(size);
         n.setMaxHeight(size);
-        AnchorPane.setBottomAnchor(n,anchor);
-        AnchorPane.setTopAnchor(n,anchor);
-        AnchorPane.setLeftAnchor(n,anchor);
-        AnchorPane.setRightAnchor(n,anchor);
+        AnchorPane.setBottomAnchor(n, anchor);
+        AnchorPane.setTopAnchor(n, anchor);
+        AnchorPane.setLeftAnchor(n, anchor);
+        AnchorPane.setRightAnchor(n, anchor);
     }
+
     @Override
     public Node activate() {
         // parent node for this module
@@ -131,10 +129,12 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         SplitPane sp = new SplitPane();
         // Upper split -> Form
         vb = new VBox();
-        FormRenderer form = setupForm();
+        form = setupForm();
+        form.setDisable(true);
         form.setPadding(Insets.EMPTY);
         // Start Button
         Button start = new Button("Start");
+        settingController.onStartAction(start);
         // Back Button
         Button back = new Button("Indietro");
         // Bottom Hbox for start and back
@@ -142,10 +142,10 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         btmBox.getChildren().addAll(back, start);
         btmBox.setAlignment(Pos.CENTER);
         btmBox.setSpacing(160);
-        vb.getChildren().addAll(form,btmBox);
+        vb.getChildren().addAll(form, btmBox);
         // container
         AnchorPane anchorVB = new AnchorPane(vb);
-        setSquareSizes(vb,360,0);
+        setSquareSizes(vb, 360, 0);
 
         // Bottom Spllit -> BW UI
         basicMap = new ImageView();
@@ -153,7 +153,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         basicMap.setFitWidth(360);
         basicMap.setImage(imgBW);
         AnchorPane anchorBW = new AnchorPane(basicMap);
-        setSquareSizes(anchorBW,360,0);
+        setSquareSizes(anchorBW, 360, 0);
         basicMap.setPreserveRatio(true);
         basicMap.fitHeightProperty().bind(anchorBW.heightProperty());
         basicMap.fitWidthProperty().bind(anchorBW.widthProperty());
@@ -161,9 +161,9 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         // Left Panel graphic settings
         sp.getItems().addAll(anchorVB, anchorBW);
         sp.setOrientation(Orientation.VERTICAL);
-        sp.setMaxSize(360,720);
-        sp.setMinSize(360,720);
-        sp.setPrefSize(360,720);
+        sp.setMaxSize(360, 720);
+        sp.setMinSize(360, 720);
+        sp.setPrefSize(360, 720);
 
         // Right Side -> Colored Map
         // Animation Img
@@ -171,7 +171,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         map.setImage(imgAnimation);
         map.setPreserveRatio(true);
         AnchorPane rightPane = new AnchorPane(map);
-        setSquareSizes(rightPane,720,0);
+        setSquareSizes(rightPane, 720, 0);
         map.fitHeightProperty().bind(rightPane.heightProperty());
         map.fitWidthProperty().bind(rightPane.widthProperty());
         hb.setSpacing(0);
@@ -196,37 +196,49 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
             case "ERROR_STID" -> errorStartIdRecovery();
-            case "FINISH"-> System.out.println("DIOPORCO");
-            case "OBSUPDATE"-> System.out.println("DIOPORCO2");
+            case "FINISH" -> {
+                form.setDisable(false);
+            }
+            case "OBSUPDATE" -> System.out.println("DIOPORCO2");
             default -> System.out.println("Not Mapped Case.");
 
         }
 
     }
 
-        private void errorStartIdRecovery() {
+    private void errorStartIdRecovery() {
         Platform.runLater(() -> wb.showDialog(WorkbenchDialog.builder(
-                "Il rover non necessita di spostarsi",
-                "Continuare (OK) la simulazione o selezionare un altro ID (CANCEL).",
-                ButtonType.OK,ButtonType.CANCEL).blocking(true)
+                        "Il rover non necessita di spostarsi",
+                        "Continuare (OK) la simulazione o selezionare un altro ID (CANCEL).",
+                        ButtonType.OK, ButtonType.CANCEL).blocking(true)
                 .onResult(buttonType -> {
-                    switch(buttonType.getText()){
-                        case "OK"->{}
-                            case "CANCEL"->{}
+                    switch (buttonType.getText()) {
+                        case "OK" -> {
+                        }
+                        case "CANCEL" -> {
+                        }
                     }
                 }).build()
         ));
     }
 
-        private void clearAnimationBuffer() {
-            bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-            bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-            pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
-            pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
-            imgBW = new WritableImage(pixelBufferBW);
-            imgAnimation = new WritableImage(pixelBufferAnimation);
-            map.setImage(imgAnimation);
-            basicMap.setImage(imgBW);
-        }
+    private void clearAnimationBuffer() {
+        bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+        bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+        pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
+        pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+        imgBW = new WritableImage(pixelBufferBW);
+        imgAnimation = new WritableImage(pixelBufferAnimation);
+        map.setImage(imgAnimation);
+        basicMap.setImage(imgBW);
+    }
 
+
+    public VBox getVb() {
+        return vb;
+    }
+
+    public void setVb(VBox vb) {
+        this.vb = vb;
+    }
 }

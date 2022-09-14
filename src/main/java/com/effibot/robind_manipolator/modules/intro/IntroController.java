@@ -121,7 +121,7 @@ public class IntroController {
                     }
                     case "FINISH" -> {
                         finish = true;
-                        introBean.setFinish(finish);
+                        settingBean.setFinish(true);
                     }
                 }
 //            if ((Double) pkt.get("FINISH") == 1.0) {

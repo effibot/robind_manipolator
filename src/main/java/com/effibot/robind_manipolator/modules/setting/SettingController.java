@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator.modules.setting;
 
 import com.effibot.robind_manipolator.Utils;
+import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import javafx.beans.property.ListProperty;
@@ -10,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import org.apache.commons.lang.ArrayUtils;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -45,9 +47,12 @@ public class SettingController {
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
         t = new Thread(()->{
-
+            try {
+                makePath();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
-        t.start();
     }
 
     public void setIdByShape(String shape) {
@@ -72,7 +77,9 @@ public class SettingController {
     }
 
     public void onStartAction(Button start) {
-        
+        start.setOnAction(event -> {
+            t.start();
+        });
     }
 
     private void makePath() throws InterruptedException {
@@ -106,4 +113,6 @@ public class SettingController {
             }
         }
     }
+
+
 }

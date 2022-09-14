@@ -17,7 +17,6 @@ import java.util.Arrays;
 public class IntroBean implements Serializable {
     private final PropertyChangeSupport changes= new PropertyChangeSupport(this);
 
-    private boolean finish;
 
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener(l);
@@ -47,15 +46,6 @@ public class IntroBean implements Serializable {
 
    ////
 
-    public void setFinish(boolean finish) {
-        notifyPropertyChange("FINISH",this.finish, finish);
-        this.finish = finish;
-
-    }
-
-    public boolean getFinish(){
-        return finish;
-    }
 
 
 
