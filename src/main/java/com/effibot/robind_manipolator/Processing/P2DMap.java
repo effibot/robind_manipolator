@@ -29,6 +29,7 @@ public class P2DMap extends ProcessingBase {
     @Override
     public void setup() {
         super.setup();
+        settings();
         surface.setTitle("Posizionamento Ostacoli");
         rectMode(CENTER);
         obsList = new ArrayList<>();

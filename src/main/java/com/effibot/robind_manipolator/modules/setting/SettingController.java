@@ -1,8 +1,9 @@
 package com.effibot.robind_manipolator.modules.setting;
 
+import com.dlsc.workbenchfx.Workbench;
 import com.effibot.robind_manipolator.Utils;
-import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
+import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -11,20 +12,18 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import org.apache.commons.lang.ArrayUtils;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class SettingController {
     private final SettingBean sb;
     private final SettingModule sm;
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
+    private final Workbench wb;
     TCPFacade tcp = TCPFacade.getInstance();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -41,9 +40,10 @@ public class SettingController {
 
     private final Thread t;
 
-    public SettingController(SettingModule sm, SettingBean sb) {
+    public SettingController(SettingModule sm, SettingBean sb, Workbench wb) {
         this.sm = sm;
         this.sb = sb;
+        this.wb = wb;
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
         t = new Thread(()->{
@@ -115,4 +115,14 @@ public class SettingController {
     }
 
 
+    public void onBackAction(Button back) {
+        back.setOnMouseClicked(evt->{
+            IntroModule im = new IntroModule();
+
+            wb.closeModule(sm);
+            wb.getModules().removeAll(sm);
+            wb.getModules().add(im);
+            wb.openModule(im);
+        });
+    }
 }

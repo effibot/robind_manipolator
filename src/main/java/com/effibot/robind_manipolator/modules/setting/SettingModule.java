@@ -64,11 +64,12 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                     Arrays.asList("Paraboloic", "Quintic", "Cubic")
             ));
 
-    public SettingModule(SettingBean settingBean) {
+    public SettingModule(SettingBean settingBean,Workbench wb) {
         super("Impostazioni", MaterialDesign.MDI_SETTINGS);
         this.settingBean = settingBean;
         this.settingBean.addPropertyChangeListener(this);
-        settingController = new SettingController(this, this.settingBean);
+        this.wb = wb;
+        settingController = new SettingController(this, this.settingBean,this.wb);
 
     }
 
@@ -137,6 +138,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         settingController.onStartAction(start);
         // Back Button
         Button back = new Button("Indietro");
+        settingController.onBackAction(back);
         // Bottom Hbox for start and back
         HBox btmBox = new HBox();
         btmBox.getChildren().addAll(back, start);
@@ -241,4 +243,13 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     public void setVb(VBox vb) {
         this.vb = vb;
     }
+    @Override
+    public boolean destroy(){
+        deactivate();
+        this.getWorkbench().getModules().remove(1);
+        this.getWorkbench().openModule(this.getWorkbench().getModules().get(0));
+        wb = this.getWorkbench();
+        return true;
+    }
+
 }

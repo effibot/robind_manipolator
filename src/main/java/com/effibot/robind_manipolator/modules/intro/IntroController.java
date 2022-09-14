@@ -10,43 +10,54 @@ import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.modules.setting.SettingModule;
 import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
+import com.jogamp.newt.opengl.GLWindow;
 import javafx.scene.control.Button;
+import processing.core.PGraphics;
 
+import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class IntroController {
+    private final IntroModule introModule;
+    private final ProcessingBase sketch;
     TCPFacade tcp = TCPFacade.getInstance();
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
 
     private int state = 0;
     private IntroBean introBean;
-    private SettingBean settingBean = new SettingBean();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     private final Thread t;
 
     private static final Lock lock = new Lock();
-    public IntroController() {
+    private SettingBean settingBean;
+
+    public IntroController(Workbench workbench, IntroModule introModule, ProcessingBase sketch) {
+        this.introModule = introModule;
         this.queue = tcp.getQueue();
+        this.sketch = sketch;
+        this.sketch.run(this.sketch.getClass().getSimpleName());
+
         addPropertyChangeListener(tcp);
         t = new Thread(()->{
             synchronized (lock){
-                try {
-                    lock.lock();
-                    while(lock.isLocked()){
-                        System.out.println("I'm waiting");
-                        lock.wait();}
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-            System.out.println("Running MakeMap");
+                    try {
+                        lock.lock();
+                        while (lock.isLocked()) {
+                            System.out.println("I'm waiting");
+                            lock.wait();
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
 
-            makeMap();
+                    System.out.println("Running MakeMap");
+
+                    makeMap();
+            }
         });
         t.start();
     }
@@ -79,15 +90,23 @@ public class IntroController {
 
         btn.setOnMouseClicked(event -> {
             introBean = new IntroBean();
-            SettingModule sm = new SettingModule(settingBean);
+            this.settingBean = new SettingBean();
+
+            SettingModule sm = new SettingModule(settingBean,wb);
+            wb.getModules().add(sm);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
             synchronized (lock){
                 lock.unlock();
                 System.out.println("I'm unlocking and notifying");
                 lock.notifyAll();
             }
-            wb.getModules().addAll(sm);
-            wb.openModule(wb.getModules().get(1));
+
+            GLWindow pane = (GLWindow)sketch.getSurface().getNative();
+            pane.destroy();
+            wb.closeModule(introModule);
+            wb.getModules().remove(introModule);
+            wb.getModules().add(sm);
+            wb.openModule(sm);
 
         });
     }

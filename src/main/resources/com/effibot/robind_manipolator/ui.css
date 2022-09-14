@@ -1,0 +1,21 @@
+.root > * {
+    -fx-light-text-color: rgba(33, 33, 33, 0.58);
+    -fx-base: rgba(250, 208, 208, 0.96);
+
+    -primary-color: #37b9b0;
+    -primary-variant-color: #3cc7d3;
+    -secondary-color: #83dbde;
+    -secondary-variant-color: #73c2c2;
+    -background-color: #c3deda;
+    -surface-color: #468d8d;
+    -error-color: #B00020;
+    -on-primary-color: -fx-light-text-color;
+    -on-secondary-color: -fx-light-text-color;
+    -on-background-color: #c43c00;
+    -on-surface-color: -fx-light-text-color;
+    -on-error-color: #FFFFFF;
+}
+
+#user-icon {
+    -fx-fill: -fx-light-text-color !important;
+}

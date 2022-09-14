@@ -40,6 +40,8 @@ for i = 1:3
                 pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
                 repmat(color(i,1,:),radius,radius,1);
             obstemp(obb,:)=[];
+                shapepos(i,:) = [form,pos];
+
             break
         end
         obstemp(obb,:)=[];
@@ -49,7 +51,6 @@ for i = 1:3
         list(i) = struct("id",{i},"pos",{0},"endid",{0},"allid",{[0,0]});
 
     end
-    shapepos(i,:) = [form,pos];
 
     switch(i)
         case 1
@@ -73,7 +74,7 @@ M= M(:,:,1:3);
 msg = src.UserData.buildMessage(0,"ID",gid);
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
-msg = src.UserData.buildMessage(msg,"SHAPE",shapepos);
+msg = src.UserData.buildMessage(0,"SHAPE",shapepos);
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 msg = src.UserData.buildMessage(0,"FINISH",1);

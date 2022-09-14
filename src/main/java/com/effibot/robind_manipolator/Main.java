@@ -1,66 +1,48 @@
 package com.effibot.robind_manipolator;
+
 import com.dlsc.workbenchfx.Workbench;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
-import com.effibot.robind_manipolator.modules.intro.IntroModule;
-import com.effibot.robind_manipolator.modules.setting.SettingModule;
+import com.effibot.robind_manipolator.modules.manual.WelcomeModule;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
+
+import java.util.Objects;
 
 public class Main extends Application {
-    private ProcessingBase sketch;
 
-    public void setSketch(ProcessingBase sketch){
-        this.sketch = sketch;
-    }
-    public ProcessingBase getSketch(){ return  this.sketch; }
-    @Override
-    public void init() throws Exception {
-        sketch = new P2DMap();
-    }
+//    public static void setSketch(ProcessingBase sketch){
+//        Main.sketch = sketch;
+//    }
+//    public static  ProcessingBase getSketch(){ return sketch; }
+//    @Override
+//    public void init() throws Exception {
+//    }
     @Override
     public void start(Stage stage) {
-//        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scene.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load());
-//        stage.setTitle("Find Object Manipulator");
-//        stage.setScene(scene);
-//        stage.setResizable(false);
-//        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-//        stage.setX(  ((primScreenBounds.getWidth() - stage.getWidth()) / 2) -600 );
-//        stage.setY(  ((primScreenBounds.getHeight() - stage.getHeight()) / 2)   );
-//        stage.show();
-        IntroModule in = new IntroModule(sketch);
+
+        WelcomeModule mn = new WelcomeModule();
         Workbench wb = Workbench.builder(
-                in
-        ).build();
-
-
-
+                mn
+        ).modulesPerPage(5)
+                .build();
+        wb.getStylesheets().add(Objects.requireNonNull(getClass().getResource("ui.css")).toExternalForm());
 
         Scene myScene = new Scene(wb);
-
         stage.setTitle("Robind Manipolator");
         stage.setScene(myScene);
         stage.setWidth(1095);
         stage.setHeight(801.5);
         stage.setResizable(false);
         stage.show();
-        wb.openModule(in);
-//        SceneController controller = fxmlLoader.getController();
-//        SceneController.setSketch(sketch);
-//        sketch.registerObserver(controller);
-//        controller.setJavafxApp(this);
-//        sketch.setJavaFX(controller);
-        sketch.run(sketch.getClass().getSimpleName());
     }
-    @Override
-    public void stop(){
-        sketch.noLoop();
-        sketch.stop();
-        sketch.exit();
-    }
+//    @Override
+//    public void stop(){
+//        sketch.noLoop();
+//        sketch.stop();
+//        sketch.exit();
+//    }
 
 
     public static void main(String[] args) {
