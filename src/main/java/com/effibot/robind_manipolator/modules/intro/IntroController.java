@@ -115,7 +115,7 @@ public class IntroController {
                         ArrayList<double[]> greenIdShape = new ArrayList<>();
                         greenIdShape.add((double[]) pkt.get("SFERA"));
                         greenIdShape.add((double[]) pkt.get("CONO"));
-                        greenIdShape.add((gitdouble[]) pkt.get("CUBO"));
+                        greenIdShape.add((double[]) pkt.get("CUBO"));
                         settingBean.setShapeIdList(greenIdShape);
                     }
                     case "FINISH" -> {

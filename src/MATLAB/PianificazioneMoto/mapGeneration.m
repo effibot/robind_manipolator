@@ -26,29 +26,29 @@ for i = 1:3
     form = i-1;
 
     while  ~isempty(obstemp)
-         nobs = size(obstemp,1);
+        nobs = size(obstemp,1);
 
         obb = randi(nobs,1);
         pos = obstemp(obb,1:2);
         condition = find(ismember(shapepos(:,2:3),pos,'rows'),1);
-        if isempty(condition) || ~condition
-            [listElem,boolean]= findEndIds(nodeList,pos,G,i);
-            if boolean
-
-                radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
-                M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
-                    pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
-                    repmat(color(i,1,:),radius,radius,1);
-                break
-            
-            end
-           
+        %         if isempty(condition) || ~condition
+        [listElem,boolean]= findEndIds(nodeList,pos,G,i);
+        if boolean
+            list(i) = listElem;
+            radius = obs(ismember(obs(:,1:2),pos,'rows'),3);
+            M(pos(1)-fix(radius/2)+1:pos(1)+fix(radius/2),...
+                pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
+                repmat(color(i,1,:),radius,radius,1);
+            obstemp(obb,:)=[];
+            break
         end
         obstemp(obb,:)=[];
 
     end
-    list(i) = listElem;
+    if length(list)<i
+        list(i) = struct("id",{i},"pos",{0},"endid",{0},"allid",{[0,0]});
 
+    end
     shapepos(i,:) = [form,pos];
 
     switch(i)
@@ -62,7 +62,7 @@ for i = 1:3
 
 end
 
-    msg = src.UserData.buildMessage(msg,"FINISH",0);
+msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 M = cat(3,M,ones(1024,'uint8')*255);
 msg = src.UserData.buildMessage(0,"ANIMATION",src.UserData.compressImg(M));
