@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class IntroController {
     TCPFacade tcp = TCPFacade.getInstance();
-    private final BlockingQueue<LinkedHashMap<String, Object>> queue = new LinkedBlockingQueue<>(1);
+    private final BlockingQueue<LinkedHashMap<String, Object>> queue;
 
     private int state = 0;
     private IntroBean introBean;
@@ -31,7 +31,7 @@ public class IntroController {
 
     private static final Lock lock = new Lock();
     public IntroController() {
-        tcp.setQueue(queue);
+        this.queue = tcp.getQueue();
         addPropertyChangeListener(tcp);
         t = new Thread(()->{
             synchronized (lock){
@@ -88,6 +88,7 @@ public class IntroController {
             }
             wb.getModules().addAll(sm);
             wb.openModule(wb.getModules().get(1));
+
         });
     }
 
