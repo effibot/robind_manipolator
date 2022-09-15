@@ -77,7 +77,7 @@ public class IntroController {
 
             SettingModule sm = new SettingModule(settingBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
-            notifyPropertyChange("RESET",false,true);
+//            notifyPropertyChange("RESET",false,true);
 
             if(t!=null)
                 t.interrupt();
@@ -86,26 +86,19 @@ public class IntroController {
                 t.start();
             }
             synchronized (lock){
-                while(lock.isLocked()){
-                    try {
-                        System.out.println("On click wainting");
-
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+       
                 lock.lock();
                 System.out.println("I'm unlocking and notifying");
                 lock.notifyAll();
             }
-
             GLWindow pane = (GLWindow)sketch.getSurface().getNative();
             pane.destroy();
             introModule.close();
             wb.getModules().remove(introModule);
             wb.getModules().add(sm);
             wb.openModule(sm);
+
+
 
         });
     }
@@ -166,8 +159,9 @@ public class IntroController {
 //                bean.notifyPropertyChange(ANIMATION, false, true);
 //                finish = true;
             }
-        } catch (Exception e) {
-             Thread.currentThread().interrupt();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
     }

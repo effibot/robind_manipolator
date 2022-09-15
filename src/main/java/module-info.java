@@ -8,8 +8,6 @@ module com.effibot.robind_manipolator {
     requires java.desktop;
     requires commons.math3;
     requires commons.lang;
-    requires commons.io;
-    requires com.squareup.gifencoder;
     requires com.dlsc.workbenchfx.core;
     requires org.kordamp.ikonli.materialdesign;
     opens com.effibot.robind_manipolator ;
