@@ -23,7 +23,7 @@ else
         shapestruct = struct("id",{i},"pos",{shape},"endid",{greenAdj2(id).id},"allid",{allGreenIds2});
         ok=true;
     else
-        shapestruct = struct("id",{i},"pos",{shape},"endid",{0},"allid",{0});
+        shapestruct = struct("id",{i},"pos",{shape},"endid",{0,0},"allid",{0});
         ok=false;
     end
 

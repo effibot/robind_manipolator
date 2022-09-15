@@ -40,7 +40,7 @@ public class Receiver implements Runnable{
                     }
                 }
             }
-        } catch (/*InterruptedException | IOException | ClassNotFoundException |*/ Exception e) {
+        } catch (InterruptedException | IOException | ClassNotFoundException e) {
 //            throw new RuntimeException(e);
             System.out.println("Receiver: Interrupted by TCP.EVENT.RESET");
         } finally {
