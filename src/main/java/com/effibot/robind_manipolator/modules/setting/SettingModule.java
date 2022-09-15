@@ -137,6 +137,9 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         // Start Button
         Button start = new Button("Start");
         settingController.onStartAction(start);
+        // Start 3D Button
+        Button start3d = new Button("Start 3D");
+        settingController.onStart3DAction(start3d);
         // Back Button
         Button back = new Button("Indietro");
         settingController.onBackAction(back);

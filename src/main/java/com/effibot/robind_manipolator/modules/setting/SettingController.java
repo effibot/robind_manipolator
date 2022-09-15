@@ -48,7 +48,7 @@ public class SettingController {
         this.queue = tcp.getQueue();
     }
 
-    private Thread getNewThread() {
+    private Thread getNew2DThread() {
         return new Thread(()->{
             try {
                     makePath();
@@ -81,7 +81,8 @@ public class SettingController {
 
     public void onStartAction(Button start) {
         start.setOnAction(event -> {
-            t = getNewThread();
+
+            t = getNew2DThread();
             t.start();
             sm.getVb().setDisable(true);
         });
@@ -127,6 +128,19 @@ public class SettingController {
             wb.getModules().remove(sm);
             wb.getModules().add(im);
             wb.openModule(im);
+        });
+    }
+
+    public void onStart3DAction(Button start3d) {
+        start3d.setOnAction(event->{
+            t = getNew3DThread();
+            t.start();
+        });
+    }
+
+    private Thread getNew3DThread() {
+        return new Thread(()->{
+            // TODO: 1. starto processing3d. 2. bean 3d. 3. robot getter from bean
         });
     }
 }
