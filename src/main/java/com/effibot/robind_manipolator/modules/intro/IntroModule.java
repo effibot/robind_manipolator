@@ -62,6 +62,5 @@ public class IntroModule extends WorkbenchModule implements Observer {
     public void update(Object object) {
         cbtn.setDisable(((P2DMap) object).getObstacleList().size() == 0);
         abtn.setDisable(((P2DMap) object).getObstacleList().size() == 0);
-
     }
 }

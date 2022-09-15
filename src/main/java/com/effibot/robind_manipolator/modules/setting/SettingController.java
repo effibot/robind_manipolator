@@ -38,7 +38,7 @@ public class SettingController {
         changes.addPropertyChangeListener(l);
     }
 
-    private final Thread t;
+    private Thread t;
 
     public SettingController(SettingModule sm, SettingBean sb, Workbench wb) {
         this.sm = sm;
@@ -46,9 +46,12 @@ public class SettingController {
         this.wb = wb;
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
-        t = new Thread(()->{
+    }
+
+    private Thread getNewThread() {
+        return new Thread(()->{
             try {
-                makePath();
+                    makePath();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -78,7 +81,9 @@ public class SettingController {
 
     public void onStartAction(Button start) {
         start.setOnAction(event -> {
+            t = getNewThread();
             t.start();
+            sm.getVb().setDisable(true);
         });
     }
 
@@ -104,12 +109,12 @@ public class SettingController {
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 default -> {
                     System.out.println("Caso error non mappato");
-                    finish = true;
+//                    finish = true;
                 }
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
                 finish = true;
-
+                sm.getVb().setDisable(false);
             }
         }
     }

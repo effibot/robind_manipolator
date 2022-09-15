@@ -61,16 +61,16 @@ dim = length(nPoints);
 x = nPoints(:,1);
 y= nPoints(:,2);
 switch method
-    case 'paraboloic'
+    case 'Paraboloic'
         time = 0:1:floor(dim/2);
         [qx,qxd,qxdd]= paraboloic_blend(x',time);
         [qy,qyd,qydd]= paraboloic_blend(y',time);
-    case 'cubic'
+    case 'Cubic'
         step=1e-3;
         [qx,qxd,qxdd]=cubic_spline(x,step);
         [qy,qyd,qydd]=cubic_spline(y,step);
 
-    case 'quintic'
+    case 'Quintic'
      step=1e-3;
      [qx,qxd,qxdd]=quintic_spline(x,step);
      [qy,qyd,qydd]=quintic_spline(y,step);
