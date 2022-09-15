@@ -131,8 +131,8 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         SplitPane sp = new SplitPane();
         // Upper split -> Form
         vb = new VBox();
+        vb.setDisable(true);
         form = setupForm();
-        form.setDisable(true);
         form.setPadding(Insets.EMPTY);
         // Start Button
         Button start = new Button("Start");
@@ -200,7 +200,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
             }
             case "ERROR_STID" -> errorStartIdRecovery();
             case "FINISH" -> {
-                form.setDisable(false);
+                vb.setDisable(false);
             }
             case "OBSUPDATE" -> System.out.println("DIOPORCO2");
             default -> System.out.println("Not Mapped Case.");

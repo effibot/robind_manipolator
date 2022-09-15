@@ -3,6 +3,7 @@ package com.effibot.robind_manipolator.modules.intro;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.MultilineLabel;
+import com.effibot.robind_manipolator.Processing.Observer;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import javafx.geometry.Pos;
@@ -15,16 +16,17 @@ import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
 
-public class IntroModule extends WorkbenchModule {
+public class IntroModule extends WorkbenchModule implements Observer {
     private final ProcessingBase sketch;
 
     private final IntroController introController;
-
+    private Button cbtn, abtn;
     public IntroModule() {
         super("Intro", MaterialDesign.MDI_ACCOUNT);
 
             this.sketch = new P2DMap();
             introController = new IntroController(this.getWorkbench(), this, this.sketch);
+            sketch.registerObserver(this);
 
     }
 
@@ -38,8 +40,10 @@ public class IntroModule extends WorkbenchModule {
                 Andrea Efficace, Lorenzo Rossi, Martina Liberti""");
         mlb.setTextAlignment(TextAlignment.CENTER);
         mlb.setAlignment(Pos.CENTER);
-        Button cbtn = new Button("Continua");
-        Button abtn = new Button("Annulla");
+        cbtn = new Button("Continua");
+        cbtn.setDisable(true);
+        abtn = new Button("Annulla");
+        abtn.setDisable(true);
         HBox hb = new HBox();
         hb.getChildren().addAll(cbtn, abtn);
         hb.setAlignment(Pos.CENTER);
@@ -52,5 +56,12 @@ public class IntroModule extends WorkbenchModule {
         introController.onRedoAction(abtn,sketch);
 
         return vbx;
+    }
+
+    @Override
+    public void update(Object object) {
+        cbtn.setDisable(((P2DMap) object).getObstacleList().size() == 0);
+        abtn.setDisable(((P2DMap) object).getObstacleList().size() == 0);
+
     }
 }
