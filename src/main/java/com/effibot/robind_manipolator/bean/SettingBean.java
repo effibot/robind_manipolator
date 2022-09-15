@@ -7,26 +7,30 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SettingBean implements Serializable {
-    private final ListProperty<Double> greenId = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
-    private final ListProperty<Double> idList = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingBean.class.getName());
+    private final transient  ListProperty<Double> greenId = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
+    private final transient ListProperty<Double> idList = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
 
-    private final ObjectProperty<Double> selectedId = new SimpleObjectProperty<>();
+    private final transient ObjectProperty<Double> selectedId = new SimpleObjectProperty<>();
 
-    private final ObjectProperty<String> selectedShape = new SimpleObjectProperty<>();
+    private final transient ObjectProperty<String> selectedShape = new SimpleObjectProperty<>();
 
-    private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
+    private final transient ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
 
-    private final PropertyChangeSupport changes= new PropertyChangeSupport(this);
+    private final transient PropertyChangeSupport changes= new PropertyChangeSupport(this);
 
-    private final ListProperty<String> pathLabels = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final transient ListProperty<String> pathLabels = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     private byte[] rawImg;
     private double[][] shapeList;
@@ -83,11 +87,11 @@ public class SettingBean implements Serializable {
 
     public byte[] getAnimation(){return this.animation;}
 
-    public void setShapeIdList(ArrayList<double[]> greenIdShape) {
-        this.shapeIdList = greenIdShape;
+    public void setShapeIdList(List<double[]> greenIdShape) {
+        this.shapeIdList = (ArrayList<double[]>)greenIdShape;
     }
 
-    public ArrayList<double[]> getShapeIdList(){return shapeIdList;}
+    public List<double[]> getShapeIdList(){return shapeIdList;}
     public ObservableList<Double> getIdList() {
         return idList.get();
     }
@@ -128,6 +132,7 @@ public class SettingBean implements Serializable {
             case "Sfera"-> select=0;
             case "Cono" -> select=1;
             case "Cubo" -> select=2;
+            default -> LOGGER.warn("ShapeToPos shape not found");
         }
 
         return new double[]{getShapeList()[select][1],getShapeList()[select][2]};

@@ -11,6 +11,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -20,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 
 public class SettingController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class.getName());
     private final SettingBean sb;
     private final SettingModule sm;
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
@@ -53,18 +56,20 @@ public class SettingController {
             try {
                     makePath();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                LOGGER.info("Interrupting 2D Thread",e);
+                Thread.currentThread().interrupt();
             }
         });
     }
 
     public void setIdByShape(String shape) {
         ListProperty<Double> list = new SimpleListProperty<>();
-        ArrayList<double[]> shapesID = sb.getShapeIdList();
+        ArrayList<double[]> shapesID = (ArrayList<double[]>) sb.getShapeIdList();
         switch (shape) {
             case "Sfera" -> list.setValue(arrayToObsListProp(shapesID.get(0)));
             case "Cono" -> list.setValue(arrayToObsListProp(shapesID.get(1)));
             case "Cubo" -> list.setValue(arrayToObsListProp(shapesID.get(2)));
+            default -> LOGGER.warn("Forma non esistente");
         }
         sb.setIdList(list);
     }
@@ -108,10 +113,7 @@ public class SettingController {
 //                case "ddQ" -> sb.setGddq((double[][]) pkt.get(key));
                 case "PATHIDS" -> sb.setPathLabel((double[]) pkt.get(key));
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-                default -> {
-                    System.out.println("Caso error non mappato");
-//                    finish = true;
-                }
+                default -> LOGGER.warn("Pacchetto non mappato.");
             }
             if ((Double) pkt.get("FINISH") == 1.0) {
                 finish = true;

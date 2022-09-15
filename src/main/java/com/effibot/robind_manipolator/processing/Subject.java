@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 public interface Subject {
     void registerObserver(Observer o);

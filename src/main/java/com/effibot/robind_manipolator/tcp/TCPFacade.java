@@ -1,25 +1,28 @@
 package com.effibot.robind_manipolator.tcp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class TCPFacade implements PropertyChangeListener {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(TCPFacade.class.getName());
     private Socket clientSocket;
     private static TCPFacade instance = null;
     private final Thread[] t = new Thread[2];
-    private Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
+    private final Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
 
     private static final String HOST_ADDR = "localhost";
     private static final int PORT = 3030;
-    private static final BlockingQueue<LinkedHashMap<String, Object>> queue = new LinkedBlockingQueue<>(1);
+    private static final  BlockingQueue<LinkedHashMap<String, Object>> queue = new LinkedBlockingQueue<>(1);
 
     private HashMap<String,Object> toSend;
     private TCPFacade(){
@@ -32,21 +35,16 @@ public class TCPFacade implements PropertyChangeListener {
         return instance;
     }
 
-
-
-//    public void setQueue(BlockingQueue<LinkedHashMap<String,Object>> queue) {
-//        this.queue = queue;
-//    }
     public BlockingQueue<LinkedHashMap<String, Object>> getQueue() {
         return queue;
     }
 
-    public HashMap<String, Object> getToSend() {
+    public Map<String, Object> getToSend() {
         return toSend;
     }
 
-    public void setToSend(HashMap<String, Object> toSend) {
-        this.toSend = toSend;
+    public void setToSend(Map<String, Object> toSend) {
+        this.toSend = (HashMap<String, Object>) toSend;
     }
 
 
@@ -57,7 +55,10 @@ public class TCPFacade implements PropertyChangeListener {
         switch (propertyName){
             case "SEND" ->{
                 try {// Checks if connection are still up
-                    if (clientSocket == null) clientSocket = new Socket(HOST_ADDR, PORT);
+                    if (clientSocket == null) {
+                        clientSocket = new Socket(HOST_ADDR, PORT);
+                        clientSocket.setReuseAddress(true);
+                    }
                     // Make new Packet to send
                     HashMap<String, Object> pkt = (HashMap<String, Object>) evt.getNewValue();
                     Sender sender = new Sender(sem, clientSocket);
@@ -66,7 +67,8 @@ public class TCPFacade implements PropertyChangeListener {
                     t[0] = new Thread(sender);
                     t[0].start();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    LOGGER.warn("SENDER EXCEPTION",e);
+                    Thread.currentThread().interrupt();
                 }
             }
             case "RECEIVE" ->{
@@ -75,22 +77,21 @@ public class TCPFacade implements PropertyChangeListener {
                 t[1] = new Thread(receiver);
                 t[1].start();
             }
-            case "RESET" ->{
-                try {
-                    if(clientSocket!=null && clientSocket.isConnected()) {
-                        clientSocket.close();
-                    }
-                    if(t[0] != null)
-                        t[0].interrupt();
-                    if(t[1] != null )
-                        t[1].interrupt();
-                    sem = new Semaphore[]{new Semaphore(1), new Semaphore(0)};
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            default -> LOGGER.warn("Unknown Property Name");
+        }
+    }
 
-            }
-            default -> System.out.println("Unknown Property Name");
+    public void resetSocket() {
+        try(InputStream is= clientSocket.getInputStream();
+            OutputStream ois = clientSocket.getOutputStream();
+        ){
+            clientSocket.getInputStream().close();
+            clientSocket.getOutputStream().close();
+        }
+        catch (IOException e) {
+            LOGGER.warn("Resetting Socket");
+        }finally {
+            clientSocket=null;
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 import processing.core.PApplet;
 
@@ -21,7 +21,6 @@ public class Obstacle{
         this.h = h;
         this.id = id;
         this.p =  p;
-        //System.out.println(this);
     }
 
     @Override

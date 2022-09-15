@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.SceneController;
 import processing.core.PApplet;
@@ -25,8 +25,8 @@ public abstract class ProcessingBase extends PApplet implements Subject{
     @Override
     public abstract void settings();
 
-    protected int Y_AXIS = 1;
-    protected int X_AXIS = 2;
+    protected static final int Y_AXIS = 1;
+    protected static final int X_AXIS = 2;
     protected int c1 = color(153,204,204);
     protected int c2 = color(57,104,124);
     // bg utils
@@ -71,7 +71,7 @@ public abstract class ProcessingBase extends PApplet implements Subject{
     public void setJavaFX(SceneController controller) {
         this.controller = controller;
     }
-
+    @Override
     public PSurface getSurface() {
         return this.surface;
     }

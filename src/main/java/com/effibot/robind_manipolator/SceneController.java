@@ -1,37 +1,8 @@
 package com.effibot.robind_manipolator;
 
 //import com.effibot.robind_manipolator.Processing.Observer;
-import com.effibot.robind_manipolator.Processing.Obstacle;
-import com.effibot.robind_manipolator.Processing.P2DMap;
-import com.effibot.robind_manipolator.Processing.ProcessingBase;
-import com.effibot.robind_manipolator.tcp.GameState;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.*;
 //import javafx.fxml.FXML;
 //import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelBuffer;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.StageStyle;
-import javafx.util.converter.FloatStringConverter;
-import org.controlsfx.control.textfield.CustomTextField;
-import org.controlsfx.dialog.CommandLinksDialog;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
-import java.util.function.UnaryOperator;
-import org.controlsfx.dialog.CommandLinksDialog.CommandLinksButtonType;
 
 
 public class SceneController {

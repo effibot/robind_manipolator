@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;

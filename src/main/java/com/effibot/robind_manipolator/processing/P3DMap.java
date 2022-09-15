@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.tcp.GameState;
 import com.effibot.robind_manipolator.tcp.TCPFacade;

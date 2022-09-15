@@ -1,9 +1,9 @@
 package com.effibot.robind_manipolator.modules.intro;
 
 import com.dlsc.workbenchfx.Workbench;
-import com.effibot.robind_manipolator.Processing.Obstacle;
-import com.effibot.robind_manipolator.Processing.P2DMap;
-import com.effibot.robind_manipolator.Processing.ProcessingBase;
+import com.effibot.robind_manipolator.processing.Obstacle;
+import com.effibot.robind_manipolator.processing.P2DMap;
+import com.effibot.robind_manipolator.processing.ProcessingBase;
 import com.effibot.robind_manipolator.Utils;
 import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
@@ -12,9 +12,8 @@ import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jogamp.newt.opengl.GLWindow;
 import javafx.scene.control.Button;
-import processing.core.PGraphics;
-
-import javax.swing.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -22,12 +21,13 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 
 public class IntroController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IntroController.class.getName());
+
     private final IntroModule introModule;
     private final ProcessingBase sketch;
     TCPFacade tcp = TCPFacade.getInstance();
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
 
-    private int state = 0;
     private IntroBean introBean;
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     private Thread t=null;
@@ -35,12 +35,11 @@ public class IntroController {
     private static final Lock lock = new Lock();
     private SettingBean settingBean;
 
-    public IntroController(Workbench workbench, IntroModule introModule, ProcessingBase sketch) {
+    public IntroController(IntroModule introModule, ProcessingBase sketch) {
         this.introModule = introModule;
         this.queue = tcp.getQueue();
         this.sketch = sketch;
-        this.sketch.run(this.sketch.getClass().getSimpleName());
-
+//        this.sketch.run(this.sketch.getClass().getSimpleName());
         addPropertyChangeListener(tcp);
 
     }
@@ -77,7 +76,6 @@ public class IntroController {
 
             SettingModule sm = new SettingModule(settingBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
-//            notifyPropertyChange("RESET",false,true);
 
             if(t!=null)
                 t.interrupt();
@@ -88,7 +86,7 @@ public class IntroController {
             synchronized (lock){
        
                 lock.lock();
-                System.out.println("I'm unlocking and notifying");
+                LOGGER.info("I'm unlocking and notifying");
                 lock.notifyAll();
             }
             GLWindow pane = (GLWindow)sketch.getSurface().getNative();
@@ -107,16 +105,15 @@ public class IntroController {
         return new Thread(()->{
             synchronized (lock){
                 try {
-//                    lock.lock();
                     while (!lock.isLocked()) {
-                        System.out.println("I'm waiting");
+                        LOGGER.info("I'm waiting");
                         lock.wait();
                     }
                 } catch (Exception e) {
                     Thread.currentThread().interrupt();
                 }
 
-                System.out.println("Running MakeMap");
+                LOGGER.info("Running MakeMap");
 
                 makeMap();
             }
@@ -152,16 +149,18 @@ public class IntroController {
                     }
                     case "FINISH" -> {
                         finish = true;
-                        settingBean.setFinish(true);
+                        if((Double)pkt.get(key)!=-99d) settingBean.setFinish(true);
+
                     }
+                    default -> LOGGER.info("Not Mapped Case");
                 }
-//            if ((Double) pkt.get("FINISH") == 1.0) {
-//                bean.notifyPropertyChange(ANIMATION, false, true);
-//                finish = true;
             }
         }
         catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            LOGGER.debug( " Take Queue Interrupted!", e);
+            Thread.currentThread().interrupt();
+        }finally {
+            Thread.currentThread().interrupt();
         }
 
     }

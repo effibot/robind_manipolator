@@ -1,16 +1,13 @@
 package com.effibot.robind_manipolator.modules.setting;
 
-import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.Form;
-import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.*;
 import com.dlsc.formsfx.model.validators.DoubleRangeValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
-import com.effibot.robind_manipolator.Main;
-import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
+import com.effibot.robind_manipolator.tcp.TCPFacade;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -27,6 +24,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -34,24 +33,21 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class SettingModule extends WorkbenchModule implements PropertyChangeListener {
-    private IntroBean introBean;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SettingModule.class.getName());
     private final SettingController settingController;
-    Workbench wb = this.getWorkbench();
     private static final int HEIGHT = 1024;
     private static final int WIDTH = 1024;
-    private ByteBuffer bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-    private ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-    private PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
+    private final Workbench wb;
+    private final ByteBuffer bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+    private final ByteBuffer bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+    private final PixelBuffer<ByteBuffer> pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
 
-    private PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
-    private WritableImage imgBW = new WritableImage(pixelBufferBW);
-    private WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
-    private ImageView basicMap;
-    private ImageView map;
+    private final PixelBuffer<ByteBuffer> pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+    private final WritableImage imgBW = new WritableImage(pixelBufferBW);
+    private final WritableImage imgAnimation = new WritableImage(pixelBufferAnimation);
 
     private VBox vb;
 
-    private FormRenderer form;
     private final ObjectProperty<Double> id = new SimpleObjectProperty<>();
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
@@ -77,49 +73,51 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private FormRenderer setupForm() {
         // Construct control form
         /* Id e Forma */
-        Field shapeField = Field.ofSingleSelectionType(shapeName, shape)
+        Field<SingleSelectionField<String>> shapeField = Field.ofSingleSelectionType(shapeName, shape)
                 .label("Forma")
                 .required(true)
                 .tooltip("Forma da raggiungere");
         shape.bindBidirectional(settingBean.selectedShapeProperty());
         shape.addListener(change -> settingController.setIdByShape(shape.get()));
-        Field idField = Field.ofSingleSelectionType(settingBean.idListProperty(), id)
+        Field<SingleSelectionField<Double>> idField = Field.ofSingleSelectionType(settingBean.idListProperty(), id)
                 .label("Start ID")
                 .required(true)
                 .tooltip("ID di un nodo Verde");
         id.bindBidirectional(settingBean.selectedIdProperty());
         /* Interpolante */
-        Field interpField = Field.ofSingleSelectionType(methods, selectedMethod)
+        Field<SingleSelectionField<String>> interpField = Field.ofSingleSelectionType(methods, selectedMethod)
                 .label("Metodo").required(true)
                 .tooltip("Metodo di interpolazione del percorso");
         selectedMethod.bindBidirectional(settingBean.selectedMethodProperty());
         /* Roll Pitch Yaw */
-        Field rollField = Field.ofDoubleType(0.0)
-                .label("Roll").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
+        String valueNonCompliant = "Valore non ammesso";
+        String specifyValue = "Specificare un valore";
+        Field<DoubleField> rollField = Field.ofDoubleType(0.0)
+                .label("Roll").required(specifyValue)
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
 
-        Field pitchField = Field.ofDoubleType(0.0)
-                .label("Pitch").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
+        Field<DoubleField> pitchField = Field.ofDoubleType(0.0)
+                .label("Pitch").required(specifyValue)
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
 
-        Field yawField = Field.ofDoubleType(0.0)
-                .label("Yaw").required("Specificare un valore")
-                .validate(DoubleRangeValidator.between(0.0d, 360.0d, "Valore non ammesso"));
+        Field<DoubleField> yawField = Field.ofDoubleType(0.0)
+                .label("Yaw").required(specifyValue)
+                .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
         Form controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
         return new FormRenderer(controlForm);
     }
 
-    private void setSquareSizes(Pane n, double size, double anchor) {
+    private void setSquareSizes(Pane n, double size) {
         n.setPrefHeight(size);
         n.setPrefWidth(size);
         n.setMinWidth(size);
         n.setMinHeight(size);
         n.setMaxWidth(size);
         n.setMaxHeight(size);
-        AnchorPane.setBottomAnchor(n, anchor);
-        AnchorPane.setTopAnchor(n, anchor);
-        AnchorPane.setLeftAnchor(n, anchor);
-        AnchorPane.setRightAnchor(n, anchor);
+        AnchorPane.setBottomAnchor(n, (double) 0);
+        AnchorPane.setTopAnchor(n, (double) 0);
+        AnchorPane.setLeftAnchor(n, (double) 0);
+        AnchorPane.setRightAnchor(n, (double) 0);
     }
 
     @Override
@@ -132,7 +130,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         // Upper split -> Form
         vb = new VBox();
         vb.setDisable(true);
-        form = setupForm();
+        FormRenderer form = setupForm();
         form.setPadding(Insets.EMPTY);
         // Start Button
         Button start = new Button("Start");
@@ -151,15 +149,15 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         vb.getChildren().addAll(form, btmBox);
         // container
         AnchorPane anchorVB = new AnchorPane(vb);
-        setSquareSizes(vb, 360, 0);
+        setSquareSizes(vb, 360);
 
         // Bottom Spllit -> BW UI
-        basicMap = new ImageView();
+        ImageView basicMap = new ImageView();
         basicMap.setFitHeight(360);
         basicMap.setFitWidth(360);
         basicMap.setImage(imgBW);
         AnchorPane anchorBW = new AnchorPane(basicMap);
-        setSquareSizes(anchorBW, 360, 0);
+        setSquareSizes(anchorBW, 360);
         basicMap.setPreserveRatio(true);
         basicMap.fitHeightProperty().bind(anchorBW.heightProperty());
         basicMap.fitWidthProperty().bind(anchorBW.widthProperty());
@@ -173,11 +171,11 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
 
         // Right Side -> Colored Map
         // Animation Img
-        map = new ImageView();
+        ImageView map = new ImageView();
         map.setImage(imgAnimation);
         map.setPreserveRatio(true);
         AnchorPane rightPane = new AnchorPane(map);
-        setSquareSizes(rightPane, 720, 0);
+        setSquareSizes(rightPane, 720);
         map.fitHeightProperty().bind(rightPane.heightProperty());
         map.fitWidthProperty().bind(rightPane.widthProperty());
         hb.setSpacing(0);
@@ -202,11 +200,9 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
             case "ERROR_STID" -> errorStartIdRecovery();
-            case "FINISH" -> {
-                vb.setDisable(false);
-            }
-            case "OBSUPDATE" -> System.out.println("DIOPORCO2");
-            default -> System.out.println("Not Mapped Case.");
+            case "FINISH" -> vb.setDisable(false);
+            case "OBSUPDATE" -> LOGGER.info("OBS UPDATE");
+            default -> LOGGER.warn("Not Mapped Case.");
 
         }
 
@@ -223,21 +219,22 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                         }
                         case "CANCEL" -> {
                         }
+                        default -> LOGGER.warn("Error ID Recover not mapped");
                     }
                 }).build()
         ));
     }
 
-    private void clearAnimationBuffer() {
-        bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-        bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-        pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
-        pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
-        imgBW = new WritableImage(pixelBufferBW);
-        imgAnimation = new WritableImage(pixelBufferAnimation);
-        map.setImage(imgAnimation);
-        basicMap.setImage(imgBW);
-    }
+//    private void clearAnimationBuffer() {
+//        bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+//        bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
+//        pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
+//        pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
+//        imgBW = new WritableImage(pixelBufferBW);
+//        imgAnimation = new WritableImage(pixelBufferAnimation);
+//        map.setImage(imgAnimation);
+//        basicMap.setImage(imgBW);
+//    }
 
 
     public VBox getVb() {
@@ -249,7 +246,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     }
     @Override
     public boolean destroy(){
-
+        TCPFacade.getInstance().resetSocket();
         wb.getModules().remove(this);
         return true;
     }

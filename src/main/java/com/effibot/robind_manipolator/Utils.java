@@ -1,14 +1,17 @@
 package com.effibot.robind_manipolator;
 
-import com.effibot.robind_manipolator.Processing.Obstacle;
+import com.effibot.robind_manipolator.processing.Obstacle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class Utils {
-
-    public Utils(){
+    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class.getName());
+    private Utils(){
         /*
         * Public constructor
         * */
@@ -33,7 +36,8 @@ public class Utils {
             oos.writeObject(obj);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.warn("Compression Error",e);
+            return new byte[0];
         }
     }
     public static Object decompress(byte[] stream){
@@ -42,7 +46,8 @@ public class Utils {
             ObjectInputStream ois = new ObjectInputStream(in)){
             return ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            LOGGER.warn("Decompression Error",e);
+            return null;
         }
     }
 

@@ -1,17 +1,17 @@
 package com.effibot.robind_manipolator.tcp;
 
 public class Lock {
-    private boolean lock = false;
+    private boolean mutex = false;
 
     public synchronized boolean isLocked() {
-        return lock;
+        return mutex;
     }
 
     public void lock(){
-        if(!isLocked()) lock = true;
+        if(!isLocked()) mutex = true;
     }
 
     public void unlock(){
-        if(isLocked()) lock = false;
+        if(isLocked()) mutex = false;
     }
 }

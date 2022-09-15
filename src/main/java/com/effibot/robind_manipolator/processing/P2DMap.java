@@ -1,4 +1,4 @@
-package com.effibot.robind_manipolator.Processing;
+package com.effibot.robind_manipolator.processing;
 
 
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.ArrayList;
 public class P2DMap extends ProcessingBase {
     private final int mapColor = color(102, 102, 102);
     private int targetColor;
-    private final float targetAlpha = 80f;
-    private final float targetSize = 32.0f;
+    private static final float TARGET_ALPHA = 80f;
+    private static final float TARGET_SIZE = 32.0f;
 
-    private final int colorPass = color(0, 255, 0, targetAlpha);
-    private final int colorFail = color(255, 0, 0, targetAlpha);
+    private final int colorPass = color(0, 255, 0, TARGET_ALPHA);
+    private final int colorFail = color(255, 0, 0, TARGET_ALPHA);
     private ArrayList<Obstacle> obsList;
 
     public P2DMap(){
@@ -58,10 +58,10 @@ public class P2DMap extends ProcessingBase {
 
     private void targetColorSelect() {
         // ObsList is empty> checks only if mouse is inside the box
-        if (checkConstrains(mouseX + targetSize / 2, mouseY + targetSize / 2, padding, padding, size, size) &&
-                checkConstrains(mouseX + targetSize / 2, mouseY - targetSize / 2, padding, padding, size, size) &&
-                checkConstrains(mouseX - targetSize / 2, mouseY + targetSize / 2, padding, padding, size, size) &&
-                checkConstrains(mouseX - targetSize / 2, mouseY - targetSize / 2, padding, padding, size, size)) {
+        if (checkConstrains(mouseX + TARGET_SIZE / 2, mouseY + TARGET_SIZE / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX + TARGET_SIZE / 2, mouseY - TARGET_SIZE / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX - TARGET_SIZE / 2, mouseY + TARGET_SIZE / 2, padding, padding, size, size) &&
+                checkConstrains(mouseX - TARGET_SIZE / 2, mouseY - TARGET_SIZE / 2, padding, padding, size, size)) {
             targetColor = colorPass;
         } else {
             targetColor = colorFail;
@@ -74,7 +74,7 @@ public class P2DMap extends ProcessingBase {
         targetColorSelect();
         fill(targetColor);
         noStroke();
-        rect(0, 0, targetSize, targetSize);
+        rect(0, 0, TARGET_SIZE, TARGET_SIZE);
         noFill();
         popMatrix();
     }
@@ -114,7 +114,7 @@ public class P2DMap extends ProcessingBase {
         int id = obsList.size();
         final int obsHeight = 200;
         Obstacle obs = new Obstacle(this, targetX, targetY,
-                obsHeight/2.0f, 2 * targetSize, obsHeight, id);
+                obsHeight/2.0f, 2 * TARGET_SIZE, obsHeight, id);
         obsList.add(obs);
         notifyObservers();
     }
