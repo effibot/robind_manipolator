@@ -1,22 +1,18 @@
 package com.effibot.robind_manipolator.modules.manual;
 
-import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
-import com.effibot.robind_manipolator.Processing.P2DMap;
-import com.effibot.robind_manipolator.Processing.ProcessingBase;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
-import javafx.scene.text.Font;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import javafx.scene.control.Button;
 
 public class WelcomeModule extends WorkbenchModule {
 

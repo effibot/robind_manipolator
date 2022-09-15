@@ -118,9 +118,8 @@ public class SettingController {
     public void onBackAction(Button back) {
         back.setOnMouseClicked(evt->{
             IntroModule im = new IntroModule();
-
-            wb.closeModule(sm);
-            wb.getModules().removeAll(sm);
+            sm.close();
+            wb.getModules().remove(sm);
             wb.getModules().add(im);
             wb.openModule(im);
         });

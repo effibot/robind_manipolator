@@ -3,39 +3,22 @@ package com.effibot.robind_manipolator.modules.intro;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.dlsc.workbenchfx.view.controls.MultilineLabel;
-import com.effibot.robind_manipolator.Main;
 import com.effibot.robind_manipolator.Processing.P2DMap;
 import com.effibot.robind_manipolator.Processing.ProcessingBase;
-import com.jogamp.newt.NewtFactory;
-import com.jogamp.newt.Screen;
-import com.jogamp.newt.awt.NewtCanvasAWT;
-import com.jogamp.newt.javafx.NewtCanvasJFX;
-import com.jogamp.newt.opengl.GLWindow;
-import com.jogamp.newt.swt.NewtCanvasSWT;
-import com.jogamp.opengl.*;
-import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.util.Animator;
-import javafx.embed.swing.SwingNode;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import processing.awt.PSurfaceAWT;
-import processing.core.PApplet;
 
-import javax.swing.*;
-import java.awt.*;
 
 public class IntroModule extends WorkbenchModule {
-    private  ProcessingBase sketch;
+    private final ProcessingBase sketch;
 
-    private IntroController introController;
+    private final IntroController introController;
 
     public IntroModule() {
         super("Intro", MaterialDesign.MDI_ACCOUNT);

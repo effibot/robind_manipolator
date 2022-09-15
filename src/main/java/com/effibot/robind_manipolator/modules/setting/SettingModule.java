@@ -8,6 +8,7 @@ import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import com.effibot.robind_manipolator.Main;
 import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import javafx.application.Platform;
@@ -245,10 +246,8 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     }
     @Override
     public boolean destroy(){
-        deactivate();
-        this.getWorkbench().getModules().remove(1);
-        this.getWorkbench().openModule(this.getWorkbench().getModules().get(0));
-        wb = this.getWorkbench();
+
+        wb.getModules().remove(this);
         return true;
     }
 

@@ -32,7 +32,8 @@ public class Sender implements Runnable{
                 oos.flush();
             }
         } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
+//            throw new RuntimeException(e);
+            System.out.println("Sender: Interrupted by TCP.EVENT.RESET");
         } finally {
             sem[1].release();
             System.out.format("Sender Unlock.\tSem[0] = %d, Sem[1] = %d\n",sem[0].availablePermits(),sem[1].availablePermits());

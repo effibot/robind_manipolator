@@ -30,7 +30,7 @@ public class IntroController {
     private int state = 0;
     private IntroBean introBean;
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
-    private final Thread t;
+    private Thread t=null;
 
     private static final Lock lock = new Lock();
     private SettingBean settingBean;
@@ -42,24 +42,7 @@ public class IntroController {
         this.sketch.run(this.sketch.getClass().getSimpleName());
 
         addPropertyChangeListener(tcp);
-        t = new Thread(()->{
-            synchronized (lock){
-                    try {
-                        lock.lock();
-                        while (lock.isLocked()) {
-                            System.out.println("I'm waiting");
-                            lock.wait();
-                        }
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
 
-                    System.out.println("Running MakeMap");
-
-                    makeMap();
-            }
-        });
-        t.start();
     }
 
     public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue) {
@@ -88,26 +71,62 @@ public class IntroController {
 
     public void onContinueAction(Button btn, Workbench wb, ProcessingBase pb) {
 
-        btn.setOnMouseClicked(event -> {
+        btn.setOnAction(event -> {
             introBean = new IntroBean();
             this.settingBean = new SettingBean();
 
             SettingModule sm = new SettingModule(settingBean,wb);
-            wb.getModules().add(sm);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
+            notifyPropertyChange("RESET",false,true);
+
+            if(t!=null)
+                t.interrupt();
+            else{
+                t = getNewThread();
+                t.start();
+            }
             synchronized (lock){
-                lock.unlock();
+                while(lock.isLocked()){
+                    try {
+                        System.out.println("On click wainting");
+
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                lock.lock();
                 System.out.println("I'm unlocking and notifying");
                 lock.notifyAll();
             }
 
             GLWindow pane = (GLWindow)sketch.getSurface().getNative();
             pane.destroy();
-            wb.closeModule(introModule);
+            introModule.close();
             wb.getModules().remove(introModule);
             wb.getModules().add(sm);
             wb.openModule(sm);
 
+        });
+    }
+
+    private Thread getNewThread() {
+        return new Thread(()->{
+            synchronized (lock){
+                try {
+//                    lock.lock();
+                    while (!lock.isLocked()) {
+                        System.out.println("I'm waiting");
+                        lock.wait();
+                    }
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                System.out.println("Running MakeMap");
+
+                makeMap();
+            }
         });
     }
 
@@ -147,7 +166,7 @@ public class IntroController {
 //                bean.notifyPropertyChange(ANIMATION, false, true);
 //                finish = true;
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
              Thread.currentThread().interrupt();
         }
 

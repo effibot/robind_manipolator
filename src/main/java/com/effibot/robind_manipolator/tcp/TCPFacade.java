@@ -14,8 +14,8 @@ public class TCPFacade implements PropertyChangeListener {
 
     private Socket clientSocket;
     private static TCPFacade instance = null;
-
-    private static final Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
+    private final Thread[] t = new Thread[2];
+    private Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
 
     private static final String HOST_ADDR = "localhost";
     private static final int PORT = 3030;
@@ -63,7 +63,8 @@ public class TCPFacade implements PropertyChangeListener {
                     Sender sender = new Sender(sem, clientSocket);
                     sender.setToSend(pkt);
                     // send msg to Matlab Server
-                    new Thread(sender).start();
+                    t[0] = new Thread(sender);
+                    t[0].start();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -71,7 +72,23 @@ public class TCPFacade implements PropertyChangeListener {
             case "RECEIVE" ->{
                 // receiver from Matlab Server
                 Receiver receiver = new Receiver(sem, clientSocket, queue);
-                new Thread(receiver).start();
+                t[1] = new Thread(receiver);
+                t[1].start();
+            }
+            case "RESET" ->{
+                try {
+                    if(clientSocket!=null && clientSocket.isConnected()) {
+                        clientSocket.close();
+                    }
+                    if(t[0] != null)
+                        t[0].interrupt();
+                    if(t[1] != null )
+                        t[1].interrupt();
+                    sem = new Semaphore[]{new Semaphore(1), new Semaphore(0)};
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
             default -> System.out.println("Unknown Property Name");
         }

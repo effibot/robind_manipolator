@@ -27,7 +27,7 @@ public class Receiver implements Runnable{
             sem[1].acquire();
             System.out.format("Receiver Lock.\tSem[0] = %d, Sem[1] = %d\n",sem[0].availablePermits(),sem[1].availablePermits());
             InputStream is = socket.getInputStream();
-            while (true) {
+            while (!Thread.interrupted()) {
                 if (is.available() > 0) {
                     ois = new ObjectInputStream(is);
                     Object obj = ois.readObject();
@@ -40,8 +40,9 @@ public class Receiver implements Runnable{
                     }
                 }
             }
-        } catch (InterruptedException | IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (/*InterruptedException | IOException | ClassNotFoundException |*/ Exception e) {
+//            throw new RuntimeException(e);
+            System.out.println("Receiver: Interrupted by TCP.EVENT.RESET");
         } finally {
             sem[0].release();
             System.out.format("Receiver Unlock.\tSem[0] = %d, Sem[1] = %d\n",sem[0].availablePermits(),sem[1].availablePermits());

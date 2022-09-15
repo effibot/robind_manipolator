@@ -12,13 +12,7 @@ import java.util.Objects;
 
 public class Main extends Application {
 
-//    public static void setSketch(ProcessingBase sketch){
-//        Main.sketch = sketch;
-//    }
-//    public static  ProcessingBase getSketch(){ return sketch; }
-//    @Override
-//    public void init() throws Exception {
-//    }
+
     @Override
     public void start(Stage stage) {
 
@@ -37,15 +31,11 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.show();
     }
-//    @Override
-//    public void stop(){
-//        sketch.noLoop();
-//        sketch.stop();
-//        sketch.exit();
-//    }
 
 
     public static void main(String[] args) {
         launch();
     }
+
+
 }
