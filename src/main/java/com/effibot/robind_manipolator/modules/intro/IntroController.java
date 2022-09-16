@@ -1,6 +1,8 @@
 package com.effibot.robind_manipolator.modules.intro;
 
 import com.dlsc.workbenchfx.Workbench;
+import com.dlsc.workbenchfx.model.WorkbenchDialog;
+import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.processing.Obstacle;
 import com.effibot.robind_manipolator.processing.P2DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
@@ -12,8 +14,16 @@ import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import com.jogamp.newt.opengl.GLWindow;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import org.controlsfx.control.PopOver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -25,6 +35,7 @@ public class IntroController {
 
     private final IntroModule introModule;
     private final ProcessingBase sketch;
+    private final Workbench wb;
     TCPFacade tcp = TCPFacade.getInstance();
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
 
@@ -34,11 +45,19 @@ public class IntroController {
 
     private static final Lock lock = new Lock();
     private SettingBean settingBean;
+    private static final String WIKICONTENT = """
+                All'apertura della finestra secondaria
+                cliccare su di essa per posizionare gli
+                ostacoli.Poi tornare sulla finestra
+                principale per annullare o confermare
+                la selezione.
+                """;
 
-    public IntroController(IntroModule introModule, ProcessingBase sketch) {
+    public IntroController(IntroModule introModule, ProcessingBase sketch, Workbench workbench) {
         this.introModule = introModule;
         this.queue = tcp.getQueue();
         this.sketch = sketch;
+        this.wb = workbench;
         this.sketch.run(this.sketch.getClass().getSimpleName());
         addPropertyChangeListener(tcp);
 
@@ -162,6 +181,17 @@ public class IntroController {
         }finally {
             Thread.currentThread().interrupt();
         }
+
+    }
+
+    public void setOnHoverInfo(ToolbarItem toolbarItem) {
+        toolbarItem.setOnClick(evt->{
+            wb.showInformationDialog(
+                    "Wiki "+introModule.getName(),
+                    WIKICONTENT,
+                    buttonType ->{}
+            );
+        });
 
     }
 }

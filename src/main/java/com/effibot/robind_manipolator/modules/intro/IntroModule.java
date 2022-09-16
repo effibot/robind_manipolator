@@ -6,28 +6,25 @@ import com.dlsc.workbenchfx.view.controls.MultilineLabel;
 import com.effibot.robind_manipolator.processing.Observer;
 import com.effibot.robind_manipolator.processing.P2DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
+import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import com.jfoenix.controls.JFXButton;
 
 
 public class IntroModule extends WorkbenchModule implements Observer {
     private final ProcessingBase sketch;
 
-    private final IntroController introController;
     private JFXButton  cbtn;
     private JFXButton  abtn;
     public IntroModule() {
         super("Intro", MaterialDesign.MDI_ACCOUNT);
 
             this.sketch = new P2DMap();
-            introController = new IntroController( this, this.sketch);
             sketch.registerObserver(this);
 
     }
@@ -35,6 +32,7 @@ public class IntroModule extends WorkbenchModule implements Observer {
     @Override
     public Node activate() {
         Workbench wb = this.getWorkbench();
+        IntroController introController = new IntroController(this, this.sketch, wb);
 
         Label mlb = new MultilineLabel("""
                 Benvenuti nella schermata di controllo dell'application
@@ -55,7 +53,7 @@ public class IntroModule extends WorkbenchModule implements Observer {
         vbx.setSpacing(50d);
         introController.onContinueAction(cbtn, wb,sketch);
         introController.onRedoAction(abtn,sketch);
-
+        introController.setOnHoverInfo(wb.getToolbarControlsRight().get(0));
         return vbx;
     }
 

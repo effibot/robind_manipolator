@@ -7,8 +7,7 @@ idx = find(ismember(shapeposlist,shape,'rows'));
 endId = list(idx).endid;
 P = shortestpath(G, startId, endId);
 if P == startId 
-    msg = src.UserData.buildMessage(0,"ERROR_STID",2);
-    msg = src.UserData.buildMessage(msg,"FINISH",1);
+    msg = src.UserData.buildMessage(0,"FINISH",1);
     src.UserData.sendMessage(src,msg);
     return
 elseif isempty(P)

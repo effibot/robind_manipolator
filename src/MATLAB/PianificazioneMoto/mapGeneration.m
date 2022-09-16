@@ -54,11 +54,11 @@ for i = 1:3
 
     switch(i)
         case 1
-            msg = src.UserData.buildMessage(msg,"SFERA",list(i).allid);
+            msg = src.UserData.buildMessage(msg,"SFERA",sort(list(i).allid,'ascend'));
         case 2
-            msg = src.UserData.buildMessage(msg,"CONO",list(i).allid);
+            msg = src.UserData.buildMessage(msg,"CONO",sort(list(i).allid,'ascend'));
         case 3
-            msg = src.UserData.buildMessage(msg,"CUBO",list(i).allid);
+            msg = src.UserData.buildMessage(msg,"CUBO",sort(list(i).allid,'ascend'));
     end
 
 end

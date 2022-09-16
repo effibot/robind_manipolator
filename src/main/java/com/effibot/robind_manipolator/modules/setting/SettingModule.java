@@ -142,6 +142,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         // Back Button
         JFXButton back = new JFXButton("Indietro");
         settingController.onBackAction(back);
+        settingController.setOnHoverInfo(wb.getToolbarControlsRight().get(0));
         // Bottom Hbox for start and back
         HBox btmBox = new HBox();
         btmBox.getChildren().addAll(back, start2D,start3d);
@@ -200,7 +201,6 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                 bufferBW.put(0, settingBean.getRaw());
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
-            case "ERROR_STID" -> errorStartIdRecovery();
             case "FINISH" -> vb.setDisable(false);
             case "OBSUPDATE" -> LOGGER.info("OBS UPDATE");
             default -> LOGGER.warn("Not Mapped Case.");
@@ -208,34 +208,6 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         }
 
     }
-
-    private void errorStartIdRecovery() {
-        Platform.runLater(() -> wb.showDialog(WorkbenchDialog.builder(
-                        "Il rover non necessita di spostarsi",
-                        "Continuare (OK) la simulazione o selezionare un altro ID (CANCEL).",
-                        ButtonType.OK, ButtonType.CANCEL).blocking(true)
-                .onResult(buttonType -> {
-                    switch (buttonType.getText()) {
-                        case "OK" -> {
-                        }
-                        case "CANCEL" -> {
-                        }
-                        default -> LOGGER.warn("Error ID Recover not mapped");
-                    }
-                }).build()
-        ));
-    }
-
-//    private void clearAnimationBuffer() {
-//        bufferBW = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-//        bufferAnimation = ByteBuffer.allocateDirect(4 * WIDTH * HEIGHT);
-//        pixelBufferBW = new PixelBuffer<>(WIDTH, HEIGHT, bufferBW, PixelFormat.getByteBgraPreInstance());
-//        pixelBufferAnimation = new PixelBuffer<>(WIDTH, HEIGHT, bufferAnimation, PixelFormat.getByteBgraPreInstance());
-//        imgBW = new WritableImage(pixelBufferBW);
-//        imgAnimation = new WritableImage(pixelBufferAnimation);
-//        map.setImage(imgAnimation);
-//        basicMap.setImage(imgBW);
-//    }
 
 
     public VBox getVb() {

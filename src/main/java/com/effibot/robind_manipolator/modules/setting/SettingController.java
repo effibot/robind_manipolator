@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator.modules.setting;
 
 import com.dlsc.workbenchfx.Workbench;
+import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.Utils;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
@@ -10,7 +11,6 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +31,14 @@ public class SettingController {
     TCPFacade tcp = TCPFacade.getInstance();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
+    private static final String WIKICONTENT = """
+            Selezionare la forma e l'ID da cui far partire il rover, il metodo di
+             interpolazione della generazione del cammino e gli angoli
+            di roll,pitch e yaw da utilizzare nella cinematica inversa per avvicinare
+            il PUMA alla forma e procedere all'identificazione dell'oggetto.
+            Nel caso in cui si voglia cambiare i parametri, modificare le scelte e
+            premere il bottono Start 2D; altrimenti, per continuare premere Start 3D.
+            """;
     public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue) {
         /*
          * Just a wrapper for the fire property change method.
@@ -113,11 +121,11 @@ public class SettingController {
 //                case "ddQ" -> sb.setGddq((double[][]) pkt.get(key));
                 case "PATHIDS" -> sb.setPathLabel((double[]) pkt.get(key));
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+                case "FINISH" ->{
+                        finish = true;
+                        sm.getVb().setDisable(false);
+                }
                 default -> LOGGER.warn("Pacchetto non mappato.");
-            }
-            if ((Double) pkt.get("FINISH") == 1.0) {
-                finish = true;
-                sm.getVb().setDisable(false);
             }
         }
     }
@@ -143,6 +151,18 @@ public class SettingController {
     private Thread getNew3DThread() {
         return new Thread(()->{
             // TODO: 1. starto processing3d. 2. bean 3d. 3. robot getter from bean
+
         });
+    }
+
+    public void setOnHoverInfo(ToolbarItem toolbarItem) {
+        toolbarItem.setOnClick(evt->
+            wb.showInformationDialog(
+                    "Wiki "+sm.getName(),
+                    WIKICONTENT,
+                    buttonType ->{}
+            )
+        );
+
     }
 }

@@ -1,11 +1,13 @@
 package com.effibot.robind_manipolator;
 
 import com.dlsc.workbenchfx.Workbench;
+import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.modules.manual.WelcomeModule;
-import com.effibot.robind_manipolator.processing.P2DMap;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.materialdesign.MaterialDesign;
 
 import java.util.Objects;
 
@@ -18,6 +20,14 @@ public class Main extends Application {
                 mn
         ).modulesPerPage(5)
                 .build();
+        FontIcon fi = new FontIcon(MaterialDesign.MDI_COMMENT_QUESTION_OUTLINE);
+        fi.setIconSize(50);
+        ToolbarItem tb = new ToolbarItem("",fi);
+        tb.setMaxSize(50,50);
+        tb.setMinSize(50,50);
+        tb.setPrefSize(50,50);
+
+        wb.getToolbarControlsRight().add(tb);
         wb.getStylesheets().add(Objects.requireNonNull(getClass().getResource("ui.css")).toExternalForm());
 
         Scene myScene = new Scene(wb);
