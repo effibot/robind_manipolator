@@ -5,6 +5,7 @@ import com.effibot.robind_manipolator.Utils;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
+import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -84,9 +85,8 @@ public class SettingController {
         );
     }
 
-    public void onStartAction(Button start) {
+    public void onStart2DAction(JFXButton start) {
         start.setOnAction(event -> {
-
             t = getNew2DThread();
             t.start();
             sm.getVb().setDisable(true);
@@ -123,7 +123,7 @@ public class SettingController {
     }
 
 
-    public void onBackAction(Button back) {
+    public void onBackAction(JFXButton back) {
         back.setOnMouseClicked(evt->{
             IntroModule im = new IntroModule();
             sm.close();
@@ -133,7 +133,7 @@ public class SettingController {
         });
     }
 
-    public void onStart3DAction(Button start3d) {
+    public void onStart3DAction(JFXButton start3d) {
         start3d.setOnAction(event->{
             t = getNew3DThread();
             t.start();

@@ -2,11 +2,11 @@ package com.effibot.robind_manipolator.modules.manual;
 
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
+import com.jfoenix.controls.JFXButton;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -59,7 +59,7 @@ public class WelcomeModule extends WorkbenchModule {
         presentationText.setFont(Font.font("Verdana",FontPosture.REGULAR,15));
         HBox hb = new HBox();
         hb.setSpacing(40);
-        Button startBtn = new Button("Start Simulation");
+        JFXButton startBtn = new JFXButton("Start Simulation");
         startBtn.setOnMouseClicked(evt->{
             IntroModule in = new IntroModule();
             ObservableList<WorkbenchModule> moduleList = this.getWorkbench().getModules();

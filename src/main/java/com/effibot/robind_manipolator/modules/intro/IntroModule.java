@@ -14,15 +14,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import processing.core.PApplet;
+import com.jfoenix.controls.JFXButton;
 
 
 public class IntroModule extends WorkbenchModule implements Observer {
     private final ProcessingBase sketch;
 
     private final IntroController introController;
-    private Button cbtn;
-    private Button abtn;
+    private JFXButton  cbtn;
+    private JFXButton  abtn;
     public IntroModule() {
         super("Intro", MaterialDesign.MDI_ACCOUNT);
 
@@ -42,9 +42,9 @@ public class IntroModule extends WorkbenchModule implements Observer {
                 Andrea Efficace, Lorenzo Rossi, Martina Liberti""");
         mlb.setTextAlignment(TextAlignment.CENTER);
         mlb.setAlignment(Pos.CENTER);
-        cbtn = new Button("Continua");
+        cbtn = new JFXButton("Continua");
         cbtn.setDisable(true);
-        abtn = new Button("Annulla");
+        abtn = new JFXButton("Annulla");
         abtn.setDisable(true);
         HBox hb = new HBox();
         hb.getChildren().addAll(cbtn, abtn);

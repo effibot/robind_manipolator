@@ -2,12 +2,12 @@
     -fx-light-text-color: rgba(33, 33, 33, 0.58);
     -fx-base: rgba(250, 208, 208, 0.96);
 
-    -primary-color: #37b9b0;
+    -primary-color: #4db6ac;
     -primary-variant-color: #3cc7d3;
     -secondary-color: #83dbde;
     -secondary-variant-color: #73c2c2;
     -background-color: #c3deda;
-    -surface-color: #468d8d;
+    -surface-color: #ffffff;
     -error-color: #B00020;
     -on-primary-color: -fx-light-text-color;
     -on-secondary-color: -fx-light-text-color;
@@ -15,7 +15,19 @@
     -on-surface-color: -fx-light-text-color;
     -on-error-color: #FFFFFF;
 }
+/*Flat button example */
+.jfx-button {
+    -jfx-button-type: FLAT;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
 
+/*Raised button example */
+.jfx-button {
+    -jfx-button-type: RAISED;
+    -fx-background-color: #7e7ee8;
+    -fx-text-fill: white;
+}
 #user-icon {
     -fx-fill: -fx-light-text-color !important;
 }

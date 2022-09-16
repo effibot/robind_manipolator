@@ -8,6 +8,7 @@ import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
+import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -133,19 +134,19 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         FormRenderer form = setupForm();
         form.setPadding(Insets.EMPTY);
         // Start Button
-        Button start = new Button("Start");
-        settingController.onStartAction(start);
+        JFXButton start2D = new JFXButton("Start 2D");
+        settingController.onStart2DAction(start2D);
         // Start 3D Button
-        Button start3d = new Button("Start 3D");
+        JFXButton start3d = new JFXButton("Start 3D");
         settingController.onStart3DAction(start3d);
         // Back Button
-        Button back = new Button("Indietro");
+        JFXButton back = new JFXButton("Indietro");
         settingController.onBackAction(back);
         // Bottom Hbox for start and back
         HBox btmBox = new HBox();
-        btmBox.getChildren().addAll(back, start);
+        btmBox.getChildren().addAll(back, start2D,start3d);
         btmBox.setAlignment(Pos.CENTER);
-        btmBox.setSpacing(160);
+        btmBox.setSpacing(50);
         vb.getChildren().addAll(form, btmBox);
         // container
         AnchorPane anchorVB = new AnchorPane(vb);

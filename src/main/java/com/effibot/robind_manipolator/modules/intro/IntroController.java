@@ -10,8 +10,8 @@ import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.modules.setting.SettingModule;
 import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
+import com.jfoenix.controls.JFXButton;
 import com.jogamp.newt.opengl.GLWindow;
-import javafx.scene.control.Button;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.beans.PropertyChangeListener;
@@ -39,7 +39,7 @@ public class IntroController {
         this.introModule = introModule;
         this.queue = tcp.getQueue();
         this.sketch = sketch;
-//        this.sketch.run(this.sketch.getClass().getSimpleName());
+        this.sketch.run(this.sketch.getClass().getSimpleName());
         addPropertyChangeListener(tcp);
 
     }
@@ -57,7 +57,7 @@ public class IntroController {
 
 
 
-    public void onRedoAction(Button btn, ProcessingBase pb) {
+    public void onRedoAction(JFXButton btn, ProcessingBase pb) {
         btn.setOnMouseClicked(event -> {
 
             ArrayList<Obstacle> obsList = ((P2DMap) pb).getObstacleList();
@@ -68,7 +68,7 @@ public class IntroController {
         });
     }
 
-    public void onContinueAction(Button btn, Workbench wb, ProcessingBase pb) {
+    public void onContinueAction(JFXButton btn, Workbench wb, ProcessingBase pb) {
 
         btn.setOnAction(event -> {
             introBean = new IntroBean();
