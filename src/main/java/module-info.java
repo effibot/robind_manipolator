@@ -18,6 +18,7 @@ module com.effibot.robind_manipolator {
     exports com.effibot.robind_manipolator.processing;
     opens com.effibot.robind_manipolator.processing;
     exports com.effibot.robind_manipolator.tcp;
+    exports com.effibot.robind_manipolator.bean;
     opens com.effibot.robind_manipolator.tcp;
 
 }

@@ -6,7 +6,9 @@ import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
+import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
+import com.effibot.robind_manipolator.processing.Robot;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -53,6 +55,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
     private final SettingBean settingBean;
+    private RobotBean robotBean;
     private final ListProperty<String> shapeName = new SimpleListProperty<>(
             FXCollections.observableArrayList(
                     Arrays.asList("Sfera", "Cono", "Cubo")
@@ -62,12 +65,14 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                     Arrays.asList("Paraboloic", "Quintic", "Cubic")
             ));
 
-    public SettingModule(SettingBean settingBean,Workbench wb) {
+    public SettingModule(SettingBean settingBean, RobotBean robotBean, Workbench wb) {
         super("Impostazioni", MaterialDesign.MDI_SETTINGS);
         this.settingBean = settingBean;
         this.settingBean.addPropertyChangeListener(this);
+        this.robotBean = robotBean;
+        this.robotBean.addPropertyChangeListener(this);
         this.wb = wb;
-        settingController = new SettingController(this, this.settingBean,this.wb);
+        settingController = new SettingController(this, this.settingBean, this.robotBean, this.wb);
 
     }
 

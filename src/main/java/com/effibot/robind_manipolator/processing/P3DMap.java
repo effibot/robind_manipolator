@@ -1,5 +1,6 @@
 package com.effibot.robind_manipolator.processing;
 
+import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.tcp.GameState;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import peasy.PeasyCam;
@@ -22,7 +23,7 @@ public class P3DMap extends ProcessingBase{
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
     private Reference frame;
-
+    private final RobotBean rb;
     private int qSelection = 0;                                // Joint selection (for interactive controls).
 
     private int i = (6) + 48;
@@ -34,8 +35,9 @@ public class P3DMap extends ProcessingBase{
 
     private  int simIdx = 0;
     private int task = 0;
-    public P3DMap(List<Obstacle> obsList) {
+    public P3DMap(List<Obstacle> obsList, RobotBean rb) {
         this.obsList = obsList;
+        this.rb = rb;
         size = 1024;
         mapH = 20;
         frame = new Reference(this);
@@ -87,7 +89,7 @@ public class P3DMap extends ProcessingBase{
         super.setup();
         surface.setTitle("Mappa 3D");
         rectMode(CENTER);
-        r = Robot.getInstance(this);
+//        r = new Robot(this,);
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
         int tilex = floor((width-padding) / NX);
         int tiley = floor((height-padding) / NY);

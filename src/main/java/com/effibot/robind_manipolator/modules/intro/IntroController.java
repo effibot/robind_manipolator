@@ -3,6 +3,7 @@ package com.effibot.robind_manipolator.modules.intro;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
+import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.processing.Obstacle;
 import com.effibot.robind_manipolator.processing.P2DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
@@ -23,7 +24,6 @@ import javafx.scene.text.TextAlignment;
 import org.controlsfx.control.PopOver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ public class IntroController {
 
     private static final Lock lock = new Lock();
     private SettingBean settingBean;
+    private RobotBean robotBean;
     private static final String WIKICONTENT = """
                 All'apertura della finestra secondaria
                 cliccare su di essa per posizionare gli
@@ -73,9 +74,6 @@ public class IntroController {
         changes.addPropertyChangeListener(l);
     }
 
-
-
-
     public void onRedoAction(JFXButton btn, ProcessingBase pb) {
         btn.setOnMouseClicked(event -> {
 
@@ -92,8 +90,10 @@ public class IntroController {
         btn.setOnAction(event -> {
             introBean = new IntroBean();
             this.settingBean = new SettingBean();
-
-            SettingModule sm = new SettingModule(settingBean,wb);
+            robotBean = new RobotBean();
+            this.robotBean = new RobotBean();
+            this.robotBean.setObsList(((P2DMap)sketch).getObstacleList());
+            SettingModule sm = new SettingModule(settingBean,robotBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
 
             if(t!=null)

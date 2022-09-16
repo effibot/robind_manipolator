@@ -3,8 +3,10 @@ package com.effibot.robind_manipolator.modules.setting;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.Utils;
+import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
+import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.ListProperty;
@@ -27,7 +29,9 @@ public class SettingController {
     private final SettingBean sb;
     private final SettingModule sm;
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
+    private RobotBean robotBean;
     private final Workbench wb;
+    private RobotBean rb;
     TCPFacade tcp = TCPFacade.getInstance();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
@@ -52,9 +56,10 @@ public class SettingController {
 
     private Thread t;
 
-    public SettingController(SettingModule sm, SettingBean sb, Workbench wb) {
+    public SettingController(SettingModule sm, SettingBean sb, RobotBean robotBean, Workbench wb) {
         this.sm = sm;
         this.sb = sb;
+        this.rb = robotBean;
         this.wb = wb;
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
@@ -147,11 +152,19 @@ public class SettingController {
             t.start();
         });
     }
-
+    private P3DMap p3d;
     private Thread getNew3DThread() {
         return new Thread(()->{
             // TODO: 1. starto processing3d. 2. bean 3d. 3. robot getter from bean
+            try {
+                rb = new RobotBean();
+                p3d = new P3DMap(rb.getObsList(),rb);
+                makeSimulation();
 
+            } catch (InterruptedException e) {
+                LOGGER.info("Interrupting 3D Thread",e);
+                Thread.currentThread().interrupt();
+            }
         });
     }
 
@@ -164,5 +177,43 @@ public class SettingController {
             )
         );
 
+    }
+
+    private void makeSimulation() throws InterruptedException {
+        // make new packet
+        LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
+        pkt.put("PROC","SYM");
+        pkt.put("M",5);
+        pkt.put("ALPHA",300);
+        notifyPropertyChange("SEND", null, pkt);
+        notifyPropertyChange("RECEIVE", false, true);
+        boolean finish = false;
+        while (!finish) {
+            // set green id
+            pkt = queue.take();
+            String key = (String) (pkt.keySet().toArray())[0];
+            switch (key) {
+                case "ROVER" ->{
+                    rb.setRoverPos((double[][]) pkt.get("Qs"));
+                    rb.setRoverVel((double[][]) pkt.get("dQs"));
+                    rb.setRoverAcc((double[][]) pkt.get("ddQs"));
+                    rb.setError((double[][]) pkt.get("E"));
+                    p3d.start();
+                }
+                case "ANIMATION" -> rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+//                case "ERROR"-> {
+//                    bean.setShapeAvailable(true);
+//                    finish = true;
+//                }
+                default -> {
+                    finish = true;
+
+                }
+            }
+            if ((Double) pkt.get("FINISH") == 1.0) {
+                finish = true;
+
+            }
+        }
     }
 }

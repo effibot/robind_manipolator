@@ -1,13 +1,21 @@
 package com.effibot.robind_manipolator.processing;
 
+import com.effibot.robind_manipolator.bean.RobotBean;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.ListChangeListener;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import processing.core.PShape;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import static java.lang.Math.*;
 import static processing.core.PConstants.PI;
 
@@ -53,10 +61,35 @@ public class Robot {
 
     // Processing reference
     private ProcessingBase p3d;
+    private RobotBean rb;
     // Observers
     private static Robot instance = null;
-    private Robot(ProcessingBase p3d) {
+    private final ListProperty<Float> qObs = new SimpleListProperty<>();
+    private final ListProperty<Double[]> qRoverObs = new SimpleListProperty<>();
+    private LinkedBlockingQueue<Float[]> symQueue = new LinkedBlockingQueue<>();
+    private Float[] symPos;
+    private final ListProperty<Double[]> dqRoverObs = new SimpleListProperty<>();
+    private final ListProperty<Double[]> ddqRoverObs = new SimpleListProperty<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Robot.class.getName());
+    public Robot(ProcessingBase p3d, RobotBean rb) {
         this.p3d = p3d;
+        this.rb = rb;
+        qObs.bind(rb.qProperty());
+        qRoverObs.bind(rb.qRoverProperty());
+        qRoverObs.addListener((ListChangeListener<? super Double[]>) change -> {
+            for(Double[] value : qRoverObs.get()){
+               Float[] pos = new Float[] {Float.valueOf(value[0].toString()),
+                       Float.valueOf(value[1].toString())};
+                try {
+                    symQueue.put(pos);
+                } catch (InterruptedException e) {
+                    LOGGER.error("SymQueue put failed");
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        dqRoverObs.bind(rb.dqRoverProperty());
+        ddqRoverObs.bind(rb.ddqRoverProperty());
         this.shapeList.add(loadLink(0));
         for (int i = 0; i < 6; i++) {
             // load link_i
@@ -65,12 +98,13 @@ public class Robot {
             Vector<Float> dhRow = new Vector<>(Arrays.asList(q[i], d[i], alpha[i], a[i]));
             dhTable.add(dhRow);
         }
+
     }
-    public static synchronized Robot getInstance(ProcessingBase p3d){
-        if( instance == null)
-            instance = new Robot(p3d);
-        return instance;
-    }
+//    public static synchronized Robot getInstance(ProcessingBase p3d,RobotBean rb){
+//        if( instance == null)
+//            instance = new Robot(p3d);
+//        return instance;
+//    }
     public void dh(float theta, float d, float alpha, float a) {
         p3d.rotateZ(theta);
         p3d.translate(0, 0, d);
@@ -98,6 +132,16 @@ public class Robot {
         p3d.pushMatrix();
         p3d.rotateX(PI/2);
         //rotateY(PI/2);
+        // Rover
+        try {
+            if(!symQueue.isEmpty()) {
+                symPos = symQueue.take();
+                p3d.translate(symPos[0], symPos[1],0);
+            }
+        } catch (InterruptedException e) {
+            LOGGER.error("SymQueue take error");
+            Thread.currentThread().interrupt();
+        }
         p3d.shape(this.getShapeList().get(0));
         p3d.popMatrix();
         // dh 01
@@ -286,12 +330,11 @@ public class Robot {
         return new double[][]{{1,0,0},{0,cos(theta), -sin(theta)},{0,sin(theta), cos(theta)}};
     }
     private void printR(RealMatrix R){
-        System.out.println(String.format(
-                "[%f,%f,%f]\n[%f,%f,%f]\n[%f,%f,%f]",
+        System.out.printf(
+                "[%f,%f,%f]%n[%f,%f,%f]%n[%f,%f,%f]%n",
                 R.getEntry(0,0),R.getEntry(0,1),R.getEntry(0,2),
                 R.getEntry(1,0),R.getEntry(1,1),R.getEntry(1,2),
-                R.getEntry(2,0),R.getEntry(2,1),R.getEntry(2,2))
-        );
+                R.getEntry(2,0),R.getEntry(2,1),R.getEntry(2,2));
     }
     public double [][] translateM(float x, float y, float z){
         return new double[][]{{x},{y},{z}};
