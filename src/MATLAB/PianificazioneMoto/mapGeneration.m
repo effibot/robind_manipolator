@@ -31,7 +31,6 @@ for i = 1:3
         obb = randi(nobs,1);
         pos = obstemp(obb,1:2);
         condition = find(ismember(shapepos(:,2:3),pos,'rows'),1);
-        %         if isempty(condition) || ~condition
         [listElem,boolean]= findEndIds(nodeList,pos,G,i);
         if boolean
             list(i) = listElem;

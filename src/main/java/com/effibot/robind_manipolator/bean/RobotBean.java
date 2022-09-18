@@ -1,7 +1,9 @@
 package com.effibot.robind_manipolator.bean;
 
 import com.effibot.robind_manipolator.processing.Obstacle;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,17 +28,23 @@ public class RobotBean implements Serializable {
                     ))
     ));
     // Rover Position [x][y]
-    private final transient ListProperty<Double[]> qRover = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final transient ListProperty<Double[]> qRover = new SimpleListProperty<>(FXCollections.observableList(
+            new ArrayList<>(List.<Double[]>of(new Double[]{0d, 0d}))
+    ));
     // Rover Velocity [dx][dy]
-    private final transient ListProperty<Double[]> dqRover = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final transient ListProperty<Double[]> dqRover = new SimpleListProperty<>(FXCollections.observableArrayList(
+            new ArrayList<>(List.<Double[]>of(new Double[]{0d, 0d}))
+    ));
     // Rover Acceleration [ddx][ddy]
     private final transient ListProperty<Double[]> ddqRover = new SimpleListProperty<>(FXCollections.observableArrayList());
     // Rover Error [e_x][e_y][e_dx][e_dy]
     private final transient ListProperty<Double[]> errors = new SimpleListProperty<>(FXCollections.observableArrayList());
+
+
     // map image's stream
     private byte[] animation;
     private final transient PropertyChangeSupport changes = new PropertyChangeSupport(this);
-    private ArrayList<Obstacle> obsList;
+    private transient ArrayList<Obstacle> obsList;
 
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener(l);
@@ -66,18 +74,18 @@ public class RobotBean implements Serializable {
     }
     private ListProperty<Double[]> adaptToPropertyList(double[][] values) {
         ListProperty<Double[]> adapted = new SimpleListProperty<>(FXCollections.observableArrayList());
-        int i = 0;
         for (double[] val : values) {
-            adapted.set(i, ArrayUtils.toObject(val));
-            i++;
+            adapted.add(ArrayUtils.toObject(val));
+
         }
         return adapted;
     }
 
+    public byte[] getAnimation(){return this.animation;}
 
     public void setAnimation(byte[] writableImage){
         this.animation = writableImage;
-        changes.firePropertyChange("ANIMATION",false,true);
+        changes.firePropertyChange("ANIMATION",false,this);
     }
     // PUMA
     public ObservableList<Float> getQ() {
@@ -140,10 +148,12 @@ public class RobotBean implements Serializable {
         this.errors.set(errors);
     }
 
-    public void setObsList(ArrayList<Obstacle> obstacleList) {
-        this.obsList = obstacleList;
+    public void setObsList(List<Obstacle> obstacleList) {
+        this.obsList = (ArrayList<Obstacle>) obstacleList;
     }
     public List<Obstacle> getObsList(){
         return obsList;
     }
+
+
 }

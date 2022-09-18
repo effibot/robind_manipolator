@@ -3,6 +3,9 @@ load mapg.mat
 redListNode = findobj(nodeList, 'prop', 'r');
 redObsbc = reshape([redListNode.bc]',2,[]);
 shapeposlist = reshape([list.pos]',2,[])';
+startNode = findobj(nodeList,'id',startId);
+startPos = startNode.bc;
+pend = [shape,80];
 idx = find(ismember(shapeposlist,shape,'rows'));
 endId = list(idx).endid;
 P = shortestpath(G, startId, endId);
@@ -32,6 +35,6 @@ src.UserData.sendMessage(src,msg);
 runonmap(M,p,redObsbc',nodeList,robotsize,src);
 msg =src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
-save path.mat p dp ddp M redObsbc nodeList robotsize
+save path.mat p dp ddp M redObsbc nodeList robotsize pend startPos
 end
 

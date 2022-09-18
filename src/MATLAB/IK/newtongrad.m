@@ -1,6 +1,7 @@
-function newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
-    pend= [xdes;ydes;zdes];
-    P=[pend(1);pend(2);pend(3);roll;pitch;yaw];
+function newtongrad(roll,pitch,yaw,src)
+    load path.mat pend startPos
+    pfinal = pend-[startPos,0];
+    P=[pfinal(1);pfinal(2);pfinal(3);roll;pitch;yaw];
     q=sym('q',[6,1]);
     L=[33;50;0;51;0;12];
     dof=6;
@@ -29,9 +30,7 @@ function newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
     err = [dep;rollp;pitchp;yawp]-P;
     E = matlabFunction(err);
     %% Newton-Gradient Hybrid
-    cond= @(L1,L2,L4,P1,P2,P3)(-L2.^2-L4.^2+P1.^2+P2.^2+(L1-P3).^2)./(L2.*L4.*2.0);
-    if cond(L(1),L(2),L(4),pend(1),pend(2),pend(3))<=1 &&...
-            cond(L(1),L(2),L(4),pend(1),pend(2),pend(3))>=-1
+   
         while 1
             % Jacobian
             Jval =J(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
@@ -59,11 +58,11 @@ function newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src)
             msg = src.UserData.buildMessage(0,"Q",q0);
             msg = src.UserData.buildMessage(msg,"FINISH",0);
             src.UserData.sendMessage(src,msg);
-            msg = src.UserData.buildMessage(0,"ENEWTON",errornorm);
+            msg = src.UserData.buildMessage(0,"E",errnorm);
             msg = src.UserData.buildMessage(msg,"FINISH",0);
             src.UserData.sendMessage(src,msg);
         end
-    end
+    
     msg = src.UserData.buildMessage(0,"FINISH",1);
     src.UserData.sendMessage(src,msg);
 end

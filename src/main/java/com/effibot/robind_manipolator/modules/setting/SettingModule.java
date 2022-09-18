@@ -4,11 +4,9 @@ import com.dlsc.formsfx.model.structure.*;
 import com.dlsc.formsfx.model.validators.DoubleRangeValidator;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.dlsc.workbenchfx.Workbench;
-import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.model.WorkbenchModule;
 import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
-import com.effibot.robind_manipolator.processing.Robot;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
@@ -18,10 +16,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -54,6 +53,8 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private final ObjectProperty<Double> id = new SimpleObjectProperty<>();
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
+
+
     private final SettingBean settingBean;
     private RobotBean robotBean;
     private final ListProperty<String> shapeName = new SimpleListProperty<>(
@@ -64,7 +65,10 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
             FXCollections.observableArrayList(
                     Arrays.asList("Paraboloic", "Quintic", "Cubic")
             ));
+    private final DoubleProperty pitchValue = new SimpleDoubleProperty(0);
+    private final DoubleProperty rollValue = new SimpleDoubleProperty(0);
 
+    private final DoubleProperty yawValue = new SimpleDoubleProperty(0);
     public SettingModule(SettingBean settingBean, RobotBean robotBean, Workbench wb) {
         super("Impostazioni", MaterialDesign.MDI_SETTINGS);
         this.settingBean = settingBean;
@@ -98,17 +102,21 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         /* Roll Pitch Yaw */
         String valueNonCompliant = "Valore non ammesso";
         String specifyValue = "Specificare un valore";
-        Field<DoubleField> rollField = Field.ofDoubleType(0.0)
+        Field<DoubleField> rollField = Field.ofDoubleType(rollValue)
                 .label("Roll").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
 
-        Field<DoubleField> pitchField = Field.ofDoubleType(0.0)
+        Field<DoubleField> pitchField = Field.ofDoubleType(pitchValue)
                 .label("Pitch").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
 
-        Field<DoubleField> yawField = Field.ofDoubleType(0.0)
+        Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
                 .label("Yaw").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
+
+        settingBean.rollProperty().bindBidirectional(rollValue);
+        settingBean.pitchProperty().bindBidirectional(pitchValue);
+        settingBean.yawProperty().bindBidirectional(yawValue);
         Form controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
         return new FormRenderer(controlForm);
     }
@@ -197,7 +205,13 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         switch (evt.getPropertyName()) {
             case "ANIMATION" -> {
                 bufferAnimation.clear();
-                bufferAnimation.put(0, settingBean.getAnimation());
+                byte[] animation = new byte[0];
+                if(evt.getNewValue() instanceof RobotBean)
+                     animation = robotBean.getAnimation();
+                else if (evt.getNewValue() instanceof SettingBean) {
+                    animation = settingBean.getAnimation();
+                }
+                bufferAnimation.put(0, animation);
                 Platform.runLater(() -> pixelBufferAnimation.updateBuffer(b -> null));
             }
 

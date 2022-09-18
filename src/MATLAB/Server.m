@@ -37,13 +37,10 @@ if(src.NumBytesAvailable~=0)
             alpha = hashmap.get("ALPHA");
             runsimulation(mass,alpha,src);
         case "IK"
-            xdes = hashmap.get("X");
-            ydes = hashmap.get("Y");
-            zdes = hashmap.get("Z");
             roll = hashmap.get("ROLL");
             pitch = hashmap.get("PITCH");
             yaw = hashmap.get("YAW");
-            newtongrad(xdes,ydes,zdes,roll,pitch,yaw,src);
+            newtongrad(roll,pitch,yaw,src);
 
         case "VIS"
             shape = hashmap.get("SHAPE");

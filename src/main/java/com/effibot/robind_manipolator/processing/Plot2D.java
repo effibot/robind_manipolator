@@ -2,6 +2,9 @@ package com.effibot.robind_manipolator.processing;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
+import processing.core.PConstants;
 
 import static processing.core.PApplet.ceil;
 import static processing.core.PConstants.PI;
@@ -9,18 +12,11 @@ import static processing.core.PConstants.PI;
 class Plot2D {
 
     /* 2D plot class parameters. */
-    private int titleBackground ;  // Title tile background color.
-    private int titleHeight = 35;                         // Title tile height.
-    private int titleColor ;            // Title text color.
-    private int titleSize = 16;                           // Title text size (pixels).
-    private int gridColor ;          // Grid lines color.
-    private int gridSpacing = 25;                         // Spacing between grid lines (pixels).
+    private final int titleBackground ;  // Title tile background color.
+    private static final int TITLE_HEIGHT = 35;                         // Title tile height.
+    private final int titleColor ;            // Title text color.
+    private final int gridColor ;          // Grid lines color.
 
-    /* Plot attributes. */
-    private int xMin;         // X axis minimum value.
-    private int xMax;         // X axis maximum value.
-    private int yMin;         // Y axis minimum value.
-    private int yMax;         // Y axis maximum value.
     private int xPos;         // X plot window position.
     private int yPos;         // Y plot window position.
     private int pWidth;       // Plot width.
@@ -28,7 +24,7 @@ class Plot2D {
     private String pltTitle;  // Plot title.
     private int backColor;  // Background color.
     private int scaleFact;    // Scale factor for variable to plot.
-    private P3DMap p3d;
+    private final P3DMap p3d;
 
     public Plot2D(P3DMap p3DMap) {
         this.p3d = p3DMap;
@@ -38,7 +34,7 @@ class Plot2D {
 
     }
 
-    public ArrayList<Plot2D> initializePlot(P3DMap p3DMap) {
+    public List<Plot2D> initializePlot(P3DMap p3DMap) {
 
         ArrayList<Plot2D> plots = new ArrayList<>();
 
@@ -61,10 +57,11 @@ class Plot2D {
 
     /* Set plot dimensions. */
     public void setXYLims(int x1, int x2, int y1, int y2, int scale) {
-        this.xMin = x1;
-        this.xMax = x2;
-        this.yMin = y1;
-        this.yMax = y2;
+        /* Plot attributes. */
+        // X axis minimum value.
+        // X axis maximum value.
+        // Y axis minimum value.
+        // Y axis maximum value.
         this.pWidth = x2 - x1;
         this.pHeight = (y2 - y1) * scale;
         this.scaleFact = scale;
@@ -91,34 +88,38 @@ class Plot2D {
     public void drawCanvas() {
         p3d.strokeWeight(2);
         p3d.stroke(0, 0, 0);
-        p3d.textAlign(p3d.CENTER, p3d.CENTER);
-        p3d.textSize(this.titleSize);
+        p3d.textAlign(PConstants.CENTER, PConstants.CENTER);
+        // Title text size (pixels).
+        int titleSize = 16;
+        p3d.textSize(titleSize);
         // Draw title tile.
         p3d.fill(this.titleBackground);
-        p3d.rect(this.xPos, this.yPos-160, this.pWidth + 2, this.titleHeight);
+        p3d.rect(this.xPos, this.yPos-160f, this.pWidth + 2f, TITLE_HEIGHT);
 
         // Draw plot tile.
         p3d.fill(this.backColor);
-        p3d.rect(this.xPos, this.yPos + this.titleHeight-92, this.pWidth + 2, this.pHeight/2 + 2);
+        p3d.rect(this.xPos, this.yPos + TITLE_HEIGHT -92f, this.pWidth + 2f, this.pHeight/2f + 2);
 
         p3d.fill(this.titleColor);
-        p3d.text(this.pltTitle,  this.pWidth/2,  this.titleHeight/2);
+        p3d.text(this.pltTitle,  this.pWidth/2f, Plot2D.TITLE_HEIGHT /2f);
     }
     /* Draw XY grid. */
     public void drawGrid() {
         p3d.strokeWeight(1);
         p3d.stroke(this.gridColor);
         // Draw vertical lines.
-        int xOff = this.gridSpacing;
+        // Spacing between grid lines (pixels).
+        int gridSpacing = 25;
+        int xOff = gridSpacing;
         while (xOff < this.pWidth) {
-            p3d.line(  10+xOff,  this.titleHeight , 10+xOff, this.yPos+this.titleHeight);
-            xOff += this.gridSpacing;
+            p3d.line(  10f+xOff,  TITLE_HEIGHT, 10f+xOff, (float)this.yPos+ TITLE_HEIGHT);
+            xOff += gridSpacing;
         }
         // Draw horizontal lines.
-        int yOff = this.titleHeight + this.gridSpacing;
-        while ((yOff - this.titleHeight) < this.pHeight/2) {
-            p3d.line(10,  yOff, 10+ this.pWidth,  yOff);
-            yOff += this.gridSpacing;
+        int yOff = TITLE_HEIGHT + gridSpacing;
+        while ((yOff - TITLE_HEIGHT) < this.pHeight/2) {
+            p3d.line(10f,  yOff, 10f+ this.pWidth,  yOff);
+            yOff += gridSpacing;
         }
     }
 
@@ -129,7 +130,7 @@ class Plot2D {
         p3d.stroke(lineColor);
         p3d.beginShape();
         for (int i = 0; i < nPoints; i++) {
-            this.p3d.vertex(this.xPos + i, this.titleHeight + (this.pHeight - (this.scaleFact * points[i])));
+            this.p3d.vertex((float)this.xPos + i, Plot2D.TITLE_HEIGHT + (this.pHeight - (this.scaleFact * points[i])));
         }
         p3d.endShape();
     }

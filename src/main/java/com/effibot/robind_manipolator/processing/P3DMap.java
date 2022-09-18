@@ -1,41 +1,39 @@
 package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
-import com.effibot.robind_manipolator.tcp.GameState;
-import com.effibot.robind_manipolator.tcp.TCPFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import peasy.PeasyCam;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class P3DMap extends ProcessingBase{
+    private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
     private final List<Obstacle> obsList;
-    private final int NX = 2;
-    private final int NY = 1;
+    private static final int NX = 2;
+    private static final int NY = 1;
     private final int mapH;
     private final int bgColor = color(51,102,102);
-    private static double[][] ps;
-    private final GameState gm;
-    private final double[][] points;
+    private final Semaphore[] sequence;
+
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
-    private Reference frame;
+    private final Reference frame;
     private final RobotBean rb;
     private int qSelection = 0;                                // Joint selection (for interactive controls).
 
     private int i = (6) + 48;
     private boolean showPlots=false;
 
-    private ArrayList<Plot2D> plots = new ArrayList<>();
-    private final TCPFacade tcp = TCPFacade.getInstance();
+    private List<Plot2D> plots = new ArrayList<>();
+    private Robot r1;
 
-
-    private  int simIdx = 0;
-    private int task = 0;
-    public P3DMap(List<Obstacle> obsList, RobotBean rb) {
+    public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] sequence) {
         this.obsList = obsList;
         this.rb = rb;
         size = 1024;
@@ -43,9 +41,7 @@ public class P3DMap extends ProcessingBase{
         frame = new Reference(this);
         observers = new ArrayList<>();
         this.padding = 5;
-        this.gm = GameState.getInstance();
-        this.points = gm.getSq();
-
+        this.sequence = sequence;
     }
 
 
@@ -54,16 +50,17 @@ public class P3DMap extends ProcessingBase{
         setGLGraphicsViewport(0, 0, width, height);
         background(153,204,153);
         // Aggiungo degli effetti di luce direzionale
-        directionalLight(126F, 126F, 126F, (float) -1, (float) 1, (float) -0.7);
+        directionalLight(126F, 126F, 126F, -1, 1, (float) -0.7);
         // Aggiungo degli effetti di luce ambientale
         ambientLight(200, 200, 200);
         // setup bg
-        for (int i = 0; i < cameras.length; i++) {
+        for (int cameraIdx = 0; cameraIdx < cameras.length; cameraIdx++) {
             pushStyle();
             pushMatrix();
-            switch (i) {
-                case 0 -> draw3Dmap(setupScene(cameras[i],i));
-                case 1 -> draw3Drobot(setupScene(cameras[i],i));
+            switch (cameraIdx) {
+                case 0 -> draw3Dmap(setupScene(cameras[cameraIdx],cameraIdx));
+                case 1 -> draw3Drobot(setupScene(cameras[cameraIdx],cameraIdx));
+                default -> LOGGER.warn("DRAW3DMAP/ROBOT not mapped");
             }
             popMatrix();
             popStyle();
@@ -72,11 +69,12 @@ public class P3DMap extends ProcessingBase{
 
     @Override
     public void settings() {
-        int WIDTH3D = 1366;
-        int HEIGHT3D = 768;
-        size(WIDTH3D, HEIGHT3D, P3D);
+        int width3D = 1366;
+        int height3D = 768;
+        size(width3D, height3D, P3D);
         pixelDensity(1);
         smooth(8);
+
     }
 
     float dx = 0;
@@ -87,15 +85,17 @@ public class P3DMap extends ProcessingBase{
     @Override
     public void setup() {
         super.setup();
+
+        r = new Robot(this,rb,sequence,true);
+        r1 = new Robot(this,rb,sequence,false);
         surface.setTitle("Mappa 3D");
         rectMode(CENTER);
-//        r = new Robot(this,);
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
-        int tilex = floor((width-padding) / NX);
-        int tiley = floor((height-padding) / NY);
+        int tilex = floor((float)(width-padding) / NX);
+        int tiley = floor((float)(height-padding) / NY);
 
         // viewport offset ... corrected gap due to floor()
-        int offx = (width - (tilex * NX-padding)) / 2;
+        int offx = (width - (tilex * NX -padding)) / 2;
         int offy = (height - (tiley * NY-padding)) / 2;
 
         // viewport dimension
@@ -178,9 +178,9 @@ public class P3DMap extends ProcessingBase{
         int h = viewport[3];
         int x = viewport[0];
         int y = viewport[1];
-        int y_inv = height - y - h; // inverted y-axis
+        int yInv = height - y - h; // inverted y-axis
         // scissors-test and viewport transformation
-        setGLGraphicsViewport(x, y_inv, w, h);
+        setGLGraphicsViewport(x, yInv, w, h);
         // set camera state like spinning a globe
 //        cam.setYawRotationMode();
         cam.setRightDragHandler(null);
@@ -194,6 +194,8 @@ public class P3DMap extends ProcessingBase{
                 cam.setMinimumDistance(300);
                 cam.setMaximumDistance(1000);
             }
+            default -> LOGGER.warn("Id not mapped");
+
         }
         cam.feed();
         // projection - using camera viewport
@@ -232,7 +234,7 @@ public class P3DMap extends ProcessingBase{
             box(obs.getR(), obs.getR(), obs.getH());
             popMatrix();
         }
-            translate((float) 0, (float) 0, dz+9.5f);
+            translate(0, 0, dz+9.5f);
 
         pushMatrix();
 //
@@ -278,7 +280,7 @@ public class P3DMap extends ProcessingBase{
         translate(0,0,-100);
 
 
-        r.drawLink();
+        r1.drawLink();
         int nPoints = 300;
         cam.beginHUD();
         if (showPlots) {
@@ -298,11 +300,6 @@ public class P3DMap extends ProcessingBase{
         pgl.enable(PGL.SCISSOR_TEST);
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
-    }
-
-    public void setPosition(){
-        this.ps = GameState.getInstance().getSq();
-
     }
 
 

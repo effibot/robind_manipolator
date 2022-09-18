@@ -1,9 +1,6 @@
 package com.effibot.robind_manipolator.bean;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
@@ -31,6 +28,10 @@ public class SettingBean implements Serializable {
     private final transient PropertyChangeSupport changes= new PropertyChangeSupport(this);
 
     private final transient ListProperty<String> pathLabels = new SimpleListProperty<>(FXCollections.observableArrayList());
+
+    private final transient DoubleProperty roll = new SimpleDoubleProperty();
+    private final transient DoubleProperty pitch = new SimpleDoubleProperty();
+    private final transient DoubleProperty yaw = new SimpleDoubleProperty();
 
     private byte[] rawImg;
     private double[][] shapeList;
@@ -82,7 +83,7 @@ public class SettingBean implements Serializable {
     }
     public void setAnimation(byte[] writableImage){
         this.animation = writableImage;
-        changes.firePropertyChange("ANIMATION",false,true);
+        changes.firePropertyChange("ANIMATION",false,this);
     }
 
     public byte[] getAnimation(){return this.animation;}
@@ -177,4 +178,39 @@ public class SettingBean implements Serializable {
         return finish;
     }
 
+    public double getRoll() {
+        return roll.get();
+    }
+
+    public DoubleProperty rollProperty() {
+        return roll;
+    }
+
+    public void setRoll(double roll) {
+        this.roll.set(roll);
+    }
+
+    public double getPitch() {
+        return pitch.get();
+    }
+
+    public DoubleProperty pitchProperty() {
+        return pitch;
+    }
+
+    public void setPitch(double pitch) {
+        this.pitch.set(pitch);
+    }
+
+    public double getYaw() {
+        return yaw.get();
+    }
+
+    public DoubleProperty yawProperty() {
+        return yaw;
+    }
+
+    public void setYaw(double yaw) {
+        this.yaw.set(yaw);
+    }
 }

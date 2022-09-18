@@ -37,7 +37,7 @@ msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 save_system('PIDTrajectory');
 close_system('PIDTrajectory');
-runonmap(M,qr,rbclist,nodeList,robotsize,src);
+% runonmap(M,qr,redObsbc',nodeList,robotsize,src);
 msg = src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 end

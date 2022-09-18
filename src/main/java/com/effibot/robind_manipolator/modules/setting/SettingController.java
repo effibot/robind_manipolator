@@ -23,17 +23,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 
 public class SettingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class.getName());
+    private P3DMap p3d;
     private final SettingBean sb;
     private final SettingModule sm;
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
-    private RobotBean robotBean;
     private final Workbench wb;
     private RobotBean rb;
     TCPFacade tcp = TCPFacade.getInstance();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
+    
+    private final Semaphore[] sequence = {new Semaphore(1),new Semaphore(0)};
 
     private static final String WIKICONTENT = """
             Selezionare la forma e l'ID da cui far partire il rover, il metodo di
@@ -148,22 +151,109 @@ public class SettingController {
 
     public void onStart3DAction(JFXButton start3d) {
         start3d.setOnAction(event->{
-            t = getNew3DThread();
-            t.start();
+            p3d = new P3DMap(rb.getObsList(), rb,sequence);
+            p3d.run(p3d.getClass().getSimpleName());
+
+//            rb.stateProperty().addListener(evt -> {
+//                switch ( rb.getState()){
+//                    case 1-> {
+//                        inverseKinematics();
+//                    }
+//                    case 0->{}
+//                    default-> LOGGER.warn("Statw Processing not mapped");
+//                }
+//            });
+            Thread simulationThread = makeSimulation();
+            simulationThread.start();
+            Thread inverseThread = inverseKinematics();
+            inverseThread.start();
+
         });
     }
-    private P3DMap p3d;
-    private Thread getNew3DThread() {
+
+    private Thread makeSimulation() {
         return new Thread(()->{
-            // TODO: 1. starto processing3d. 2. bean 3d. 3. robot getter from bean
             try {
-                rb = new RobotBean();
-                p3d = new P3DMap(rb.getObsList(),rb);
-                makeSimulation();
+                sequence[0].acquire();
+                // make new packet
+                LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
+                pkt.put("PROC","SYM");
+                pkt.put("M",5);
+                pkt.put("ALPHA",300);
+                notifyPropertyChange("SEND", null, pkt);
+                notifyPropertyChange("RECEIVE", false, true);
+                boolean finish = false;
+                while (!finish) {
+                    // set green id
+                    pkt = queue.take();
+                    String key = (String) (pkt.keySet().toArray())[0];
+                    switch (key) {
+                        case "ROVER" ->{
+                            rb.setRoverPos((double[][]) pkt.get("Qs"));
+                            rb.setRoverVel((double[][]) pkt.get("dQs"));
+                            rb.setRoverAcc((double[][]) pkt.get("ddQs"));
+                            rb.setError((double[][]) pkt.get("E"));
+
+                        }
+//                        rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+//                        case "ANIMATION" -> {}
+                        default -> finish = true;
+                    }
+                }
 
             } catch (InterruptedException e) {
                 LOGGER.info("Interrupting 3D Thread",e);
                 Thread.currentThread().interrupt();
+            }finally {
+                LOGGER.info("Finally Simulink, releasing IK");
+            }
+        });
+    }
+
+    private Thread inverseKinematics() {
+        return new Thread(()->{
+            try{
+                LOGGER.info("Semaphore acquiring");
+
+                sequence[1].acquire();
+                LOGGER.info("Semaphore acquired");
+
+                // make new packet
+                LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
+                pkt.put("PROC","IK");
+                pkt.put("ROLL",sb.getRoll());
+                pkt.put("PITCH",sb.getPitch());
+                pkt.put("YAW",sb.getYaw());
+                notifyPropertyChange("SEND", null, pkt);
+                notifyPropertyChange("RECEIVE", false, true);
+                boolean finish = false;
+                while (!finish) {
+                    // set green id
+                        pkt = queue.take();
+
+                    String key = (String) (pkt.keySet().toArray())[0];
+                    switch (key) {
+                        case "Q" ->{
+                            LOGGER.info("Receiving Q IK");
+                            double[] qlist = (double[]) pkt.get(key);
+                            String qstring = ArrayUtils.toString(qlist);
+                            qstring =qstring.substring(1,qstring.length()-1);
+                            String[] qStringArray = qstring.split(", ");
+                            ObservableList<Float> qJoint = FXCollections.observableArrayList(
+                                    Arrays.stream(qStringArray).map(Float::valueOf).toArray(Float[]::new)
+                            );
+                            rb.setQ(qJoint);
+                        }
+                        case "E"->{}
+                        case "FINISH"->finish = true;
+                        default -> LOGGER.warn("IK not mapped case:{}",key);
+                    }
+                }
+            }catch (InterruptedException e){
+                LOGGER.error("Inverse Kinemetics acquire error",e);
+                Thread.currentThread().interrupt();
+            }finally {
+                LOGGER.info("Finally IK");
             }
         });
     }
@@ -179,41 +269,31 @@ public class SettingController {
 
     }
 
-    private void makeSimulation() throws InterruptedException {
-        // make new packet
-        LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
-        pkt.put("PROC","SYM");
-        pkt.put("M",5);
-        pkt.put("ALPHA",300);
-        notifyPropertyChange("SEND", null, pkt);
-        notifyPropertyChange("RECEIVE", false, true);
-        boolean finish = false;
-        while (!finish) {
-            // set green id
-            pkt = queue.take();
-            String key = (String) (pkt.keySet().toArray())[0];
-            switch (key) {
-                case "ROVER" ->{
-                    rb.setRoverPos((double[][]) pkt.get("Qs"));
-                    rb.setRoverVel((double[][]) pkt.get("dQs"));
-                    rb.setRoverAcc((double[][]) pkt.get("ddQs"));
-                    rb.setError((double[][]) pkt.get("E"));
-                    p3d.start();
-                }
-                case "ANIMATION" -> rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-//                case "ERROR"-> {
-//                    bean.setShapeAvailable(true);
-//                    finish = true;
+//    private void makeSimulation() throws InterruptedException {
+//        // make new packet
+//        LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
+//        pkt.put("PROC","SYM");
+//        pkt.put("M",5);
+//        pkt.put("ALPHA",300);
+//        notifyPropertyChange("SEND", null, pkt);
+//        notifyPropertyChange("RECEIVE", false, true);
+//        boolean finish = false;
+//        while (!finish) {
+//            // set green id
+//            pkt = queue.take();
+//            String key = (String) (pkt.keySet().toArray())[0];
+//            switch (key) {
+//                case "ROVER" ->{
+//                    rb.setRoverPos((double[][]) pkt.get("Qs"));
+//                    rb.setRoverVel((double[][]) pkt.get("dQs"));
+//                    rb.setRoverAcc((double[][]) pkt.get("ddQs"));
+//                    rb.setError((double[][]) pkt.get("E"));
+//
+//                    p3d.run(p3d.getClass().getSimpleName());
 //                }
-                default -> {
-                    finish = true;
-
-                }
-            }
-            if ((Double) pkt.get("FINISH") == 1.0) {
-                finish = true;
-
-            }
-        }
-    }
+//                case "ANIMATION" -> rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
+//                default -> finish = true;
+//            }
+//        }
+//    }
 }
