@@ -17,9 +17,9 @@ G=graph(A);
 
 shapepos = zeros(3,3);
 color = zeros(3,1,3,'uint8');
-color(1,1,:)=[246,182,41];  %Sfera: arancione
-color(2,1,:)= [205,117,149]; %Cono: viola
-color(3,1,:) = [88, 238, 255]; %Cubo: celeste
+color(1,1,:)=fliplr([246,182,41]);  %Sfera: arancione
+color(2,1,:)= fliplr([205,117,149]); %Cono: viola
+color(3,1,:) = fliplr([88, 238, 255]); %Cubo: celeste
 msg = src.UserData.buildMessage(0,"SHAPEIDS",0);
 obstemp = obs;
 for i = 1:3

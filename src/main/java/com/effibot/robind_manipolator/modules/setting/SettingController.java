@@ -37,6 +37,7 @@ public class SettingController {
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     
     private final Semaphore[] sequence = {new Semaphore(1),new Semaphore(0)};
+    private final Semaphore[] next = {new Semaphore(1),new Semaphore(0)};
 
     private static final String WIKICONTENT = """
             Selezionare la forma e l'ID da cui far partire il rover, il metodo di
@@ -151,8 +152,7 @@ public class SettingController {
 
     public void onStart3DAction(JFXButton start3d) {
         start3d.setOnAction(event->{
-            p3d = new P3DMap(rb.getObsList(), rb,sequence);
-            p3d.run(p3d.getClass().getSimpleName());
+
 
 //            rb.stateProperty().addListener(evt -> {
 //                switch ( rb.getState()){
@@ -165,8 +165,19 @@ public class SettingController {
 //            });
             Thread simulationThread = makeSimulation();
             simulationThread.start();
-            Thread inverseThread = inverseKinematics();
-            inverseThread.start();
+            try {
+                next[1].acquire();
+                rb.setShapePos(sb.getShapeList());
+                p3d = new P3DMap(rb.getObsList(), rb,sequence);
+                p3d.run(p3d.getClass().getSimpleName());
+                next[0].release();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+
+//            Thread inverseThread = inverseKinematics();
+//            inverseThread.start();
 
         });
     }
@@ -175,6 +186,7 @@ public class SettingController {
         return new Thread(()->{
             try {
                 sequence[0].acquire();
+                next[0].acquire();
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
@@ -187,9 +199,12 @@ public class SettingController {
                     // set green id
                     pkt = queue.take();
                     String key = (String) (pkt.keySet().toArray())[0];
+                    LOGGER.info("Getting Rover Infos:");
                     switch (key) {
                         case "ROVER" ->{
                             rb.setRoverPos((double[][]) pkt.get("Qs"));
+                            next[1].release();
+                            LOGGER.info("rover pos setted");
                             rb.setRoverVel((double[][]) pkt.get("dQs"));
                             rb.setRoverAcc((double[][]) pkt.get("ddQs"));
                             rb.setError((double[][]) pkt.get("E"));
@@ -197,7 +212,9 @@ public class SettingController {
                         }
 //                        rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
 //                        case "ANIMATION" -> {}
-                        default -> finish = true;
+                        default -> {
+                            finish = true;
+                        }
                     }
                 }
 

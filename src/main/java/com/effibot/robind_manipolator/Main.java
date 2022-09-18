@@ -8,13 +8,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
-
 import java.util.Objects;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+
         WelcomeModule mn = new WelcomeModule();
         Workbench wb = Workbench.builder(
                 mn

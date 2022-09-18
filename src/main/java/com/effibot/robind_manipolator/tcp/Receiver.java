@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
-
 public class Receiver implements Runnable{
     private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class.getName());
     private final Semaphore[] sem;
@@ -54,7 +53,7 @@ public class Receiver implements Runnable{
             }
         }finally {
             sem[0].release();
-            LOGGER.debug("Receiver Unlock.\tSem[0] = {}, Sem[1] = {}\n",sem[0].availablePermits(),sem[1].availablePermits());
+            LOGGER.info("Receiver Unlock.\tSem[0] = {}, Sem[1] = {}\n",sem[0].availablePermits(),sem[1].availablePermits());
         }
 
     }

@@ -19,7 +19,7 @@ public class P3DMap extends ProcessingBase{
     private final int mapH;
     private final int bgColor = color(51,102,102);
     private final Semaphore[] sequence;
-
+    private final int[] shapeColor = new int[]{color(246,182,41), color(205,117,149), color(88, 238, 255)};
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
@@ -228,10 +228,18 @@ public class P3DMap extends ProcessingBase{
         strokeWeight(1);
         fill(100);
         // draw obstacles
+
         for (Obstacle obs : obsList) {
             pushMatrix();
             translate(obs.getXc() - size / 2.0f, obs.getYc() - size / 2.0f, obs.getZc());
+            if(obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1])
+                fill(shapeColor[0]);
+            else if(obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1])
+                fill(shapeColor[1]);
+            else if(obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1])
+                fill(shapeColor[2]);
             box(obs.getR(), obs.getR(), obs.getH());
+
             popMatrix();
         }
             translate(0, 0, dz+9.5f);

@@ -74,7 +74,8 @@ public class Robot {
             ListProperty<Float> qObs = new SimpleListProperty<>();
             qObs.bind(rb.qProperty());
             ListProperty<Double[]> qRoverObs = new SimpleListProperty<>();
-            qRoverObs.bindBidirectional(rb.qRoverProperty());
+            qRoverObs = rb.qRoverProperty();
+//            qRoverObs.bindBidirectional(rb.qRoverProperty());
             Float[] pos = new Float[0];
             for(Double[] value : qRoverObs.get()) {
                 pos = new Float[]{Float.valueOf(value[0].toString()),
@@ -127,7 +128,6 @@ public class Robot {
         // scalefactor for shapes
         float scaleFactor;
         if (id == 0) {
-//            scaleFactor = 30.0f;
             scaleFactor = 9f;
         } else {
             scaleFactor = 1;
@@ -141,12 +141,13 @@ public class Robot {
         //! Offset dalla mappa 9.5
 //        try {
             if(!symQueue.isEmpty()) {
-                Float[] symPos = new Float[0];
+                Float[] symPos;
                 try {
                     symPos = symQueue.take();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+//                LOGGER.info("Pos: {}, {}", symPos[0], symPos[1]);
                 p3d.translate(symPos[0]-512, symPos[1]-512,-5.5f);
             }
             else if(binded){
@@ -301,7 +302,6 @@ public class Robot {
         float s2 = (A11*b2-A21*b1)/det;
         float q2 = (float) atan2(s2,c2);
         //// another setup
-        //float k = a2*c2+d4*sin(q2+q3);
         float k = a2*c2+d4*(s2*c3+c2*s3);
         // cos(q[1])
         float c1 = xh/k;
@@ -353,8 +353,7 @@ public class Robot {
         return new double[][]{{1,0,0},{0,cos(theta), -sin(theta)},{0,sin(theta), cos(theta)}};
     }
     private void printR(RealMatrix realMatrix){
-        System.out.printf(
-                "[%f,%f,%f]%n[%f,%f,%f]%n[%f,%f,%f]%n",
+        LOGGER.info("\n[{},{},{}]\n[{},{},{}]\n[{},{},{}]",
                 realMatrix.getEntry(0,0),realMatrix.getEntry(0,1),realMatrix.getEntry(0,2),
                 realMatrix.getEntry(1,0),realMatrix.getEntry(1,1),realMatrix.getEntry(1,2),
                 realMatrix.getEntry(2,0),realMatrix.getEntry(2,1),realMatrix.getEntry(2,2));
@@ -374,9 +373,7 @@ public class Robot {
             trasformMatrix = translateM(0,0,d);
         }
         for(int i = 0; i < 3; i++){
-            for(int j = 0; j < 3; j++){
-                av[i][j] = rotationMatrix[i][j];
-            }
+            System.arraycopy(rotationMatrix[i], 0, av[i], 0, 3);
         }
         for(int k = 0; k < 3; k++){
             av[k][3] = trasformMatrix[k][0];
@@ -387,12 +384,12 @@ public class Robot {
         double[][] value = new double[][]{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,1}};
         RealMatrix qMatrix = MatrixUtils.createRealIdentityMatrix(4);
         for (Vector<Float> dhRow : dhTable) {
-            float q = dhRow.get(0);
-            float d = dhRow.get(1);
-            float alpha = dhRow.get(2);
-            float a = dhRow.get(3);
-            double[][] qZi = rotor("z", q, d);
-            double[][] qXi = rotor("x", alpha, a);
+            float qValue = dhRow.get(0);
+            float dValue = dhRow.get(1);
+            float alphaValue = dhRow.get(2);
+            float aValue = dhRow.get(3);
+            double[][] qZi = rotor("z", qValue, dValue);
+            double[][] qXi = rotor("x", alphaValue, aValue);
             RealMatrix qziM = MatrixUtils.createRealMatrix(qZi);
             RealMatrix qxiM = MatrixUtils.createRealMatrix(qXi);
             qMatrix = qMatrix.multiply(qziM).multiply(qxiM);

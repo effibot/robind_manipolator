@@ -1,9 +1,7 @@
 package com.effibot.robind_manipolator.bean;
 
 import com.effibot.robind_manipolator.processing.Obstacle;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,8 +17,17 @@ import java.util.List;
 import static processing.core.PConstants.PI;
 
 public class RobotBean implements Serializable {
-    // Robot Joint Variables [q1,...,q6]
+    public double[][] getShapePos() {
+        return shapePos;
+    }
 
+    public void setShapePos(double[][] shapePos) {
+        this.shapePos = shapePos;
+    }
+
+    // Robot Joint Variables [q1,...,q6]
+    // shape ids
+    private double[][] shapePos;
     private final transient ListProperty<Float> q = new SimpleListProperty<>(FXCollections.observableArrayList(
             Arrays.asList(
                     ArrayUtils.toObject(
@@ -59,7 +66,7 @@ public class RobotBean implements Serializable {
     }
 
     public void setRoverPos(double[][] roverPos) {
-        this.qRover.set(adaptToPropertyList(roverPos));
+        this.qRover.addAll(adaptToPropertyList(roverPos));
     }
 
     public void setRoverVel(double[][] roverVel) {
