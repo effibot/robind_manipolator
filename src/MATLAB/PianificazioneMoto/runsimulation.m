@@ -9,6 +9,8 @@ time = 0:step:(size(p,1)-1)/1000;
 pidm = 'PIDTrajectory';
 load_system(pidm)
 mdlWks = get_param(pidm,'ModelWorkspace');
+assignin(mdlWks,'M',M);
+
 assignin(mdlWks,'xp',p(:,1));
 assignin(mdlWks,'yp',p(:,2));
 assignin(mdlWks,'vxp',dp(1,:));

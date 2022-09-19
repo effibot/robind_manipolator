@@ -65,31 +65,31 @@
 
                     ;% rtP.FromWorkspace_Data0_erdsjhbktd
                     section.data(9).logicalSrcIdx = 10;
-                    section.data(9).dtTransOffset = 7022;
+                    section.data(9).dtTransOffset = 3014;
 
                     ;% rtP.Gain1_Gain
                     section.data(10).logicalSrcIdx = 11;
-                    section.data(10).dtTransOffset = 14036;
+                    section.data(10).dtTransOffset = 6020;
 
                     ;% rtP.FromWorkspace_Data0_irypaqsgbf
                     section.data(11).logicalSrcIdx = 13;
-                    section.data(11).dtTransOffset = 14037;
+                    section.data(11).dtTransOffset = 6021;
 
                     ;% rtP.FromWorkspace_Data0_fbwrwi4aj1
                     section.data(12).logicalSrcIdx = 15;
-                    section.data(12).dtTransOffset = 21051;
+                    section.data(12).dtTransOffset = 9027;
 
                     ;% rtP.FromWorkspace_Data0_elsudc4efs
                     section.data(13).logicalSrcIdx = 17;
-                    section.data(13).dtTransOffset = 28066;
+                    section.data(13).dtTransOffset = 12034;
 
                     ;% rtP.Gain1_Gain_ipqblw4zv4
                     section.data(14).logicalSrcIdx = 18;
-                    section.data(14).dtTransOffset = 35080;
+                    section.data(14).dtTransOffset = 15040;
 
                     ;% rtP.FromWorkspace_Data0_a2gi03qt2b
                     section.data(15).logicalSrcIdx = 20;
-                    section.data(15).dtTransOffset = 35081;
+                    section.data(15).dtTransOffset = 15041;
 
             nTotData = nTotData + section.nData;
             paramMap.sections(1) = section;
@@ -356,8 +356,8 @@
     ;%
 
 
-    targMap.checksum0 = 2081470065;
-    targMap.checksum1 = 3322354520;
-    targMap.checksum2 = 2567040593;
-    targMap.checksum3 = 303487472;
+    targMap.checksum0 = 872953965;
+    targMap.checksum1 = 1838436352;
+    targMap.checksum2 = 1664098222;
+    targMap.checksum3 = 2965280412;
 
