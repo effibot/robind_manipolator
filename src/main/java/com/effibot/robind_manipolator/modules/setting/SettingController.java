@@ -9,6 +9,7 @@ import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
+import com.jogamp.newt.opengl.GLWindow;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -37,7 +38,7 @@ public class SettingController {
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     
     private final Semaphore[] sequence = {new Semaphore(1),new Semaphore(0)};
-    private final Semaphore[] next = {new Semaphore(1),new Semaphore(0)};
+//    private final Semaphore[] next = {new Semaphore(1),new Semaphore(0)};
 
     private static final String WIKICONTENT = """
             Selezionare la forma e l'ID da cui far partire il rover, il metodo di
@@ -163,14 +164,14 @@ public class SettingController {
 //                    default-> LOGGER.warn("Statw Processing not mapped");
 //                }
 //            });
+
             Thread simulationThread = makeSimulation();
             simulationThread.start();
             try {
-                next[1].acquire();
+                sequence[1].acquire();
                 rb.setShapePos(sb.getShapeList());
-                p3d = new P3DMap(rb.getObsList(), rb,sequence);
+                p3d = new P3DMap(rb.getObsList(), rb);
                 p3d.run(p3d.getClass().getSimpleName());
-                next[0].release();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -186,7 +187,7 @@ public class SettingController {
         return new Thread(()->{
             try {
                 sequence[0].acquire();
-                next[0].acquire();
+//                next[0].acquire();
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
@@ -203,7 +204,7 @@ public class SettingController {
                     switch (key) {
                         case "ROVER" ->{
                             rb.setRoverPos((double[][]) pkt.get("Qs"));
-                            next[1].release();
+//                            next[1].release();
                             LOGGER.info("rover pos setted");
                             rb.setRoverVel((double[][]) pkt.get("dQs"));
                             rb.setRoverAcc((double[][]) pkt.get("ddQs"));
@@ -223,6 +224,7 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally Simulink, releasing IK");
+                sequence[1].release();
             }
         });
     }
@@ -232,7 +234,7 @@ public class SettingController {
             try{
                 LOGGER.info("Semaphore acquiring");
 
-                sequence[1].acquire();
+//                sequence[1].acquire();
                 LOGGER.info("Semaphore acquired");
 
                 // make new packet
@@ -284,6 +286,14 @@ public class SettingController {
             )
         );
 
+    }
+
+    public void closeProcessing() {
+        if(p3d!=null){
+
+            GLWindow pane = (GLWindow)p3d.getSurface().getNative();
+            pane.destroy();
+        }
     }
 
 //    private void makeSimulation() throws InterruptedException {

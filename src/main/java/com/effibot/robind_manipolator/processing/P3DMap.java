@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
+import javafx.beans.property.ListProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peasy.PeasyCam;
@@ -9,7 +10,7 @@ import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class P3DMap extends ProcessingBase{
     private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
@@ -18,7 +19,6 @@ public class P3DMap extends ProcessingBase{
     private static final int NY = 1;
     private final int mapH;
     private final int bgColor = color(51,102,102);
-    private final Semaphore[] sequence;
     private final int[] shapeColor = new int[]{color(246,182,41), color(205,117,149), color(88, 238, 255)};
 
     private Robot r;
@@ -32,8 +32,9 @@ public class P3DMap extends ProcessingBase{
 
     private List<Plot2D> plots = new ArrayList<>();
     private Robot r1;
+    private Float[] symPos = new Float[]{0f,0f};
 
-    public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] sequence) {
+    public P3DMap(List<Obstacle> obsList, RobotBean rb) {
         this.obsList = obsList;
         this.rb = rb;
         size = 1024;
@@ -41,7 +42,7 @@ public class P3DMap extends ProcessingBase{
         frame = new Reference(this);
         observers = new ArrayList<>();
         this.padding = 5;
-        this.sequence = sequence;
+
     }
 
 
@@ -80,14 +81,16 @@ public class P3DMap extends ProcessingBase{
     float dx = 0;
     int dy = 0;
     int dz = 0;
-
+    private LinkedBlockingQueue<Float[]> symQueue;
 
     @Override
     public void setup() {
         super.setup();
-
-        r = new Robot(this,rb,sequence,true);
-        r1 = new Robot(this,rb,sequence,false);
+        r = new Robot(this,rb);
+        symQueue=setupSimulationQueue();
+        r1 = new Robot(this,rb);
+//        r1 = setup3DRobot();
+//        r1 = new Robot(this,rb,sequence,false);
         surface.setTitle("Mappa 3D");
         rectMode(CENTER);
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
@@ -116,6 +119,26 @@ public class P3DMap extends ProcessingBase{
 
         plots = new Plot2D(this).initializePlot(this);
     }
+
+    private LinkedBlockingQueue<Float[]> setupSimulationQueue() {
+//         Setup Bindings
+        ListProperty<Double[]> qRoverObs = rb.qRoverProperty();
+        LinkedBlockingQueue<Float[]> queue = new LinkedBlockingQueue<>();
+        Float[] pos;
+        for(Double[] value : qRoverObs.get()) {
+            pos = new Float[]{Float.valueOf(value[0].toString()),
+                    Float.valueOf(value[1].toString())};
+            try {
+                queue.put(pos);
+            } catch (InterruptedException e) {
+                LOGGER.error("SymQueue put failed");
+                Thread.currentThread().interrupt();
+            }
+        }
+    return queue;
+    }
+
+
 
     @Override
     public void notifyObservers() {
@@ -228,54 +251,30 @@ public class P3DMap extends ProcessingBase{
         strokeWeight(1);
         fill(100);
         // draw obstacles
-
         for (Obstacle obs : obsList) {
             pushMatrix();
-            translate(obs.getXc() - size / 2.0f, obs.getYc() - size / 2.0f, obs.getZc());
-            if(obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1])
+            translate(obs.getYc() - size / 2.0f, obs.getXc() - size / 2.0f, obs.getZc());
+            if (obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1])
                 fill(shapeColor[0]);
-            else if(obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1])
+            else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1])
                 fill(shapeColor[1]);
-            else if(obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1])
+            else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1])
                 fill(shapeColor[2]);
             box(obs.getR(), obs.getR(), obs.getH());
 
             popMatrix();
         }
+
             translate(0, 0, dz+9.5f);
 
         pushMatrix();
-//
-//        if(simIdx<points.length-1 & task == 0) {
-//            simIdx+=1;
-//        }else if(simIdx == points.length-1 && task<2){
-//            task = task+1;
-//        }
-//        if(task<2) {
-//            HashMap<String, Object> msg = new HashMap<>();
-//            switch (task) {
-//                case 1:
-//                    msg.put("PROC","IK");
-//                    msg.put("X",gm.getXdes()- ps[ps.length-1][1]);
-//                    msg.put("Y",gm.getYdes()- ps[ps.length-1][0]);
-//                    msg.put("Z",gm.getZdes());
-//                    msg.put("ROLL",gm.getRoll());
-//                    msg.put("PITCH",gm.getPitch());
-//                    msg.put("YAW",gm.getYaw());
-//                    tcp.sendMsg(msg);
-//                    task +=1;
-//                    break;
-//                case 2:
-//                    msg.put("PROC", "VIS");
-//                    msg.put("SHAPE", gm.getSelectedShape());
-//                    ArrayList<HashMap> res = tcp.sendMsg(msg);
-//                    task +=1;
-//                    break;
-//            }
-//        }
-//        translate((float)points[simIdx][0]-512,(float)points[simIdx][1]-512,-9.5f);
 
+        if(frameCount%2==0 && !symQueue.isEmpty()){
+            thread("simulinkModel");
+        }
+        translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
         r.drawLink();
+
         popMatrix();
         popMatrix();
 
@@ -308,6 +307,18 @@ public class P3DMap extends ProcessingBase{
         pgl.enable(PGL.SCISSOR_TEST);
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
+    }
+
+    public void simulinkModel(){
+        try {
+            if(!symQueue.isEmpty()) {
+                symPos = symQueue.take();
+            }
+        } catch (InterruptedException e) {
+            LOGGER.error("Taking Queue Error",e);
+            Thread.currentThread().interrupt();
+        }
+
     }
 
 

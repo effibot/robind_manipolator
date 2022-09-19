@@ -104,7 +104,7 @@ static TARGET_CONST rtwCAPI_ElementMap rtElementMap [ ] = { { ( NULL ) , 0 ,
 0 , 0 , 0 } , } ; static const rtwCAPI_DimensionMap rtDimensionMap [ ] = { {
 rtwCAPI_SCALAR , 0 , 2 , 0 } , { rtwCAPI_VECTOR , 2 , 2 , 0 } , {
 rtwCAPI_VECTOR , 4 , 2 , 0 } } ; static const uint_T rtDimensionArray [ ] = {
-1 , 1 , 2004 , 1 , 2005 , 1 } ; static const real_T rtcapiStoredFloats [ ] =
+1 , 1 , 7014 , 1 , 7015 , 1 } ; static const real_T rtcapiStoredFloats [ ] =
 { 0.0 , 0.001 } ; static const rtwCAPI_FixPtMap rtFixPtMap [ ] = { { ( NULL )
 , ( NULL ) , rtwCAPI_FIX_RESERVED , 0 , 0 , ( boolean_T ) 0 } , } ; static
 const rtwCAPI_SampleTimeMap rtSampleTimeMap [ ] = { { ( const void * ) &
@@ -115,8 +115,8 @@ int8_T ) 0 , ( uint8_T ) 0 } , { ( const void * ) & rtcapiStoredFloats [ 1 ]
 16 , rtRootInputs , 0 , rtRootOutputs , 0 } , { rtBlockParameters , 8 ,
 rtModelParameters , 7 } , { ( NULL ) , 0 } , { rtDataTypeMap , rtDimensionMap
 , rtFixPtMap , rtElementMap , rtSampleTimeMap , rtDimensionArray } , "float"
-, { 2603871617U , 3562350714U , 3945678986U , 3062654632U } , ( NULL ) , 0 ,
-( boolean_T ) 0 , rt_LoggedStateIdxList } ; const
+, { 2081470065U , 3322354520U , 2567040593U , 303487472U } , ( NULL ) , 0 , (
+boolean_T ) 0 , rt_LoggedStateIdxList } ; const
 rtwCAPI_ModelMappingStaticInfo * PIDTrajectory_GetCAPIStaticMap ( void ) {
 return & mmiStatic ; }
 #ifndef HOST_CAPI_BUILD

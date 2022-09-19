@@ -60,11 +60,21 @@ dim = length(nPoints);
 % time = linspace(0,floor(tend/2),(dim-1)*500);
 x = nPoints(:,1);
 y= nPoints(:,2);
+[pt] = interparc(dim+1,x,y,'linear');
+
 switch method
     case 'Paraboloic'
         time = 0:1:floor(dim/2);
-        [qx,qxd,qxdd]= paraboloic_blend(x',time);
-        [qy,qyd,qydd]= paraboloic_blend(y',time);
+        [qx,qxd,qxdd]= paraboloic_blend(pt(:,1)',time);
+        [qy,qyd,qydd]= paraboloic_blend(pt(:,2),time);
+%         [pt,vt] = interparc(1000*(dim-1),qx,qy,'linear');
+%         qx = pt(:,1)';
+%         qy = pt(:,2)';
+%         qxd = vt(:,1)';
+%         qyd = vt(:,2)';
+%         qxdd = zeros(1,1000*(dim-1))';
+%         qydd = zeros(1,1000*(dim-1))';
+
     case 'Cubic'
         step=1e-3;
         [qx,qxd,qxdd]=cubic_spline(x,step);
@@ -75,7 +85,6 @@ switch method
      [qx,qxd,qxdd]=quintic_spline(x,step);
      [qy,qyd,qydd]=quintic_spline(y,step);
 end
-
 
 
 

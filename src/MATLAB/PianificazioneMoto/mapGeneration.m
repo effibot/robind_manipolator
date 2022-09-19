@@ -47,7 +47,7 @@ for i = 1:3
 
     end
     if length(list)<i
-        list(i) = struct("id",{i},"pos",{0},"endid",{0},"allid",{[0,0]});
+        list(i) = struct("id",{i},"pos",{[0,0]},"endid",{0},"allid",{[0,0]});
 
     end
 

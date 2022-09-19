@@ -3,7 +3,7 @@ package com.effibot.robind_manipolator.processing;
 import com.effibot.robind_manipolator.bean.RobotBean;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
-import org.apache.commons.lang.ArrayUtils;
+import javafx.collections.ObservableList;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.slf4j.Logger;
@@ -15,14 +15,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 
 import static java.lang.Math.*;
 import static processing.core.PConstants.PI;
 
 public class Robot {
-    private final boolean binded;
-    private Semaphore[] sequence;
+    private final RobotBean rb;
     // Theta
     private float[] q = new float[]{0, -PI/2, PI/2, 0, 0, 0};
     // d
@@ -61,59 +59,25 @@ public class Robot {
 
     // Processing reference
     private final ProcessingBase p3d;
-    private final LinkedBlockingQueue<Float[]> symQueue = new LinkedBlockingQueue<>();
-    private Float[] endPosition;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Robot.class.getName());
-    private final ListProperty<Float> qJoint = new SimpleListProperty<>();
-    public Robot(ProcessingBase p3d, RobotBean rb, Semaphore[] sequence, boolean binded) {
+    public Robot(ProcessingBase p3d, RobotBean rb) {
         this.p3d = p3d;
-        this.binded = binded;
-        if(binded) {
-            this.sequence = sequence;
-            qJoint.bind(rb.qProperty());
-            ListProperty<Float> qObs = new SimpleListProperty<>();
-            qObs.bind(rb.qProperty());
-            ListProperty<Double[]> qRoverObs = new SimpleListProperty<>();
-            qRoverObs = rb.qRoverProperty();
-//            qRoverObs.bindBidirectional(rb.qRoverProperty());
-            Float[] pos = new Float[0];
-            for(Double[] value : qRoverObs.get()) {
-                pos = new Float[]{Float.valueOf(value[0].toString()),
-                        Float.valueOf(value[1].toString())};
-                try {
-                    symQueue.put(pos);
-                } catch (InterruptedException e) {
-                    LOGGER.error("SymQueue put failed");
-                    Thread.currentThread().interrupt();
-                }
-            }
-            endPosition= pos;
-        }
-//        qRoverObs.addListener((ListChangeListener<? super Double[]>) change -> {
-
-//            }
-
-        ListProperty<Double[]> dqRoverObs = new SimpleListProperty<>();
-        dqRoverObs.bind(rb.dqRoverProperty());
-        ListProperty<Double[]> ddqRoverObs = new SimpleListProperty<>();
-        ddqRoverObs.bind(rb.ddqRoverProperty());
         this.shapeList.add(loadLink(0));
+        ListProperty<Float> qJoint = new SimpleListProperty<>();
+        qJoint.bind(rb.qProperty());
+
         for (int i = 0; i < 6; i++) {
             // load link_i
             this.shapeList.add(loadLink(i + 1));
             // Assign DH table
-            Vector<Float> dhRow;
-            if(binded) dhRow = new Vector<>(Arrays.asList(qJoint.get(i), d[i], alpha[i], a[i]));
-            else  dhRow = new Vector<>(Arrays.asList(q[i], d[i], alpha[i], a[i]));
+            Vector<Float> dhRow = new Vector<>(Arrays.asList(qJoint.get(i), d[i], alpha[i], a[i]));
             dhTable.add(dhRow);
         }
+        this.rb = rb;
 
     }
-//    public static synchronized Robot getInstance(ProcessingBase p3d,RobotBean rb){
-//        if( instance == null)
-//            instance = new Robot(p3d,rb);
-//        return instance;
-//    }
+
     public void dh(float theta, float d, float alpha, float a) {
         p3d.rotateZ(theta);
         p3d.translate(0, 0, d);
@@ -137,41 +101,19 @@ public class Robot {
     }
 
     public void drawLink() {
-        this.getShapeList().get(0).setFill(p3d.color(102,51,0));
+        shapeList.get(0).setFill(p3d.color(102,51,0));
         //! Offset dalla mappa 9.5
-//        try {
-            if(!symQueue.isEmpty()) {
-                Float[] symPos;
-                try {
-                    symPos = symQueue.take();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-//                LOGGER.info("Pos: {}, {}", symPos[0], symPos[1]);
-                p3d.translate(symPos[0]-512, symPos[1]-512,-5.5f);
-            }
-            else if(binded){
-                sequence[1].release();
-                p3d.translate(endPosition[0]-512,endPosition[1]-512,-5.5f);
 
-//                LOGGER.info("Q Values: {}",qJoint.getValue());
-                setDhTable(ArrayUtils.toPrimitive(qJoint.getValue().toArray(new Float[0])));
-
-            }
-//        } catch (InterruptedException e) {
-//            LOGGER.error("SymQueue take error");
-//            Thread.currentThread().interrupt();
-//        }
         p3d.pushMatrix();
         p3d.rotateX(PI/2);
         //rotateY(PI/2);
         // Rover
-        p3d.shape(this.getShapeList().get(0));
+        p3d.shape(shapeList.get(0));
         p3d.popMatrix();
         // dh 01
-        Vector<Float> r01 = this.getDhTable().get(0);
-        this.dh(r01.get(0), r01.get(1), r01.get(2), r01.get(3));
-        this.getShapeList().get(1).setFill(p3d.color(100, 200, 0));
+        Vector<Float> r01 = dhTable.get(0);
+        dh(r01.get(0), r01.get(1), r01.get(2), r01.get(3));
+        shapeList.get(1).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
@@ -179,32 +121,32 @@ public class Robot {
         p3d.rotateY(-PI/2);
         p3d.rotateZ(PI);
         p3d.translate(0, -25, 0);
-        p3d.shape(this.getShapeList().get(1));
+        p3d.shape(shapeList.get(1));
         p3d.popMatrix();
         // dh 12
-        Vector<Float> r12 = this.getDhTable().get(1);
-        this.dh(r12.get(0), r12.get(1), r12.get(2), r12.get(3));
-        this.getShapeList().get(2).setFill(p3d.color(40, 2, 100));
+        Vector<Float> r12 =dhTable.get(1);
+        dh(r12.get(0), r12.get(1), r12.get(2), r12.get(3));
+        shapeList.get(2).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
         p3d.translate(-50,0,0);
         p3d.rotateY(PI/2);
-        p3d.shape(this.getShapeList().get(2));
+        p3d.shape(shapeList.get(2));
         p3d.popMatrix();
         // dh 23
-        Vector<Float> r23 = this.getDhTable().get(2);
-        this.dh(r23.get(0), r23.get(1), r23.get(2), r23.get(3));
-        this.getShapeList().get(3).setFill(p3d.color(100, 200, 0));
+        Vector<Float> r23 =dhTable.get(2);
+        dh(r23.get(0), r23.get(1), r23.get(2), r23.get(3));
+        shapeList.get(3).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
 //        zeroFrame = new Reference(this,new PVector(0,0,0));
 //        zeroFrame.show(true);
         p3d.rotateZ(PI/2);
         p3d.rotateX(-PI);
-        p3d.shape(this.getShapeList().get(3));
+        p3d.shape(shapeList.get(3));
         p3d.popMatrix();
         // dh 34
-        Vector<Float> r34 = this.getDhTable().get(3);
-        this.dh(r34.get(0), r34.get(1), r34.get(2), r34.get(3));
-        this.getShapeList().get(4).setFill(p3d.color(40, 2, 100));
+        Vector<Float> r34 =  dhTable.get(3);
+         dh(r34.get(0), r34.get(1), r34.get(2), r34.get(3));
+        shapeList.get(4).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
@@ -212,29 +154,29 @@ public class Robot {
         p3d.translate(0, 51, 0);
         p3d.rotateX(-PI/2);
         p3d.rotateZ(PI/2);
-        p3d.shape(this.getShapeList().get(4));
+        p3d.shape(shapeList.get(4));
         p3d.popMatrix();
         // dh 45
-        Vector<Float> r45 = this.getDhTable().get(4);
-        this.dh(r45.get(0), r45.get(1), r45.get(2), r45.get(3));
-        this.getShapeList().get(5).setFill(p3d.color(100, 200, 0));
+        Vector<Float> r45 =  dhTable.get(4);
+         dh(r45.get(0), r45.get(1), r45.get(2), r45.get(3));
+        shapeList.get(5).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
         p3d.translate(0, 0, -1);
         p3d.rotateZ(PI/2);
-        p3d.shape(this.getShapeList().get(5));
+        p3d.shape(shapeList.get(5));
         p3d.popMatrix();
         // dh 56
-        Vector<Float> r56 = this.getDhTable().get(5);
-        this.dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
-        this.getShapeList().get(6).setFill(p3d.color(40, 2, 100));
+        Vector<Float> r56 =  dhTable.get(5);
+         dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
+        shapeList.get(6).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
 //        zeroFrame = new Reference(p3d,new PVector(0,0,0));
 //        zeroFrame.show(true);
         //show(0,0,0,true);
         p3d.translate(0, 0, -13);
-        p3d.shape(this.getShapeList().get(6));
+        p3d.shape(shapeList.get(6));
         p3d.popMatrix();
     }
 
@@ -399,4 +341,7 @@ public class Robot {
         }
         return value;
     }
+
+
+
 }
