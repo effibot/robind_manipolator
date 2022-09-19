@@ -38,7 +38,7 @@ public class SettingController {
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     
     private final Semaphore[] sequence = {new Semaphore(1),new Semaphore(0)};
-//    private final Semaphore[] next = {new Semaphore(1),new Semaphore(0)};
+    private final Semaphore[] next = {new Semaphore(0),new Semaphore(0)};
 
     private static final String WIKICONTENT = """
             Selezionare la forma e l'ID da cui far partire il rover, il metodo di
@@ -170,15 +170,18 @@ public class SettingController {
             try {
                 sequence[1].acquire();
                 rb.setShapePos(sb.getShapeList());
-                p3d = new P3DMap(rb.getObsList(), rb);
+                p3d = new P3DMap(rb.getObsList(), rb, next);
                 p3d.run(p3d.getClass().getSimpleName());
+                next[0].acquire();
+                Thread inverseThread = inverseKinematics();
+                inverseThread.start();
+                next[1].acquire();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
 
-//            Thread inverseThread = inverseKinematics();
-//            inverseThread.start();
+
 
         });
     }
@@ -232,11 +235,6 @@ public class SettingController {
     private Thread inverseKinematics() {
         return new Thread(()->{
             try{
-                LOGGER.info("Semaphore acquiring");
-
-//                sequence[1].acquire();
-                LOGGER.info("Semaphore acquired");
-
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","IK");
@@ -257,7 +255,7 @@ public class SettingController {
                             double[] qlist = (double[]) pkt.get(key);
                             String qstring = ArrayUtils.toString(qlist);
                             qstring =qstring.substring(1,qstring.length()-1);
-                            String[] qStringArray = qstring.split(", ");
+                            String[] qStringArray = qstring.split(",");
                             ObservableList<Float> qJoint = FXCollections.observableArrayList(
                                     Arrays.stream(qStringArray).map(Float::valueOf).toArray(Float[]::new)
                             );

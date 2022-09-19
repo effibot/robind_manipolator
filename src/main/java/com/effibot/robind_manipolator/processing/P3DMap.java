@@ -11,6 +11,7 @@ import processing.opengl.PJOGL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 
 public class P3DMap extends ProcessingBase{
     private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
@@ -20,6 +21,7 @@ public class P3DMap extends ProcessingBase{
     private final int mapH;
     private final int bgColor = color(51,102,102);
     private final int[] shapeColor = new int[]{color(246,182,41), color(205,117,149), color(88, 238, 255)};
+    private final Semaphore[] next;
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
@@ -33,8 +35,10 @@ public class P3DMap extends ProcessingBase{
     private List<Plot2D> plots = new ArrayList<>();
     private Robot r1;
     private Float[] symPos = new Float[]{0f,0f};
-
-    public P3DMap(List<Obstacle> obsList, RobotBean rb) {
+    private boolean symEnd = false;
+    private boolean inkEnd = false;
+    public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
+        super();
         this.obsList = obsList;
         this.rb = rb;
         size = 1024;
@@ -42,7 +46,7 @@ public class P3DMap extends ProcessingBase{
         frame = new Reference(this);
         observers = new ArrayList<>();
         this.padding = 5;
-
+        this.next = next;
     }
 
 
@@ -234,6 +238,7 @@ public class P3DMap extends ProcessingBase{
         //!! End camera setup
         return cam;
     }
+    double[][] dh;
 
     public void draw3Dmap(PeasyCam cam) {
         int zeroH = -300;
@@ -260,6 +265,9 @@ public class P3DMap extends ProcessingBase{
                 fill(shapeColor[1]);
             else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1])
                 fill(shapeColor[2]);
+            else
+                fill(100);
+
             box(obs.getR(), obs.getR(), obs.getH());
 
             popMatrix();
@@ -269,9 +277,24 @@ public class P3DMap extends ProcessingBase{
 
         pushMatrix();
 
-        if(frameCount%2==0 && !symQueue.isEmpty()){
+        if(!symQueue.isEmpty()){
             thread("simulinkModel");
+        } else {
+            try {
+              next[0].release();
+              dh = r.dhValue(r.getDhTable());
+              System.out.format("[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n\n",
+                      dh[0][0],dh[0][1],dh[0][2],dh[0][3],
+                      dh[1][0],dh[1][1],dh[1][2],dh[1][3],
+                      dh[2][0],dh[2][1],dh[2][2],dh[2][3]);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
+//        else {
+//            symEnd = true;
+//            thread("inverseKinematic");
+//        }
         translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
         r.drawLink();
 
@@ -320,6 +343,7 @@ public class P3DMap extends ProcessingBase{
         }
 
     }
+
 
 
 }

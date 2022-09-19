@@ -1,16 +1,15 @@
-function [qr,dqr,ddqr,e]=runsimulation(M,alpha,src)
+function [qr,dqr,ddqr,e]=runsimulation(mass,alpha,src)
 % time = 0:step:(size(p,1)-1)/1000;
-Fa = 10*M;
+Fa = 10*mass/10;
 Kp = alpha^2;
 Kd = 2*alpha;
 load path.mat
 step=1e-3;
 time = 0:step:(size(p,1)-1)/1000;
 pidm = 'PIDTrajectory';
-load_system(pidm)
+load_system(pidm);
 mdlWks = get_param(pidm,'ModelWorkspace');
-assignin(mdlWks,'M',M);
-
+assignin(mdlWks,'mass',mass/10);
 assignin(mdlWks,'xp',p(:,1));
 assignin(mdlWks,'yp',p(:,2));
 assignin(mdlWks,'vxp',dp(1,:));

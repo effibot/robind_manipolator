@@ -3,6 +3,7 @@ package com.effibot.robind_manipolator.processing;
 import com.effibot.robind_manipolator.bean.RobotBean;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -66,7 +67,11 @@ public class Robot {
         this.shapeList.add(loadLink(0));
         ListProperty<Float> qJoint = new SimpleListProperty<>();
         qJoint.bind(rb.qProperty());
-
+        qJoint.addListener((observableValue, oldValue, newValue) -> {
+            for(int i = 0; i < 6; i++){
+                setJoint(i,newValue.get(i));
+            }
+        });
         for (int i = 0; i < 6; i++) {
             // load link_i
             this.shapeList.add(loadLink(i + 1));
