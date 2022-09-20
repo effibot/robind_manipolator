@@ -2,6 +2,11 @@ function [p,dp,ddp]=quintic_spline(x,step)
 sz = size(x,1);
 qd = gradient(x,0.5)*0.5;
 qdd = gradient(qd,0.5)*0.5;
+% qd(qd>1)=1;
+% qd(qd<-1)=-1;
+% qdd = gradient(qd,0.5)*0.5;
+% qdd(qdd>1)=1;
+% qdd(qdd<-1)=-1;
 qd(1,1)=0;
 qdd(1,1)=0;
 A=@(ti,tf1)[ti^5 ti^4 ti^3 ti^2 ti 1;
@@ -30,9 +35,10 @@ ts = 0;
 pi = x(1);
 vi=0;
 ai=0;
+    interval = ts:step:0.5;
 
 for i = 1:sz-1
-    interval = ts:step:0.5;
+%     interval = ts:step:0.5;
     pf=x(i+1);
     vf = qd(i+1);
     af = qdd(i+1);
@@ -52,6 +58,7 @@ for i = 1:sz-1
     pi=pf;
     vi=vf;
     ai=af;
+    interval = interval+0.5;
 end
 end
 

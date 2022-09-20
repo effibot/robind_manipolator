@@ -194,7 +194,7 @@ public class SettingController {
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
-                pkt.put("M",5);
+                pkt.put("M",20);
                 pkt.put("ALPHA",300);
                 notifyPropertyChange("SEND", null, pkt);
                 notifyPropertyChange("RECEIVE", false, true);
@@ -212,7 +212,6 @@ public class SettingController {
                             rb.setRoverVel((double[][]) pkt.get("dQs"));
                             rb.setRoverAcc((double[][]) pkt.get("ddQs"));
                             rb.setError((double[][]) pkt.get("E"));
-
                         }
 //                        rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
 //                        case "ANIMATION" -> {}
@@ -241,6 +240,7 @@ public class SettingController {
                 pkt.put("ROLL",sb.getRoll());
                 pkt.put("PITCH",sb.getPitch());
                 pkt.put("YAW",sb.getYaw());
+                pkt.put("SK",4040);
                 notifyPropertyChange("SEND", null, pkt);
                 notifyPropertyChange("RECEIVE", false, true);
                 boolean finish = false;

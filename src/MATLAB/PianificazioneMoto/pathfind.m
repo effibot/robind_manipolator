@@ -60,7 +60,7 @@ dim = length(nPoints);
 % time = linspace(0,floor(tend/2),(dim-1)*500);
 x = nPoints(:,1);
 y= nPoints(:,2);
-[pt] = interparc(dim+1,x,y,'linear');
+[pt,dpt] = interparc(dim,x,y,'linear');
 
 switch method
     case 'Paraboloic'
@@ -76,12 +76,12 @@ switch method
 %         qydd = zeros(1,1000*(dim-1))';
 
     case 'Cubic'
-        step=1e-3;
+        step=1/30;
         [qx,qxd,qxdd]=cubic_spline(x,step);
         [qy,qyd,qydd]=cubic_spline(y,step);
 
     case 'Quintic'
-     step=1e-3;
+     step=1/60;
      [qx,qxd,qxdd]=quintic_spline(x,step);
      [qy,qyd,qydd]=quintic_spline(y,step);
 end

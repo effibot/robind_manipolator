@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class P3DMap extends ProcessingBase{
     private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
@@ -90,6 +91,7 @@ public class P3DMap extends ProcessingBase{
     @Override
     public void setup() {
         super.setup();
+
         r = new Robot(this,rb);
         symQueue=setupSimulationQueue();
         r1 = new Robot(this,rb);
@@ -245,6 +247,7 @@ public class P3DMap extends ProcessingBase{
         // scene objects
         pushMatrix();
         translate(0, 0, zeroH);  // translate to a nicer vertical position
+        rotateY(PI/2);
         // draw the floor
         fill(200);
         box(size, size, mapH);
@@ -276,21 +279,22 @@ public class P3DMap extends ProcessingBase{
             translate(0, 0, dz+9.5f);
 
         pushMatrix();
+            if (!symQueue.isEmpty()) {
+                thread("simulinkModel");
+            } else {
+                try {
+                    next[0].release();
+                    //              dh = r.dhValue(r.getDhTable());
+                    //              System.out.format("[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n\n",
+                    //                      dh[0][0],dh[0][1],dh[0][2],dh[0][3],
+                    //                      dh[1][0],dh[1][1],dh[1][2],dh[1][3],
+                    //                      dh[2][0],dh[2][1],dh[2][2],dh[2][3]);
 
-        if(!symQueue.isEmpty()){
-            thread("simulinkModel");
-        } else {
-            try {
-              next[0].release();
-              dh = r.dhValue(r.getDhTable());
-              System.out.format("[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n[%f,%f,%f,%f]\n\n",
-                      dh[0][0],dh[0][1],dh[0][2],dh[0][3],
-                      dh[1][0],dh[1][1],dh[1][2],dh[1][3],
-                      dh[2][0],dh[2][1],dh[2][2],dh[2][3]);
-            } catch (Exception e){
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
+
 //        else {
 //            symEnd = true;
 //            thread("inverseKinematic");
@@ -334,6 +338,7 @@ public class P3DMap extends ProcessingBase{
 
     public void simulinkModel(){
         try {
+
             if(!symQueue.isEmpty()) {
                 symPos = symQueue.take();
             }

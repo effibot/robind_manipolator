@@ -35,6 +35,7 @@ src.UserData.sendMessage(src,msg);
 runonmap(M,p,redObsbc',nodeList,robotsize,src);
 msg =src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
-save path.mat p dp ddp M redObsbc nodeList robotsize pend startPos
+simTime = length(P);
+save path.mat p dp ddp M redObsbc nodeList robotsize pend startPos simTime
 end
 

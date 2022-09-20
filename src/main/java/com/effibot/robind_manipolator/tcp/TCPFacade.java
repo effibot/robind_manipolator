@@ -21,7 +21,7 @@ public class TCPFacade implements PropertyChangeListener {
     private final Semaphore[] sem = {new Semaphore(1), new Semaphore(0)};
 
     private static final String HOST_ADDR = "localhost";
-    private static final int PORT = 3030;
+    private static  int PORT = 3030;
     private static final  BlockingQueue<LinkedHashMap<String, Object>> queue = new LinkedBlockingQueue<>(1);
 
     private HashMap<String,Object> toSend;
@@ -55,17 +55,23 @@ public class TCPFacade implements PropertyChangeListener {
         switch (propertyName){
             case "SEND" ->{
                 try {// Checks if connection are still up
+                    HashMap<String, Object> pkt = (HashMap<String, Object>) evt.getNewValue();
+
+
                     if (clientSocket == null) {
                         clientSocket = new Socket(HOST_ADDR, PORT);
                         clientSocket.setReuseAddress(true);
                     }
                     // Make new Packet to send
-                    HashMap<String, Object> pkt = (HashMap<String, Object>) evt.getNewValue();
                     Sender sender = new Sender(sem, clientSocket);
                     sender.setToSend(pkt);
                     // send msg to Matlab Server
                     t[0] = new Thread(sender);
                     t[0].start();
+//                    if(pkt.containsKey("SK")){
+//                        PORT = (int) pkt.get("SK");
+//                        clientSocket=new Socket(HOST_ADDR, PORT);
+//                    }
                 } catch (IOException e) {
                     LOGGER.warn("SENDER EXCEPTION",e);
                     Thread.currentThread().interrupt();

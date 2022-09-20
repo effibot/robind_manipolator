@@ -5,8 +5,8 @@ robotColor = [1 1 0 0.7];
 hold on
 plot(p(:,1),p(:,2),'LineWidth',3);
 saving=@(gcf)frame2im(getframe(gcf));
-% fix(size(p,1)/1000)
-for j = 1:fix(size(p,1)/50):size(p,1)
+% 
+for j = 1:size(p,1)
     currPoint = p(j,:);
     [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
     obsNode= findobj(nodeList,'bc',closestObs);
