@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
+import grafica.GPoint;
 import javafx.beans.property.ListProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class P3DMap extends ProcessingBase{
     private int i = (6) + 48;
     private boolean showPlots=false;
 
-    private List<Plot2D> plots = new ArrayList<>();
+    private Plot2D plots;
     private Robot r1;
     private Float[] symPos = new Float[]{0f,0f};
     private boolean symEnd = false;
@@ -53,6 +54,7 @@ public class P3DMap extends ProcessingBase{
 
     @Override
     public void draw() {
+        frameRate(200);
         setGLGraphicsViewport(0, 0, width, height);
         background(153,204,153);
         // Aggiungo degli effetti di luce direzionale
@@ -123,7 +125,10 @@ public class P3DMap extends ProcessingBase{
             }
         }
 
-        plots = new Plot2D(this).initializePlot(this);
+        plots = new Plot2D(this,10,10);
+        plots.setXLabel("Time");
+        plots.setYLabel("X");
+        plots.setTitle("X(t)");
     }
 
     private LinkedBlockingQueue<Float[]> setupSimulationQueue() {
@@ -318,10 +323,11 @@ public class P3DMap extends ProcessingBase{
         int nPoints = 300;
         cam.beginHUD();
         if (showPlots) {
-            this.plots.get(qSelection).drawCanvas();
-            this.plots.get(qSelection).drawGrid();
+//            this.plots.get(qSelection).drawCanvas();
+//            this.plots.get(qSelection).drawGrid();
 //            this.plots.get(qSelection).addLine(qrs_p[qSelection], nPoints, 255);
 //            this.plots.get(qSelection).addLine(qs_p[qSelection], nPoints, 16711680);
+            plots.draw();
         }
 
 
@@ -335,12 +341,16 @@ public class P3DMap extends ProcessingBase{
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
     }
-
+    private float time = 0.0f;
     public void simulinkModel(){
         try {
 
             if(!symQueue.isEmpty()) {
                 symPos = symQueue.take();
+
+                GPoint gPoint=new GPoint(time,symPos[0]);
+                plots.addPoint(gPoint);
+                time+=0.01;
             }
         } catch (InterruptedException e) {
             LOGGER.error("Taking Queue Error",e);

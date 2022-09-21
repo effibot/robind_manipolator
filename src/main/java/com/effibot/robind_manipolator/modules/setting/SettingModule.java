@@ -53,6 +53,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private final ObjectProperty<Double> id = new SimpleObjectProperty<>();
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
+    private Form controlForm;
 
 
     private final SettingBean settingBean;
@@ -76,7 +77,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         this.robotBean = robotBean;
         this.robotBean.addPropertyChangeListener(this);
         this.wb = wb;
-        settingController = new SettingController(this, this.settingBean, this.robotBean, this.wb);
+        settingController = new SettingController(this, this.settingBean, this.robotBean,this.wb);
 
     }
 
@@ -113,11 +114,8 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
                 .label("Yaw").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
-
-        settingBean.rollProperty().bindBidirectional(rollValue);
-        settingBean.pitchProperty().bindBidirectional(pitchValue);
-        settingBean.yawProperty().bindBidirectional(yawValue);
-        Form controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
+        controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
+        settingController.setControlForm(controlForm);
         return new FormRenderer(controlForm);
     }
 

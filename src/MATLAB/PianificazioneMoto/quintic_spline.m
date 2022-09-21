@@ -55,9 +55,9 @@ for i = 1:sz-1
         ddp(end+1) = sddot(tk,X);
     end
 
-    pi=pf;
-    vi=vf;
-    ai=af;
+    pi=p(end);
+    vi=dp(end);
+    ai=ddp(end);
     interval = interval+0.5;
 end
 end

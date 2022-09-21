@@ -1,5 +1,9 @@
 package com.effibot.robind_manipolator.modules.setting;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.DoubleField;
+
+import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.workbenchfx.Workbench;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.Utils;
@@ -23,11 +27,13 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
 
 public class SettingController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingController.class.getName());
+    private Form controlForm;
     private P3DMap p3d;
     private final SettingBean sb;
     private final SettingModule sm;
@@ -153,7 +159,9 @@ public class SettingController {
 
     public void onStart3DAction(JFXButton start3d) {
         start3d.setOnAction(event->{
-
+            sb.setRoll(((DoubleField)controlForm.getFields().get(3)).getValue());
+            sb.setRoll(((DoubleField)controlForm.getFields().get(4)).getValue());
+            sb.setRoll(((DoubleField)controlForm.getFields().get(5)).getValue());
 
 //            rb.stateProperty().addListener(evt -> {
 //                switch ( rb.getState()){
@@ -175,7 +183,7 @@ public class SettingController {
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
                 inverseThread.start();
-                next[1].acquire();
+//                next[1].acquire();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -240,7 +248,6 @@ public class SettingController {
                 pkt.put("ROLL",sb.getRoll());
                 pkt.put("PITCH",sb.getPitch());
                 pkt.put("YAW",sb.getYaw());
-                pkt.put("SK",4040);
                 notifyPropertyChange("SEND", null, pkt);
                 notifyPropertyChange("RECEIVE", false, true);
                 boolean finish = false;
@@ -271,6 +278,7 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally IK");
+
             }
         });
     }
@@ -288,7 +296,7 @@ public class SettingController {
 
     public void closeProcessing() {
         if(p3d!=null){
-
+            p3d.getGraphics().endDraw();
             GLWindow pane = (GLWindow)p3d.getSurface().getNative();
             pane.destroy();
         }
@@ -321,4 +329,11 @@ public class SettingController {
 //            }
 //        }
 //    }
+
+    public Form getControlForm() {
+        return controlForm;
+    }
+    public void setControlForm(Form cf){
+        this.controlForm = cf;
+    }
 }

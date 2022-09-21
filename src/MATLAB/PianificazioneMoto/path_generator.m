@@ -4,10 +4,10 @@ redListNode = findobj(nodeList, 'prop', 'r');
 redObsbc = reshape([redListNode.bc]',2,[]);
 shapeposlist = reshape([list.pos]',2,[])';
 startNode = findobj(nodeList,'id',startId);
-startPos = startNode.bc;
-pend = [shape,80];
 idx = find(ismember(shapeposlist,shape,'rows'));
 endId = list(idx).endid;
+startPos = [findobj(nodeList,'id',endId).bc,0];
+pend=[shapepos(idx,2:3),50];
 P = shortestpath(G, startId, endId);
 if P == startId 
     msg = src.UserData.buildMessage(0,"FINISH",1);

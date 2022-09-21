@@ -64,7 +64,7 @@ y= nPoints(:,2);
 
 switch method
     case 'Paraboloic'
-        time = 0:1:floor(dim/2);
+        time = 0:1/100:floor(dim/2);
         [qx,qxd,qxdd]= paraboloic_blend(pt(:,1)',time);
         [qy,qyd,qydd]= paraboloic_blend(pt(:,2),time);
 %         [pt,vt] = interparc(1000*(dim-1),qx,qy,'linear');
@@ -76,12 +76,12 @@ switch method
 %         qydd = zeros(1,1000*(dim-1))';
 
     case 'Cubic'
-        step=1/30;
+        step=1/100;
         [qx,qxd,qxdd]=cubic_spline(x,step);
         [qy,qyd,qydd]=cubic_spline(y,step);
 
     case 'Quintic'
-     step=1/60;
+     step=1/100;
      [qx,qxd,qxdd]=quintic_spline(x,step);
      [qy,qyd,qydd]=quintic_spline(y,step);
 end

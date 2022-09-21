@@ -4,7 +4,7 @@ Fa = 10*mass;
 Kp = alpha^2;
 Kd = 2*alpha;
 load path.mat
-step=1/60;
+step=1/100;
 time = 0:step:simTime;
 pidm = 'PIDTrajectory';
 load_system(pidm);
@@ -24,7 +24,8 @@ assignin(mdlWks,'Kp',Kp);
 assignin(mdlWks,'Kd',Kd);
 assignin(mdlWks,'step',step);
 assignin(mdlWks,'Fa',Fa);
-simout=sim(pidm,[time(1) time(end)]);
+opt = simset('FixedStep',num2str(step));
+simout=sim(pidm,[time(1) time(end)],opt);
 qr=simout.get('p');
 dqr=simout.get('v');
 ddqr=simout.get('a');
