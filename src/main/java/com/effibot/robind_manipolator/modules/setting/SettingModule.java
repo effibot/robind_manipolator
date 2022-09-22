@@ -218,8 +218,12 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                 bufferBW.put(0, settingBean.getRaw());
                 Platform.runLater(() -> pixelBufferBW.updateBuffer(b -> null));
             }
-            case "FINISH" -> vb.setDisable(false);
+            case "FINISH" -> {
+                vb.setDisable(false);
+
+            }
             case "OBSUPDATE" -> LOGGER.info("OBS UPDATE");
+            case "PLOT"->{}
             default -> LOGGER.warn("Not Mapped Case.");
 
         }

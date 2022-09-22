@@ -132,9 +132,9 @@ public class SettingController {
             pkt = queue.take();
             String key = (String) (pkt.keySet().toArray())[0];
             switch (key) {
-//                case "Q" -> sb.setGq((double[][]) pkt.get(key));
-//                case "dQ" -> sb.setGdq((double[][]) pkt.get(key));
-//                case "ddQ" -> sb.setGddq((double[][]) pkt.get(key));
+                case "Q" -> rb.setqGRover((double[][]) pkt.get(key));
+                case "dQ" -> rb.setDqGRover((double[][]) pkt.get(key));
+                case "ddQ" -> rb.setDdqGRover((double[][]) pkt.get(key));
                 case "PATHIDS" -> sb.setPathLabel((double[]) pkt.get(key));
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "FINISH" ->{
@@ -221,8 +221,6 @@ public class SettingController {
                             rb.setRoverAcc((double[][]) pkt.get("ddQs"));
                             rb.setError((double[][]) pkt.get("E"));
                         }
-//                        rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-//                        case "ANIMATION" -> {}
                         default -> {
                             finish = true;
                         }
@@ -302,33 +300,6 @@ public class SettingController {
         }
     }
 
-//    private void makeSimulation() throws InterruptedException {
-//        // make new packet
-//        LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
-//        pkt.put("PROC","SYM");
-//        pkt.put("M",5);
-//        pkt.put("ALPHA",300);
-//        notifyPropertyChange("SEND", null, pkt);
-//        notifyPropertyChange("RECEIVE", false, true);
-//        boolean finish = false;
-//        while (!finish) {
-//            // set green id
-//            pkt = queue.take();
-//            String key = (String) (pkt.keySet().toArray())[0];
-//            switch (key) {
-//                case "ROVER" ->{
-//                    rb.setRoverPos((double[][]) pkt.get("Qs"));
-//                    rb.setRoverVel((double[][]) pkt.get("dQs"));
-//                    rb.setRoverAcc((double[][]) pkt.get("ddQs"));
-//                    rb.setError((double[][]) pkt.get("E"));
-//
-//                    p3d.run(p3d.getClass().getSimpleName());
-//                }
-//                case "ANIMATION" -> rb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
-//                default -> finish = true;
-//            }
-//        }
-//    }
 
     public Form getControlForm() {
         return controlForm;

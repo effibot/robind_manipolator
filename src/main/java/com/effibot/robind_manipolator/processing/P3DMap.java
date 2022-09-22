@@ -1,7 +1,6 @@
 package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
-import grafica.GPoint;
 import javafx.beans.property.ListProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
+import com.effibot.robind_manipolator.oscilloscope.Oscilloscope;
 public class P3DMap extends ProcessingBase{
     private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
     private final List<Obstacle> obsList;
@@ -29,12 +27,11 @@ public class P3DMap extends ProcessingBase{
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
     private final Reference frame;
     private final RobotBean rb;
-    private int qSelection = 0;                                // Joint selection (for interactive controls).
+    private int qSelection = 0;// Joint selection (for interactive controls).
 
     private int i = (6) + 48;
-    private boolean showPlots=false;
+    private final Oscilloscope oscilloscope = Oscilloscope.getInstance();
 
-    private Plot2D plots;
     private Robot r1;
     private Float[] symPos = new Float[]{0f,0f};
     private boolean symEnd = false;
@@ -49,6 +46,9 @@ public class P3DMap extends ProcessingBase{
         observers = new ArrayList<>();
         this.padding = 5;
         this.next = next;
+        Oscilloscope.setProcessingBase(this);
+        Oscilloscope.setRb(this.rb);
+        rb.addPropertyChangeListener(oscilloscope);
     }
 
 
@@ -124,11 +124,15 @@ public class P3DMap extends ProcessingBase{
                 cameras[id].setViewport(cx, cy, cw, ch); // this is the key of this whole demo
             }
         }
+        // Rover Plots
+        oscilloscope.addPlot("X",5,5,195,200);
+        oscilloscope.addPlot("Y",5,205,195,200);
+        oscilloscope.addPlot("VX",200,5,195,200);
+        oscilloscope.addPlot("VY",200,205,195,200);
+        oscilloscope.addPlot("AX",400,5,195,200);
+        oscilloscope.addPlot("AY",400,205,195,200);
 
-        plots = new Plot2D(this,10,10);
-        plots.setXLabel("Time");
-        plots.setYLabel("X");
-        plots.setTitle("X(t)");
+
     }
 
     private LinkedBlockingQueue<Float[]> setupSimulationQueue() {
@@ -173,9 +177,9 @@ public class P3DMap extends ProcessingBase{
         } else if (key == 'c') {
             dz -= 1;
         }else if (key =='K'|| key == 'k'){
-            showPlots=true;
+            oscilloscope.setAllPlotVisible(true);
         }else if (key =='W'|| key == 'w'){
-            showPlots=false;
+            oscilloscope.setAllPlotVisible(false);
         }
         println("""
                 [dx, dy, dz] = {%f, %d, %d}
@@ -304,7 +308,7 @@ public class P3DMap extends ProcessingBase{
 //            symEnd = true;
 //            thread("inverseKinematic");
 //        }
-        translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
+        translate(symPos[0] - 512, symPos[1] - 512, -5.5f);
         r.drawLink();
 
         popMatrix();
@@ -313,6 +317,7 @@ public class P3DMap extends ProcessingBase{
         // screen-aligned 2D HUD
         cam.beginHUD();
 
+        Oscilloscope.drawOscilloscope();
         cam.endHUD();
     }
     public void draw3Drobot(PeasyCam cam){
@@ -322,13 +327,7 @@ public class P3DMap extends ProcessingBase{
         r1.drawLink();
         int nPoints = 300;
         cam.beginHUD();
-        if (showPlots) {
-//            this.plots.get(qSelection).drawCanvas();
-//            this.plots.get(qSelection).drawGrid();
-//            this.plots.get(qSelection).addLine(qrs_p[qSelection], nPoints, 255);
-//            this.plots.get(qSelection).addLine(qs_p[qSelection], nPoints, 16711680);
-            plots.draw();
-        }
+
 
 
         cam.endHUD();
@@ -347,10 +346,10 @@ public class P3DMap extends ProcessingBase{
 
             if(!symQueue.isEmpty()) {
                 symPos = symQueue.take();
-
-                GPoint gPoint=new GPoint(time,symPos[0]);
-                plots.addPoint(gPoint);
-                time+=0.01;
+                rb.notifyPropertyChange("PLOT",false, true);
+//                GPoint gPoint=new GPoint(time,symPos[0]);
+//                plots.addPoint(gPoint);
+//                time+=0.01;
             }
         } catch (InterruptedException e) {
             LOGGER.error("Taking Queue Error",e);

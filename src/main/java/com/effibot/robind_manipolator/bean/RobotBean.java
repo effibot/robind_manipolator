@@ -35,15 +35,20 @@ public class RobotBean implements Serializable {
                     ))
     ));
     // Rover Position [x][y]
-    private final transient ListProperty<Double[]> qRover = new SimpleListProperty<>(FXCollections.observableList(
-            new ArrayList<>(List.<Double[]>of(new Double[]{0d, 0d}))
-    ));
+    private final transient ListProperty<Double[]> qRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Double[]> qGRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
     // Rover Velocity [dx][dy]
-    private final transient ListProperty<Double[]> dqRover = new SimpleListProperty<>(FXCollections.observableArrayList(
-            new ArrayList<>(List.<Double[]>of(new Double[]{0d, 0d}))
-    ));
+    private final transient ListProperty<Double[]> dqRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Double[]> dqGRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
     // Rover Acceleration [ddx][ddy]
-    private final transient ListProperty<Double[]> ddqRover = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final transient ListProperty<Double[]> ddqRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Double[]> ddqGRover = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));
     // Rover Error [e_x][e_y][e_dx][e_dy]
     private final transient ListProperty<Double[]> errors = new SimpleListProperty<>(FXCollections.observableArrayList());
 
@@ -70,14 +75,14 @@ public class RobotBean implements Serializable {
     }
 
     public void setRoverVel(double[][] roverVel) {
-        this.dqRover.set(adaptToPropertyList(roverVel));
+        this.dqRover.addAll(adaptToPropertyList(roverVel));
 
     }
     public void setRoverAcc(double[][] roverAcc) {
-        this.ddqRover.set(adaptToPropertyList(roverAcc));
+        this.ddqRover.addAll(adaptToPropertyList(roverAcc));
     }
     public void setError(double[][] error) {
-        this.errors.set(adaptToPropertyList(error));
+        this.errors.addAll(adaptToPropertyList(error));
     }
     private ListProperty<Double[]> adaptToPropertyList(double[][] values) {
         ListProperty<Double[]> adapted = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -116,7 +121,7 @@ public class RobotBean implements Serializable {
     }
 
     public void setqRover(ObservableList<Double[]> qRover) {
-        this.qRover.set(qRover);
+        this.qRover.addAll(qRover);
     }
 
     public ObservableList<Double[]> getDqRover() {
@@ -128,7 +133,7 @@ public class RobotBean implements Serializable {
     }
 
     public void setDqRover(ObservableList<Double[]> dqRover) {
-        this.dqRover.set(dqRover);
+        this.dqRover.addAll(dqRover);
     }
 
     public ObservableList<Double[]> getDdqRover() {
@@ -140,7 +145,7 @@ public class RobotBean implements Serializable {
     }
 
     public void setDdqRover(ObservableList<Double[]> ddqRover) {
-        this.ddqRover.set(ddqRover);
+        this.ddqRover.addAll(ddqRover);
     }
 
     public ObservableList<Double[]> getErrors() {
@@ -152,7 +157,7 @@ public class RobotBean implements Serializable {
     }
 
     public void setErrors(ObservableList<Double[]> errors) {
-        this.errors.set(errors);
+        this.errors.addAll(errors);
     }
 
     public void setObsList(List<Obstacle> obstacleList) {
@@ -162,5 +167,39 @@ public class RobotBean implements Serializable {
         return obsList;
     }
 
+    public ObservableList<Double[]> getqGRover() {
+        return qGRover.get();
+    }
 
+    public ListProperty<Double[]> qGRoverProperty() {
+        return qGRover;
+    }
+
+    public void setqGRover(double[][] qGRover) {
+        this.qGRover.addAll(adaptToPropertyList(qGRover));
+    }
+
+    public ObservableList<Double[]> getDqGRover() {
+        return dqGRover.get();
+    }
+
+    public ListProperty<Double[]> dqGRoverProperty() {
+        return dqGRover;
+    }
+
+    public void setDqGRover(double[][] dqGRover) {
+        this.dqGRover.addAll(adaptToPropertyList(dqGRover));
+    }
+
+    public ObservableList<Double[]> getDdqGRover() {
+        return ddqGRover.get();
+    }
+
+    public ListProperty<Double[]> ddqGRoverProperty() {
+        return ddqGRover;
+    }
+
+    public void setDdqGRover(double[][] ddqGRover) {
+        this.ddqGRover.addAll(adaptToPropertyList(ddqGRover));
+    }
 }
