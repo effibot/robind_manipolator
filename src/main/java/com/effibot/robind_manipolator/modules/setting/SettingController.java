@@ -294,7 +294,7 @@ public class SettingController {
 
     public void closeProcessing() {
         if(p3d!=null){
-            p3d.getGraphics().endDraw();
+            p3d.noLoop();
             GLWindow pane = (GLWindow)p3d.getSurface().getNative();
             pane.destroy();
         }

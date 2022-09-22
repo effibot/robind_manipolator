@@ -1,15 +1,15 @@
-function [q,dq,ddq,time]= paraboloic_blend(x,time)
+function [q,dq,ddq,time]= paraboloic_blend(x,step)
 N = length(x);
 q = double.empty;
 dq = double.empty;
 ddq = double.empty;
 pi = x(1);
-t_interval = 0:1/100:0.5;
+t_interval = 0:step:0.5;
+tf = t_interval(end);
 st = length(t_interval);
 for i = 2:N
     pf = x(i);
-    tf = t_interval(end);
-    V = (x(i)-x(i-1))/(1)*1.5;
+    V = (x(i)-x(i-1))/(0.5)*1.5;
 
     if pi == pf
         for tk=2:st

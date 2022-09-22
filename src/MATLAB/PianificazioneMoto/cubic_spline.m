@@ -18,9 +18,9 @@ ddp=double.empty;
 ts = 0;
 pi = x(1);
 vi=0;
+interval = ts:step:0.5;
 
 for i = 1:sz-1
-    interval = ts:step:0.5;
     pf=x(i+1);
     vf = qd(i+1);
     af = qdd(i+1);
@@ -38,6 +38,7 @@ for i = 1:sz-1
 
     pi=pf;
     vi=vf;
+    interval=interval+step;
 end
 end
 

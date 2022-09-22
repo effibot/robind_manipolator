@@ -36,6 +36,11 @@ public class P3DMap extends ProcessingBase{
     private Float[] symPos = new Float[]{0f,0f};
     private boolean symEnd = false;
     private boolean inkEnd = false;
+    private static final int leftMargin = 2;
+    private static final int upMargin =2;
+    private static final int plotHeight = 175;
+    private static final int plotWidth = 220;
+
     public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
         super();
         this.obsList = obsList;
@@ -124,15 +129,19 @@ public class P3DMap extends ProcessingBase{
                 cameras[id].setViewport(cx, cy, cw, ch); // this is the key of this whole demo
             }
         }
+
+        initializeRoverPlot();
+
+    }
+
+    public void initializeRoverPlot(){
         // Rover Plots
-        oscilloscope.addPlot("X",5,5,195,200);
-        oscilloscope.addPlot("Y",5,205,195,200);
-        oscilloscope.addPlot("VX",200,5,195,200);
-        oscilloscope.addPlot("VY",200,205,195,200);
-        oscilloscope.addPlot("AX",400,5,195,200);
-        oscilloscope.addPlot("AY",400,205,195,200);
-
-
+        oscilloscope.addPlot("X",leftMargin,upMargin,plotWidth,plotHeight);
+        oscilloscope.addPlot("Y",leftMargin,2*upMargin+plotHeight,plotWidth,plotHeight);
+        oscilloscope.addPlot("VX",2*leftMargin+plotWidth,upMargin,plotWidth,plotHeight);
+        oscilloscope.addPlot("VY",2*leftMargin+plotWidth,2*upMargin+plotHeight,plotWidth,plotHeight);
+        oscilloscope.addPlot("AX",3*leftMargin+2*plotWidth,upMargin,plotWidth,plotHeight);
+        oscilloscope.addPlot("AY",3*leftMargin+2*plotWidth,2*upMargin+plotHeight,plotWidth,plotHeight);
     }
 
     private LinkedBlockingQueue<Float[]> setupSimulationQueue() {
@@ -308,7 +317,7 @@ public class P3DMap extends ProcessingBase{
 //            symEnd = true;
 //            thread("inverseKinematic");
 //        }
-        translate(symPos[0] - 512, symPos[1] - 512, -5.5f);
+        translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
         r.drawLink();
 
         popMatrix();
@@ -347,9 +356,6 @@ public class P3DMap extends ProcessingBase{
             if(!symQueue.isEmpty()) {
                 symPos = symQueue.take();
                 rb.notifyPropertyChange("PLOT",false, true);
-//                GPoint gPoint=new GPoint(time,symPos[0]);
-//                plots.addPoint(gPoint);
-//                time+=0.01;
             }
         } catch (InterruptedException e) {
             LOGGER.error("Taking Queue Error",e);

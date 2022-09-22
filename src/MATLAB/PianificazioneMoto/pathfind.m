@@ -64,9 +64,9 @@ y= nPoints(:,2);
 
 switch method
     case 'Paraboloic'
-        time = 0:1/100:floor(dim/2);
-        [qx,qxd,qxdd]= paraboloic_blend(pt(:,1)',time);
-        [qy,qyd,qydd]= paraboloic_blend(pt(:,2),time);
+        step = 1/100;
+        [qx,qxd,qxdd]= paraboloic_blend(pt(:,1)',step);
+        [qy,qyd,qydd]= paraboloic_blend(pt(:,2)',step);
 %         [pt,vt] = interparc(1000*(dim-1),qx,qy,'linear');
 %         qx = pt(:,1)';
 %         qy = pt(:,2)';

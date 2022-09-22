@@ -15,6 +15,7 @@ import java.util.List;
 import processing.core.PApplet;
 public class Plot {
     private static int titleHeight = 30;
+    private  int nPoints;
     private int referenceLineColor;
     private int currentLineColor;
     private  int gridColor;
@@ -57,11 +58,11 @@ public class Plot {
         gridLineColor = processingBase.color(50,50,50);
         gridColor = processingBase.color(255, 255, 204);
         canvasColor = processingBase.color(0,0,0);
-        currentLineColor = processingBase.color(0,0,0);
-        referenceLineColor = processingBase.color(255,0,0);
+        currentLineColor = processingBase.color(26, 255, 26);
+        referenceLineColor = processingBase.color(204, 0, 0);
         setGridHeight();
         pGraphics = processingBase.createGraphics(width,height);
-        System.out.println(pGraphics);
+        nPoints = 200;
     }
 
     public void setTitleBackground(int r, int g, int b){
@@ -179,12 +180,14 @@ public class Plot {
             currentVal = currentValProperty.get();
             referenceVal = referenceValProperty.get();
 
-            pGraphics.strokeWeight(2);
+            pGraphics.strokeWeight(3);
             pGraphics.stroke(currentLineColor);
             pGraphics.beginShape();
             drawCurrentPoint();
             pGraphics.endShape();
 
+
+            pGraphics.strokeWeight(1);
             pGraphics.stroke(referenceLineColor);
             pGraphics.beginShape();
             drawReferencePoint();
@@ -201,14 +204,15 @@ public class Plot {
     }
 
     private void scaleValue(ListProperty<Float> referenceValProperty) {
-        if(!referenceValProperty.isEmpty()) {
-            if (!referenceValProperty.get().isEmpty()) {
+        if(!referenceValProperty.isEmpty() && !referenceValProperty.get().isEmpty()) {
                 for (int i = 0; i < referenceVal.size(); i++) {
-                    float scaledYValue = PApplet.map(referenceVal.get(i), Collections.min(currentVal)-gridHeight/2f, Collections.max(currentVal)+gridHeight/2f, -gridHeight / 2f, gridHeight / 2f);
-                    float scaledXValue = PApplet.map(i, 0, i+1, 0, width);
-                    pGraphics.point(scaledXValue, scaledYValue+gridHeight/2f);
+                    float scaledYValue = PApplet.map(referenceVal.get(i), Collections.min(referenceVal), Collections.max(referenceVal), 0,gridHeight-5);
+                    float scaledXValue = PApplet.map(i, 0, referenceVal.size(), 0, width);
+                    pGraphics.fill(0,0,0,0);
+                    pGraphics.vertex(scaledXValue, scaledYValue+titleHeight);
+                    pGraphics.noFill();
                 }
-            }
+
         }
     }
 
@@ -233,7 +237,7 @@ public class Plot {
         pGraphics.fill(gridColor);
         pGraphics.rect(0,titleHeight,width,gridHeight);
         //Line grid property
-        pGraphics.strokeWeight(1);
+        pGraphics.strokeWeight(0.2f);
         pGraphics.stroke(gridLineColor);
         //Vertical Line
         for ( int i = 0 ; i < width ; i+=spacing) {
@@ -293,5 +297,13 @@ public class Plot {
 
     public void setReferenceVal(ObservableList<Float> referenceVal) {
         this.referenceVal = referenceVal;
+    }
+
+    public int getnPoints() {
+        return nPoints;
+    }
+
+    public void setnPoints(int nPoints) {
+        this.nPoints = nPoints;
     }
 }
