@@ -1,6 +1,7 @@
 package com.effibot.robind_manipolator.bean;
 
 import com.effibot.robind_manipolator.processing.Obstacle;
+import com.effibot.robind_manipolator.processing.Robot;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import java.util.List;
 import static processing.core.PConstants.PI;
 
 public class RobotBean implements Serializable {
+    private static int MAXPOINT=0;
     public double[][] getShapePos() {
         return shapePos;
     }
@@ -69,8 +71,12 @@ public class RobotBean implements Serializable {
     public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue) {
         changes.firePropertyChange(propertyName, oldValue, newValue);
     }
+    public static int getMaxPoint(){
+        return RobotBean.MAXPOINT;
+    }
 
     public void setRoverPos(double[][] roverPos) {
+        RobotBean.MAXPOINT=roverPos.length;
         this.qRover.addAll(adaptToPropertyList(roverPos));
     }
 
@@ -113,7 +119,7 @@ public class RobotBean implements Serializable {
     }
     // ROVER
     public ObservableList<Double[]> getqRover() {
-        return qRover.get();
+        return this.qRover.get();
     }
 
     public ListProperty<Double[]> qRoverProperty() {

@@ -20,7 +20,7 @@ function newtongrad(roll,pitch,yaw,src)
     %% Inverse Functions
     de = DH(dhparams);
     dep = de(1:3,4);
-        pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));
+    pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));
     yawp=atan2(Rq(3,2)/sqrt(1-Rq(3,3)^2),Rq(3,1)/(-sqrt(1-Rq(3,3)^2)));
     rollp = atan2(Rq(2,3)/sqrt(1-Rq(3,3)^2),Rq(1,3)/sqrt(1-Rq(3,3)^2));
 %     pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));

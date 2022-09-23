@@ -131,7 +131,6 @@ public class P3DMap extends ProcessingBase{
         }
 
         initializeRoverPlot();
-
     }
 
     public void initializeRoverPlot(){

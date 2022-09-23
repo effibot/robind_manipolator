@@ -2,12 +2,13 @@ function runonmap(M,p,rbclist,nodeList,robotsize,src)
 showimage(M);
 circleColorObs=[0.623, 0.501, 0.635, 0.5];
 robotColor = [1 1 0 0.7];
+cp = p';
 hold on
-plot(p(:,1),p(:,2),'LineWidth',3);
+plot(cp(:,1),cp(:,2),'LineWidth',3);
 saving=@(gcf)frame2im(getframe(gcf));
 % 
-for j = 1:ceil((size(p,1)-1)/200):size(p,1)
-    currPoint = p(j,:);
+for j = 1:ceil((size(p,1)-1)/200):size(p,2)
+    currPoint = p(:,j)';
     [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
     obsNode= findobj(nodeList,'bc',closestObs);
     radiusObs=sqrt(2)/2*obsNode.dim;

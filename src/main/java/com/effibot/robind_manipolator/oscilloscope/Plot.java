@@ -1,5 +1,6 @@
 package com.effibot.robind_manipolator.oscilloscope;
 
+import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
 import javafx.beans.property.ListProperty;
@@ -180,16 +181,25 @@ public class Plot {
             currentVal = currentValProperty.get();
             referenceVal = referenceValProperty.get();
 
+//            pGraphics.beginDraw();
+//            pGraphics.stroke(0);
+//            pGraphics.strokeWeight(1);
+//            pGraphics.line(0,currentVal.get(0),width,currentVal.get(0));
+//            pGraphics.endDraw();
+
+
+            pGraphics.beginShape();
             pGraphics.strokeWeight(3);
             pGraphics.stroke(currentLineColor);
-            pGraphics.beginShape();
             drawCurrentPoint();
             pGraphics.endShape();
 
 
+
+            pGraphics.beginShape();
+            pGraphics.stroke(0);
             pGraphics.strokeWeight(1);
             pGraphics.stroke(referenceLineColor);
-            pGraphics.beginShape();
             drawReferencePoint();
             pGraphics.endShape();
 
@@ -205,13 +215,20 @@ public class Plot {
 
     private void scaleValue(ListProperty<Float> referenceValProperty) {
         if(!referenceValProperty.isEmpty() && !referenceValProperty.get().isEmpty()) {
-                for (int i = 0; i < referenceVal.size(); i++) {
-                    float scaledYValue = PApplet.map(referenceVal.get(i), Collections.min(referenceVal), Collections.max(referenceVal), 0,gridHeight-5);
-                    float scaledXValue = PApplet.map(i, 0, referenceVal.size(), 0, width);
+            float time = 0.0f;
+            float step = 1/100f;
+            for (int i = 0; i < referenceVal.size(); i++) {
+
+                    float scaledYValue = PApplet.map(referenceVal.get(i), Collections.min(referenceVal), Collections.max(referenceVal), 0,gridHeight-20f);
+                    float scaledXValue = PApplet.map(time, 0, RobotBean.getMaxPoint()/100f, 0, width);
                     pGraphics.fill(0,0,0,0);
                     pGraphics.vertex(scaledXValue, scaledYValue+titleHeight);
                     pGraphics.noFill();
+                    time += step;
+
+
                 }
+
 
         }
     }
