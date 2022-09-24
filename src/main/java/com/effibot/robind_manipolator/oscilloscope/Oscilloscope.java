@@ -46,7 +46,7 @@ public class Oscilloscope implements PropertyChangeListener {
         }
     }
 
-    public static void drawOscilloscope() {
+    public static synchronized void drawOscilloscope() {
         String[] keys = plotMap.keySet().toArray(new String[0]);
         for (String k : keys) {
             plotMap.get(k).drawPlot();

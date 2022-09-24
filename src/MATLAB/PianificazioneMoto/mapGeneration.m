@@ -15,7 +15,7 @@ src.UserData.sendMessage(src,msg);
 G=graph(A);
 [gid,M] = gPlot(nodeList, A, Amid, Aint,M,src,map.value);
 
-shapepos = zeros(3,3);
+shapepos = zeros(3,4);
 color = zeros(3,1,3,'uint8');
 color(1,1,:)=fliplr([246,182,41]);  %Sfera: arancione
 color(2,1,:)= fliplr([205,117,149]); %Cono: viola
@@ -39,7 +39,7 @@ for i = 1:3
                 pos(2)-fix(radius/2)+1:pos(2)+fix(radius/2),:)=...
                 repmat(color(i,1,:),radius,radius,1);
             obstemp(obb,:)=[];
-                shapepos(i,:) = [form,pos];
+                shapepos(i,:) = [form,pos,obs(ismember(obs(:,1:2),pos,'rows'),4)];
 
             break
         end

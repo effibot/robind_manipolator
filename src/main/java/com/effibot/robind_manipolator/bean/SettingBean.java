@@ -36,7 +36,7 @@ public class SettingBean implements Serializable {
     private byte[] rawImg;
     private double[][] shapeList;
 
-    private byte[] animation;
+    private  byte[] animation;
     private ArrayList<double[]> shapeIdList;
     private boolean finish = false;
 
@@ -82,7 +82,7 @@ public class SettingBean implements Serializable {
         this.shapeList = shapeList;
     }
     public void setAnimation(byte[] writableImage){
-        this.animation = writableImage;
+        animation = writableImage;
         changes.firePropertyChange("ANIMATION",false,this);
     }
 

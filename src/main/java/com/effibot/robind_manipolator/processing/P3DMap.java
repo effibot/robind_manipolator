@@ -5,9 +5,12 @@ import javafx.beans.property.ListProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peasy.PeasyCam;
+import processing.core.PShape;
 import processing.opengl.PGL;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PJOGL;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,6 +25,9 @@ public class P3DMap extends ProcessingBase{
     private final int bgColor = color(51,102,102);
     private final int[] shapeColor = new int[]{color(246,182,41), color(205,117,149), color(88, 238, 255)};
     private final Semaphore[] next;
+    private static final float SHAPEDIAMETER = 40;
+
+    private final ArrayList< processing.core.PShape> PshapeList = new ArrayList<>();
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
@@ -40,6 +46,7 @@ public class P3DMap extends ProcessingBase{
     private static final int upMargin =2;
     private static final int plotHeight = 175;
     private static final int plotWidth = 220;
+    private processing.core.PImage textureMap;
 
     public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
         super();
@@ -54,6 +61,33 @@ public class P3DMap extends ProcessingBase{
         Oscilloscope.setProcessingBase(this);
         Oscilloscope.setRb(this.rb);
         rb.addPropertyChangeListener(oscilloscope);
+
+    }
+
+    private processing.core.PShape sphereShape() {
+        float radius = SHAPEDIAMETER/2;
+
+
+        return createShape(SPHERE,radius);
+    }
+
+    private processing.core.PShape coneShape() {
+        float radius = SHAPEDIAMETER/2;
+        processing.core.PShape ps = createShape();
+        ps.beginShape(TRIANGLE_STRIP);
+
+        for(int angle = 0; angle<=360;angle+=20){
+            ps.vertex(radius*cos(radians(angle)),radius*sin(radians(angle)),0);
+            ps.vertex(0,0,SHAPEDIAMETER);
+
+        }
+
+        ps.endShape();
+        return ps;
+    }
+
+    private processing.core.PShape cubeShape() {
+        return createShape(BOX,SHAPEDIAMETER);
     }
 
 
@@ -129,8 +163,15 @@ public class P3DMap extends ProcessingBase{
                 cameras[id].setViewport(cx, cy, cw, ch); // this is the key of this whole demo
             }
         }
-
+        PshapeList.add(sphereShape());
+        PshapeList.add(coneShape());
+        PshapeList.add(cubeShape());
         initializeRoverPlot();
+        File file = new File("src/main/resources/com/effibot/robind_manipolator/img/textureImg.png");
+        String filepath = file.getAbsolutePath();
+        textureMap = loadImage(filepath);
+
+
     }
 
     public void initializeRoverPlot(){
@@ -268,6 +309,14 @@ public class P3DMap extends ProcessingBase{
         // draw the floor
         fill(200);
         box(size, size, mapH);
+        translate(0,0,mapH/2f);
+        beginShape();
+        texture(textureMap);
+        vertex(-512,-512,0,0);
+        vertex(-512,512,1024,0);
+        vertex(512,512,1024,1024);
+        vertex(512,-512,0,1024);
+        endShape();
         // elevate everything to the top of the floor
         translate(0, 0, mapH / 2.0f);
         // origin of R3
@@ -279,14 +328,40 @@ public class P3DMap extends ProcessingBase{
         for (Obstacle obs : obsList) {
             pushMatrix();
             translate(obs.getYc() - size / 2.0f, obs.getXc() - size / 2.0f, obs.getZc());
-            if (obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1])
-                fill(shapeColor[0]);
-            else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1])
-                fill(shapeColor[1]);
-            else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1])
-                fill(shapeColor[2]);
+            PShape pShape;
+            if (obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1]) {
+                fill(224, 224, 224);
+
+                pushMatrix();
+                translate(0, 0, (float)rb.getShapePos()[0][3]);
+                pShape = PshapeList.get(0);
+                pShape.setFill(shapeColor[0]);
+                shape(pShape);
+                popMatrix();
+            }
+            else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1]) {
+                fill(224, 224, 224);
+
+                pushMatrix();
+                translate(0, 0, (float)rb.getShapePos()[1][3]-SHAPEDIAMETER/2+1-mapH/2f);
+                pShape = PshapeList.get(1);
+                pShape.setFill(shapeColor[1]);
+                shape(pShape);
+                popMatrix();
+            }
+            else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1]) {
+                fill(224, 224, 224);
+
+                pushMatrix();
+                translate(0, 0, (float)rb.getShapePos()[2][3]+1-mapH/2f);
+                pShape = PshapeList.get(2);
+                pShape.setFill(shapeColor[2]);
+                shape(pShape);
+                popMatrix();
+            }
             else
-                fill(100);
+                fill(224, 224, 224);
+
 
             box(obs.getR(), obs.getR(), obs.getH());
 

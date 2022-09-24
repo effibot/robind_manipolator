@@ -2,6 +2,7 @@ package com.effibot.robind_manipolator.processing;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class P2DMap extends ProcessingBase {
     private final int mapColor = color(102, 102, 102);
@@ -109,10 +110,9 @@ public class P2DMap extends ProcessingBase {
             }
         }
     }
-
     private void addObstacle(int targetX, int targetY) {
         int id = obsList.size();
-        final int obsHeight = 200;
+        final int obsHeight = ThreadLocalRandom.current().nextInt(40, 80 + 1);
         Obstacle obs = new Obstacle(this, targetX, targetY,
                 obsHeight/2.0f, 2 * TARGET_SIZE, obsHeight, id);
         obsList.add(obs);

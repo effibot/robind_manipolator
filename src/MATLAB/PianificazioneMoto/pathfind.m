@@ -1,4 +1,4 @@
-function [curve,dcurve,ddcurve] = pathfind(nodeList, idList, Aint, Amid, obsList,method,pend)
+function [curve,dcurve,ddcurve,pik] = pathfind(nodeList, idList, Aint, Amid, obsList,method,pend)
 % nodeList: lista di nodi che compongono il path
 % Aint: matrice n x n x 2 di componenti [x,y]
 % costruisco sequenza di punti in cui far passare il path
@@ -17,18 +17,16 @@ for i = 1:dimPath -1
         nPoints(end+1,:) = next.bc;
     end
 end
-disp("DIOCANE");
-
 if(next.dim>64)
     p1 = next.bc;
     p2 = pend(1:2);
     
     corners = next.corner';
 
-    corners(1,:) = [corners(1,1)+31 corners(1,2)+31];
-    corners(2,:) = [corners(2,1)-31 corners(2,2)+31];
-    corners(3,:) = [corners(3,1)+31 corners(3,2)-31];
-    corners(4,:) = [corners(4,1)-31 corners(4,2)-31];
+    corners(1,:) = [corners(1,1)+32 corners(1,2)+32];
+    corners(2,:) = [corners(2,1)-32 corners(2,2)+32];
+    corners(3,:) = [corners(3,1)+32 corners(3,2)-32];
+    corners(4,:) = [corners(4,1)-32 corners(4,2)-32];
     
     xlimit = [corners(1,2) corners(4,2)];
     ylimit = [corners(1,1) corners(4,1)];
@@ -37,6 +35,7 @@ if(next.dim>64)
     [xi,yi] = polyxpoly([p1(2) p2(2)],[p1(1) p2(1)],xbox,ybox);
     nPoints(end+1,:)=[yi,xi];
 end
+pik = [(pend(1:2)+nPoints(end,:))./2,pend(3)] ;
 % figure
 % hold on
 % plot(nPoints(:,1),nPoints(:,2),'ob');

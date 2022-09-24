@@ -7,8 +7,9 @@ M = 255*repmat(uint8(map.value),1,1,4);
 nodeList = getAllNode(map, []);
 id = 0;
 
+figure('Visible','off');
 
-figure('visible','off')
+
 % imageList = zeros(numel(nodeList), dim(1), dim(2), 3);
 color=zeros(1,1,4,'uint8');
 

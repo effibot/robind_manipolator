@@ -18,12 +18,16 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -111,6 +115,12 @@ public class SettingController {
 
     public void onStart2DAction(JFXButton start) {
         start.setOnAction(event -> {
+            File fl = new File("src/main/resources/com/effibot/robind_manipolator/img/textureImg.png");
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(sm.getMap(),null),"png",fl);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             t = getNew2DThread();
             t.start();
             sm.getVb().setDisable(true);
@@ -138,8 +148,10 @@ public class SettingController {
                 case "PATHIDS" -> sb.setPathLabel((double[]) pkt.get(key));
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "FINISH" ->{
-                        finish = true;
-                        sm.getVb().setDisable(false);
+
+                    finish = true;
+
+                    sm.getVb().setDisable(false);
                 }
                 default -> LOGGER.warn("Pacchetto non mappato.");
             }
@@ -160,8 +172,8 @@ public class SettingController {
     public void onStart3DAction(JFXButton start3d) {
         start3d.setOnAction(event->{
             sb.setRoll(((DoubleField)controlForm.getFields().get(3)).getValue());
-            sb.setRoll(((DoubleField)controlForm.getFields().get(4)).getValue());
-            sb.setRoll(((DoubleField)controlForm.getFields().get(5)).getValue());
+            sb.setPitch(((DoubleField)controlForm.getFields().get(4)).getValue());
+            sb.setYaw(((DoubleField)controlForm.getFields().get(5)).getValue());
 
 //            rb.stateProperty().addListener(evt -> {
 //                switch ( rb.getState()){

@@ -1,16 +1,24 @@
 package com.effibot.robind_manipolator.bean;
 
 import com.effibot.robind_manipolator.processing.Obstacle;
-import com.effibot.robind_manipolator.processing.Robot;
+
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.image.PixelBuffer;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.WritableImage;
 import org.apache.commons.lang.ArrayUtils;
-
+import javafx.embed.swing.*;
+import javax.imageio.ImageIO;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +38,9 @@ public class RobotBean implements Serializable {
     // Robot Joint Variables [q1,...,q6]
     // shape ids
     private double[][] shapePos;
+    private final transient ByteBuffer bufferTexture = ByteBuffer.allocateDirect(4 * 1024 * 1024);
+    private final transient PixelBuffer<ByteBuffer> pixelBufferTexture = new PixelBuffer<>(1024, 1024, bufferTexture, PixelFormat.getByteBgraPreInstance());
+    private transient final WritableImage imgTexture = new WritableImage(pixelBufferTexture);
     private final transient ListProperty<Float> q = new SimpleListProperty<>(FXCollections.observableArrayList(
             Arrays.asList(
                     ArrayUtils.toObject(
@@ -208,4 +219,9 @@ public class RobotBean implements Serializable {
     public void setDdqGRover(double[][] ddqGRover) {
         this.ddqGRover.addAll(adaptToPropertyList(ddqGRover));
     }
+
+    private final int[] texturePixels=new int[1024*1024*4];
+
+
+
 }

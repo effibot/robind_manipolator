@@ -2,7 +2,7 @@ function newtongrad(roll,pitch,yaw,src)
     load path.mat pend startPos
     print("Start Newton")
     pfinal =pend-startPos;% [50 50 50];
-    P=[pfinal(1);pfinal(2);pfinal(3);roll;pitch;yaw];
+    P=[pfinal(1);pfinal(2);pfinal(3)+20;roll;pitch;yaw];
     q=sym('q',[6,1]);
     L=[33;50;0;51;0;12];
     dof=6;
@@ -39,20 +39,21 @@ function newtongrad(roll,pitch,yaw,src)
             Jval =J(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
             %Newton
             qdot = -pinv(Jval)*E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
-            qN = q0+0.09*qdot;
+            qN = q0+0.009*qdot;
             %Gradiente
-%             qdot = -Jval'*(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
-%             qG = q0+1e-5*qdot;
+            qdot = -Jval'*(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
+            qG = q0+1e-3*qdot;
             errorNewton = norm(E(qN(1,1),qN(2,1),qN(3,1),qN(4,1),qN(5,1),qN(6,1)));
-%             errorGradient = norm(E(qG(1,1),qG(2,1),qG(3,1),qG(4,1),qG(5,1),qG(6,1)));
+            errorGradient = norm(E(qG(1,1),qG(2,1),qG(3,1),qG(4,1),qG(5,1),qG(6,1)));
             q0=qN;
-            errnorm = errorNewton;
-%             if (det(Jval)<1e-2||abs(cos(q0(5,1)))<=1e-1) && errorNewton>errorGradient
-%                 q0=qG;
-%                 errnorm = errorGradient;
-%             end
+            det(Jval)
+            errnorm = errorNewton
+            if det(Jval)==0
+                q0=qG;
+                errnorm = errorGradient;
+            end
             % Stop Criteria
-            if errnorm<1e-5
+            if errnorm<1e-2
                 q0
                 msg = src.UserData.buildMessage(0,"Q",q0);
                 msg = src.UserData.buildMessage(msg,"FINISH",0);

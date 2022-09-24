@@ -2,7 +2,7 @@ function [gids,M]=gPlot(nodeList, A, Amid, Aint,mapImg,src,originalMap)
 saving=@(gcf)frame2im(getframe(gcf));
 f=figure('Visible','off');
 f.Position=[0,0,1024,1024];
-f.Units='points';
+f.Units='pixel';
 nodeList = nodeList(~ismember(nodeList,findobj(nodeList,'prop','y')));
 gids = [findobj(nodeList,'prop','g').id];
 % convert from ARGB_INT to RGB
@@ -13,10 +13,7 @@ hold on
 for i=1:size(A,1)
     % Disegno l'id del nodo
     nodeA = findobj(nodeList,'id',i);
-    if ~isempty(nodeA) && nodeA.prop=='g'
-        text(nodeA.bc(2),nodeA.bc(1),int2str(nodeA.id),...
-            'HorizontalAlignment','center');
-    end
+    
     for j=1:size(A,2)
         if A(i,j)~=0
             nodeB = findobj(nodeList,'id',j);
@@ -24,7 +21,7 @@ for i=1:size(A,1)
             nodeA_bc = nodeA.bc;
             nodeB_bc = nodeB.bc;
             plot([nodeA_bc(2) nodeB_bc(2)],[nodeA_bc(1),nodeB_bc(1)],...
-                'w','LineWidth',0.8);
+                'w','LineWidth',0.6);
             hold on
             % Disegno il punto di intersezione
             plot(Aint(i,j,2), Aint(i,j,1),'bo','MarkerSize',10);
@@ -33,6 +30,11 @@ for i=1:size(A,1)
             plot(Amid(i,j,2), Amid(i,j,1),'r*','MarkerSize',10)
             hold on
         end
+    end
+    if ~isempty(nodeA) && nodeA.prop=='g'
+        text(nodeA.bc(2),nodeA.bc(1),int2str(nodeA.id),...
+            'HorizontalAlignment','center','FontWeight','bold', ...
+            'FontSize',12);
     end
 end
 im = saving(gcf);

@@ -33,8 +33,8 @@ public class Main extends Application {
         Scene myScene = new Scene(wb);
         stage.setTitle("Robind Manipolator");
         stage.setScene(myScene);
-        stage.setWidth(1095);
-        stage.setHeight(801.5);
+        stage.setWidth(1094.5);
+        stage.setHeight(830.5);
         stage.setResizable(false);
         stage.show();
     }

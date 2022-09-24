@@ -17,10 +17,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelBuffer;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.WritableImage;
+import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -246,4 +243,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         return true;
     }
 
+    public WritableImage getMap() {
+        return this.imgAnimation;
+    }
 }

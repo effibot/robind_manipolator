@@ -21,10 +21,11 @@ public class Utils {
         double[][] col = new double[obsList.size()][];
         for(int i = 0;i<obsList.size();i++){
             Obstacle o = obsList.get(i);
-            double[] row = new double[3];
+            double[] row = new double[4];
             row[0] = o.getYc();
             row[1] = o.getXc();
             row[2] = o.getR();
+            row[3] = o.getH();
             col[i]=row;
         }
         return col;
