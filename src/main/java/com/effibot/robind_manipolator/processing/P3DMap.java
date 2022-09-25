@@ -2,6 +2,7 @@ package com.effibot.robind_manipolator.processing;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
 import javafx.beans.property.ListProperty;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import peasy.PeasyCam;
@@ -12,6 +13,7 @@ import processing.opengl.PJOGL;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -31,7 +33,7 @@ public class P3DMap extends ProcessingBase{
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
-    private final Reference frame;
+    private final Reference[] frame;
     private final RobotBean rb;
     private int qSelection = 0;// Joint selection (for interactive controls).
 
@@ -47,6 +49,7 @@ public class P3DMap extends ProcessingBase{
     private static final int plotHeight = 175;
     private static final int plotWidth = 220;
     private processing.core.PImage textureMap;
+    private double[] selectedShapePos;
 
     public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
         super();
@@ -54,7 +57,7 @@ public class P3DMap extends ProcessingBase{
         this.rb = rb;
         size = 1024;
         mapH = 20;
-        frame = new Reference(this);
+        frame = new Reference[]{new Reference(this), new Reference(this)};
         observers = new ArrayList<>();
         this.padding = 5;
         this.next = next;
@@ -105,8 +108,8 @@ public class P3DMap extends ProcessingBase{
             pushStyle();
             pushMatrix();
             switch (cameraIdx) {
-                case 0 -> draw3Dmap(setupScene(cameras[cameraIdx],cameraIdx));
-                case 1 -> draw3Drobot(setupScene(cameras[cameraIdx],cameraIdx));
+                case 0 -> draw3DMap(setupScene(cameras[cameraIdx],cameraIdx));
+                case 1 -> draw3DRobot(setupScene(cameras[cameraIdx],cameraIdx));
                 default -> LOGGER.warn("DRAW3DMAP/ROBOT not mapped");
             }
             popMatrix();
@@ -128,16 +131,22 @@ public class P3DMap extends ProcessingBase{
     int dy = 0;
     int dz = 0;
     private LinkedBlockingQueue<Float[]> symQueue;
-
+    private boolean showSpace = false;
+    private float[] qFinal;
     @Override
     public void setup() {
         super.setup();
-
-        r = new Robot(this,rb);
+        r = new Robot(this,rb,true);
         symQueue=setupSimulationQueue();
-        r1 = new Robot(this,rb);
-//        r1 = setup3DRobot();
-//        r1 = new Robot(this,rb,sequence,false);
+        // setup inverse kin vars
+        Double[] robotPos = rb.getqRover().get(rb.getqRover().size()-1);
+        double[] robotPosD = ArrayUtils.toPrimitive(robotPos);
+        selectedShapePos = rb.getSelectedShape();
+        targetPos_Rel = new float[]{(float) selectedShapePos[0] - (float) robotPosD[1], (float) selectedShapePos[1] - (float) robotPosD[0], 50};
+        r1 = new Robot(this,rb,false);
+        qFinal = r.inverseKinematics(targetPos_Rel[0], targetPos_Rel[1], targetPos_Rel[2],
+                rb.getRoll(), rb.getPitch(), rb.getYaw(), 1);
+        // continue the setup
         surface.setTitle("Mappa 3D");
         rectMode(CENTER);
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
@@ -229,6 +238,9 @@ public class P3DMap extends ProcessingBase{
             oscilloscope.setAllPlotVisible(true);
         }else if (key =='W'|| key == 'w'){
             oscilloscope.setAllPlotVisible(false);
+        }else if(key == 'F' || key == 'f'){
+//            setShowSpace(!showSpace);
+            setIK(!isIK);
         }
         println("""
                 [dx, dy, dz] = {%f, %d, %d}
@@ -300,7 +312,7 @@ public class P3DMap extends ProcessingBase{
     }
     double[][] dh;
 
-    public void draw3Dmap(PeasyCam cam) {
+    public void draw3DMap(PeasyCam cam) {
         int zeroH = -300;
         // scene objects
         pushMatrix();
@@ -320,7 +332,7 @@ public class P3DMap extends ProcessingBase{
         // elevate everything to the top of the floor
         translate(0, 0, mapH / 2.0f);
         // origin of R3
-        frame.show(true);
+        frame[0].show(true);
         stroke(0);
         strokeWeight(1);
         fill(100);
@@ -403,18 +415,48 @@ public class P3DMap extends ProcessingBase{
         Oscilloscope.drawOscilloscope();
         cam.endHUD();
     }
-    public void draw3Drobot(PeasyCam cam){
+    private boolean isIK = false;
+    private float[] targetPos_Rel;
+    private final float k = (float) 0.1;
+    public void draw3DRobot(PeasyCam cam){
         translate(0,0,-100);
-
-
+        frame[1].show(true);
+        if(isIK){
+            drawTarget();
+            System.out.println("qfinal:"+ Arrays.toString(qFinal));
+            r1.setDhTable(r1.qProp(qFinal,k));
+//            r1.setDhTable(qFinal);
+        }
         r1.drawLink();
-        int nPoints = 300;
+        r1.showSpace(showSpace);
+
         cam.beginHUD();
-
-
-
         cam.endHUD();
     }
+
+    private void drawTarget() {
+        pushMatrix();
+        // set reference frame
+        translate(targetPos_Rel[0],targetPos_Rel[1],targetPos_Rel[2]);
+        // draw sphere
+        stroke(255,0,0);
+        strokeWeight(2);
+        noFill();
+        sphere(Robot.getD()[5]);
+        noStroke();
+        // draw reference
+        makeOrient();
+//        frame[1].setOrigin((float) selectedShapePos[0]-512,(float) selectedShapePos[1],50);
+        frame[1].show(true);
+        popMatrix();
+    }
+
+    private void makeOrient() {
+        rotateZ(rb.getRoll());
+        rotateY(rb.getPitch());
+        rotateX(rb.getYaw());
+    }
+
     public void setGLGraphicsViewport(int x, int y, int w, int h) {
         PGraphics3D pg = (PGraphics3D) this.g;
         PJOGL pgl = (PJOGL) pg.beginPGL();
@@ -438,6 +480,20 @@ public class P3DMap extends ProcessingBase{
 
     }
 
+    public boolean isShowSpace() {
+        return showSpace;
+    }
 
+    public void setShowSpace(boolean showSpace) {
+        this.showSpace = showSpace;
+    }
+
+    public boolean isIK() {
+        return isIK;
+    }
+
+    public void setIK(boolean IK) {
+        isIK = IK;
+    }
 
 }

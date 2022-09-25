@@ -13,7 +13,6 @@ module com.effibot.robind_manipolator {
     requires org.slf4j;
     requires com.jfoenix;
     requires org.kordamp.ikonli.javafx;
-    requires grafica;
     requires javafx.swing;
 
     opens com.effibot.robind_manipolator ;

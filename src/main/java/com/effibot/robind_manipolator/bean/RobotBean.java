@@ -26,6 +26,11 @@ import java.util.List;
 import static processing.core.PConstants.PI;
 
 public class RobotBean implements Serializable {
+    private double[] selectedShape;
+    private double roll;
+    private double pitch;
+    private double yaw;
+
     private static int MAXPOINT=0;
     public double[][] getShapePos() {
         return shapePos;
@@ -224,4 +229,28 @@ public class RobotBean implements Serializable {
 
 
 
+
+    public void setSelectedShape(double[] shapeToPos) {
+        this.selectedShape = shapeToPos;
+    }
+
+    public double[] getSelectedShape() {
+        return selectedShape;
+    }
+
+    public void setSelectedOrient(double roll, double pitch, double yaw) {
+        this.roll = roll;
+        this.pitch = pitch;
+        this.yaw = yaw;
+    }
+
+    public float getRoll() {
+        return (float) this.roll;
+    }
+    public float getPitch() {
+        return (float) this.pitch;
+    }
+    public float getYaw() {
+        return (float) this.yaw;
+    }
 }

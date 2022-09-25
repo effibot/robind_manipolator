@@ -39,6 +39,7 @@ public class SettingBean implements Serializable {
     private  byte[] animation;
     private ArrayList<double[]> shapeIdList;
     private boolean finish = false;
+    private double[] selectedShapePos;
 
     public void addPropertyChangeListener(PropertyChangeListener l) {
         changes.addPropertyChangeListener(l);
@@ -135,8 +136,8 @@ public class SettingBean implements Serializable {
             case "Cubo" -> select=2;
             default -> LOGGER.warn("ShapeToPos shape not found");
         }
-
-        return new double[]{getShapeList()[select][1],getShapeList()[select][2]};
+        this.selectedShapePos = new double[]{getShapeList()[select][1],getShapeList()[select][2]};
+        return this.selectedShapePos;
     }
 
     public String getSelectedMethod() {

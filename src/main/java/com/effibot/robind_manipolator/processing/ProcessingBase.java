@@ -15,6 +15,7 @@ public abstract class ProcessingBase extends PApplet implements Subject{
 
     @Override
     public void setup() {
+        sphereDetail(15);
     }
     @Override
     public abstract void draw();

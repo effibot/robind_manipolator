@@ -1,5 +1,5 @@
 import peasy.*;
-
+import java.io.*;
  private final int NX = 1;
     private final int NY = 1;
     private final int bgColor = color(51,102,102);
@@ -13,8 +13,33 @@ void settings() {
         pixelDensity(1);
         smooth(8);
     }
+ArrayList<Float[]> coords;
+ArrayList<Float[]> convert(String file){
+   // Creating an object of BufferedReader class
+   ArrayList<Float[]> list = new ArrayList<>();
+        //try(BufferedReader br = new BufferedReader(new FileReader(file))){          
+          String[] st = loadStrings(file);
+          //while ((st = br.readLine()) != null){
+            for(int j = 0; j<st.length;j++){
+                 String[] result =st[j].split(",");
+                 Float[] bc = new Float[3];
+                  for(int i = 0; i< result.length; i++){
+                     bc[i] = Float.valueOf(result[i]); 
+                   }
+                 
+                    list.add(bc);
+          }
+        //} catch(Exception e){
+          //e.printStackTrace();
+      //}
+      return list;
+}
 void setup(){
+    sphereDetail(15);
+
   //size(1000,1000,P3D);
+  String file = "file.txt";
+  coords = convert(file);
   rectMode(CENTER);
         r = new Robot();
         //setGradient(0, 0, width, height, c1, c2, Y_AXIS);
@@ -78,6 +103,7 @@ public PeasyCam setupScene(PeasyCam cam,int id) {
     }
     float th = 0;
 void draw(){
+  frameRate(100);
    setGLGraphicsViewport(0, 0, width, height);
         background(153,204,153);
         // Aggiungo degli effetti di luce direzionale
@@ -213,9 +239,20 @@ public void draw3Drobot(PeasyCam cam){
         popMatrix();
         noStroke();                
         //translate(0,0,-32);
-          r.setDhTable(r.inverseKinematics(px,py,pz,roll,pitch,yaw,elbow));
-
+        Float[] val = coords.get(dx+67);
+          r.setDhTable(r.inverseKinematics(val[0],val[1],val[2],roll,pitch,yaw,elbow));
+          
         pushMatrix();
+        for(int i = 0; i < coords.size(); i++){
+          pushMatrix();
+          Float[] bc = coords.get(i);
+          translate(bc[0],bc[1],bc[2]);
+       stroke(255,50);
+        strokeWeight(1);
+        noFill();
+          sphere(12);
+          popMatrix();
+        }
          r.drawLink();
          //show(0,0,0,true);
          

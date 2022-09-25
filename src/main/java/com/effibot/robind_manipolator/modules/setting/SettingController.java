@@ -133,6 +133,7 @@ public class SettingController {
         pkt.put("PROC", "PATH");
         pkt.put("START", sb.getSelectedId());
         pkt.put("END", sb.shapeToPos());
+        rb.setSelectedShape(sb.shapeToPos());
         pkt.put("METHOD", sb.getSelectedMethod());
         notifyPropertyChange("SEND", null, pkt);
         notifyPropertyChange("RECEIVE", false, true);
@@ -174,7 +175,7 @@ public class SettingController {
             sb.setRoll(((DoubleField)controlForm.getFields().get(3)).getValue());
             sb.setPitch(((DoubleField)controlForm.getFields().get(4)).getValue());
             sb.setYaw(((DoubleField)controlForm.getFields().get(5)).getValue());
-
+            rb.setSelectedOrient(sb.getRoll(),sb.getPitch(),sb.getYaw());
 //            rb.stateProperty().addListener(evt -> {
 //                switch ( rb.getState()){
 //                    case 1-> {

@@ -150,10 +150,12 @@ public class Robot {
         shape(this.getShapeList().get(5));
         popMatrix();
         stroke(0);
-        strokeWeight(1);
+        strokeWeight(0.5);
         //sphere(abs(a2 - d4));
+        noFill();
         sphere(d6);
-        noStroke();stroke(0);
+        noStroke();
+        stroke(0);
         strokeWeight(1);
         //sphere(abs(a2 - d4));
         //sphere(d6);
