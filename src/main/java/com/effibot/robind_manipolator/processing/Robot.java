@@ -57,15 +57,12 @@ public class Robot {
     private Vector<Vector<Float>> dhTable = new Vector<>();
     // Model storage
     private final ArrayList<PShape> shapeList = new ArrayList<>();
-    // Frame storage
-    private ArrayList<Reference> referenceList = new ArrayList<>();
 
     // Processing reference
     private final ProcessingBase p3d;
     private final ArrayList<Float[]> coords;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Robot.class.getName());
-    private final boolean toBind;
     // joint binding
     private final ListProperty<Float> qJoint = new SimpleListProperty<>(FXCollections.observableArrayList(
             Arrays.asList(
@@ -75,7 +72,6 @@ public class Robot {
     ));
 
     public Robot(ProcessingBase p3d, RobotBean rb, boolean toBind) {
-        this.toBind = toBind;
         this.p3d = p3d;
         this.shapeList.add(loadLink(0));
         this.rb = rb;
@@ -223,8 +219,8 @@ public class Robot {
         dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
         shapeList.get(6).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
-//        zeroFrame = new Reference(p3d,new PVector(0,0,0));
-//        zeroFrame.show(true);
+        Reference zeroFrame = new Reference(p3d, new PVector(0, 0, 0));
+        zeroFrame.show(true);
         //show(0,0,0,true);
         p3d.translate(0, 0, -13);
         p3d.shape(shapeList.get(6));
@@ -322,7 +318,6 @@ public class Robot {
         RealMatrix Q03 = MatrixUtils.createRealMatrix(dhValue);
         RealMatrix R03T = Q03.getSubMatrix(0, 2, 0, 2).transpose();
         RealMatrix R = R03T.multiply(RDes);
-//        printR(R);
         // q[5]
         float c5 = (float) R.getEntry(2, 2);
         float s5 = (float) (elbow * sqrt(1 - pow(c5, 2)));

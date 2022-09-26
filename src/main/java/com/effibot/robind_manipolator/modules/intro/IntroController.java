@@ -185,13 +185,13 @@ public class IntroController {
     }
 
     public void setOnHoverInfo(ToolbarItem toolbarItem) {
-        toolbarItem.setOnClick(evt->{
+        toolbarItem.setOnClick(evt->
             wb.showInformationDialog(
                     "Wiki "+introModule.getName(),
                     WIKICONTENT,
                     buttonType ->{}
-            );
-        });
+            )
+        );
 
     }
 }

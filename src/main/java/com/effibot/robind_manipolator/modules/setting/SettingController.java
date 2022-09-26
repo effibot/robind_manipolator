@@ -42,6 +42,7 @@ public class SettingController {
     private final SettingBean sb;
     private final SettingModule sm;
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
+    private static final String RECEIVE = "RECEIVE";
     private final Workbench wb;
     private RobotBean rb;
     TCPFacade tcp = TCPFacade.getInstance();
@@ -119,7 +120,8 @@ public class SettingController {
             try {
                 ImageIO.write(SwingFXUtils.fromFXImage(sm.getMap(),null),"png",fl);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                LOGGER.error("Unable to make Texture",e);
+                Thread.currentThread().interrupt();
             }
             t = getNew2DThread();
             t.start();
@@ -136,7 +138,7 @@ public class SettingController {
         rb.setSelectedShape(sb.shapeToPos());
         pkt.put("METHOD", sb.getSelectedMethod());
         notifyPropertyChange("SEND", null, pkt);
-        notifyPropertyChange("RECEIVE", false, true);
+        notifyPropertyChange(RECEIVE, false, true);
         boolean finish = false;
         while (!finish) {
             // set green id
@@ -176,16 +178,6 @@ public class SettingController {
             sb.setPitch(((DoubleField)controlForm.getFields().get(4)).getValue());
             sb.setYaw(((DoubleField)controlForm.getFields().get(5)).getValue());
             rb.setSelectedOrient(sb.getRoll(),sb.getPitch(),sb.getYaw());
-//            rb.stateProperty().addListener(evt -> {
-//                switch ( rb.getState()){
-//                    case 1-> {
-//                        inverseKinematics();
-//                    }
-//                    case 0->{}
-//                    default-> LOGGER.warn("Statw Processing not mapped");
-//                }
-//            });
-
             Thread simulationThread = makeSimulation();
             simulationThread.start();
             try {
@@ -198,7 +190,8 @@ public class SettingController {
                 inverseThread.start();
 //                next[1].acquire();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                LOGGER.error("Interruption",e);
+                Thread.currentThread().interrupt();
             }
 
 
@@ -211,32 +204,27 @@ public class SettingController {
         return new Thread(()->{
             try {
                 sequence[0].acquire();
-//                next[0].acquire();
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
                 pkt.put("M",20);
                 pkt.put("ALPHA",300);
                 notifyPropertyChange("SEND", null, pkt);
-                notifyPropertyChange("RECEIVE", false, true);
+                notifyPropertyChange(RECEIVE, false, true);
                 boolean finish = false;
                 while (!finish) {
                     // set green id
                     pkt = queue.take();
                     String key = (String) (pkt.keySet().toArray())[0];
                     LOGGER.info("Getting Rover Infos:");
-                    switch (key) {
-                        case "ROVER" ->{
-                            rb.setRoverPos((double[][]) pkt.get("Qs"));
-//                            next[1].release();
-                            LOGGER.info("rover pos setted");
-                            rb.setRoverVel((double[][]) pkt.get("dQs"));
-                            rb.setRoverAcc((double[][]) pkt.get("ddQs"));
-                            rb.setError((double[][]) pkt.get("E"));
-                        }
-                        default -> {
-                            finish = true;
-                        }
+                    if ("ROVER".equals(key)) {
+                        rb.setRoverPos((double[][]) pkt.get("Qs"));
+                        LOGGER.info("rover pos setted");
+                        rb.setRoverVel((double[][]) pkt.get("dQs"));
+                        rb.setRoverAcc((double[][]) pkt.get("ddQs"));
+                        rb.setError((double[][]) pkt.get("E"));
+                    } else {
+                        finish = true;
                     }
                 }
 
@@ -260,7 +248,7 @@ public class SettingController {
                 pkt.put("PITCH",sb.getPitch());
                 pkt.put("YAW",sb.getYaw());
                 notifyPropertyChange("SEND", null, pkt);
-                notifyPropertyChange("RECEIVE", false, true);
+                notifyPropertyChange(RECEIVE, false, true);
                 boolean finish = false;
                 while (!finish) {
                     // set green id
@@ -279,7 +267,7 @@ public class SettingController {
                             );
                             rb.setQ(qJoint);
                         }
-                        case "E"->{}
+                        case "ENEWTON"->{}
                         case "FINISH"->finish = true;
                         default -> LOGGER.warn("IK not mapped case:{}",key);
                     }

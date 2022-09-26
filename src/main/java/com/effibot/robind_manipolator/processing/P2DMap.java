@@ -79,7 +79,7 @@ public class P2DMap extends ProcessingBase {
         noFill();
         popMatrix();
     }
-
+    @Override
     public void mouseClicked() {
         int targetX = 2 * (mouseX - padding);
         int targetY = 2 * (mouseY - padding);

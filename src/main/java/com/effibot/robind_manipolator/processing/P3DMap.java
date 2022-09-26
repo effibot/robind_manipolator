@@ -29,7 +29,7 @@ public class P3DMap extends ProcessingBase{
     private final Semaphore[] next;
     private static final float SHAPEDIAMETER = 40;
 
-    private final ArrayList< processing.core.PShape> PshapeList = new ArrayList<>();
+    private final ArrayList< processing.core.PShape> pShapeArrayList = new ArrayList<>();
 
     private Robot r;
     private final PeasyCam[] cameras = new PeasyCam[NX * NY];
@@ -42,14 +42,12 @@ public class P3DMap extends ProcessingBase{
 
     private Robot r1;
     private Float[] symPos = new Float[]{0f,0f};
-    private boolean symEnd = false;
-    private boolean inkEnd = false;
-    private static final int leftMargin = 2;
-    private static final int upMargin =2;
-    private static final int plotHeight = 175;
-    private static final int plotWidth = 220;
+
+    private static final int LEFT_MARGIN = 2;
+    private static final int UP_MARGIN =2;
+    private static final int PLOT_HEIGHT = 175;
+    private static final int PLOT_WIDTH = 220;
     private processing.core.PImage textureMap;
-    private double[] selectedShapePos;
 
     public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
         super();
@@ -141,10 +139,10 @@ public class P3DMap extends ProcessingBase{
         // setup inverse kin vars
         Double[] robotPos = rb.getqRover().get(rb.getqRover().size()-1);
         double[] robotPosD = ArrayUtils.toPrimitive(robotPos);
-        selectedShapePos = rb.getSelectedShape();
-        targetPos_Rel = new float[]{(float) selectedShapePos[0] - (float) robotPosD[1], (float) selectedShapePos[1] - (float) robotPosD[0], 50};
+        double[] selectedShapePos = rb.getSelectedShape();
+        targetPosRel = new float[]{(float) selectedShapePos[0] - (float) robotPosD[1], (float) selectedShapePos[1] - (float) robotPosD[0], 50};
         r1 = new Robot(this,rb,false);
-        qFinal = r.inverseKinematics(targetPos_Rel[0], targetPos_Rel[1], targetPos_Rel[2],
+        qFinal = r.inverseKinematics(targetPosRel[0], targetPosRel[1], targetPosRel[2],
                 rb.getRoll(), rb.getPitch(), rb.getYaw(), 1);
         // continue the setup
         surface.setTitle("Mappa 3D");
@@ -172,9 +170,9 @@ public class P3DMap extends ProcessingBase{
                 cameras[id].setViewport(cx, cy, cw, ch); // this is the key of this whole demo
             }
         }
-        PshapeList.add(sphereShape());
-        PshapeList.add(coneShape());
-        PshapeList.add(cubeShape());
+        pShapeArrayList.add(sphereShape());
+        pShapeArrayList.add(coneShape());
+        pShapeArrayList.add(cubeShape());
         initializeRoverPlot();
         File file = new File("src/main/resources/com/effibot/robind_manipolator/img/textureImg.png");
         String filepath = file.getAbsolutePath();
@@ -185,12 +183,12 @@ public class P3DMap extends ProcessingBase{
 
     public void initializeRoverPlot(){
         // Rover Plots
-        oscilloscope.addPlot("X",leftMargin,upMargin,plotWidth,plotHeight);
-        oscilloscope.addPlot("Y",leftMargin,2*upMargin+plotHeight,plotWidth,plotHeight);
-        oscilloscope.addPlot("VX",2*leftMargin+plotWidth,upMargin,plotWidth,plotHeight);
-        oscilloscope.addPlot("VY",2*leftMargin+plotWidth,2*upMargin+plotHeight,plotWidth,plotHeight);
-        oscilloscope.addPlot("AX",3*leftMargin+2*plotWidth,upMargin,plotWidth,plotHeight);
-        oscilloscope.addPlot("AY",3*leftMargin+2*plotWidth,2*upMargin+plotHeight,plotWidth,plotHeight);
+        oscilloscope.addPlot("X", LEFT_MARGIN, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        oscilloscope.addPlot("Y", LEFT_MARGIN,2* UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
+        oscilloscope.addPlot("VX",2* LEFT_MARGIN + PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        oscilloscope.addPlot("VY",2* LEFT_MARGIN + PLOT_WIDTH,2* UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
+        oscilloscope.addPlot("AX",3* LEFT_MARGIN +2* PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        oscilloscope.addPlot("AY",3* LEFT_MARGIN +2* PLOT_WIDTH,2* UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
     }
 
     private LinkedBlockingQueue<Float[]> setupSimulationQueue() {
@@ -319,7 +317,7 @@ public class P3DMap extends ProcessingBase{
         translate(0, 0, zeroH);  // translate to a nicer vertical position
         rotateY(PI/2);
         // draw the floor
-        fill(200);
+        fill(207, 216, 220);
         box(size, size, mapH);
         translate(0,0,mapH/2f);
         beginShape();
@@ -346,7 +344,7 @@ public class P3DMap extends ProcessingBase{
 
                 pushMatrix();
                 translate(0, 0, (float)rb.getShapePos()[0][3]);
-                pShape = PshapeList.get(0);
+                pShape = pShapeArrayList.get(0);
                 pShape.setFill(shapeColor[0]);
                 shape(pShape);
                 popMatrix();
@@ -355,8 +353,8 @@ public class P3DMap extends ProcessingBase{
                 fill(224, 224, 224);
 
                 pushMatrix();
-                translate(0, 0, (float)rb.getShapePos()[1][3]-SHAPEDIAMETER/2+1-mapH/2f);
-                pShape = PshapeList.get(1);
+                translate(0, 0, (float)rb.getShapePos()[1][3]-SHAPEDIAMETER/2-mapH/2f);
+                pShape = pShapeArrayList.get(1);
                 pShape.setFill(shapeColor[1]);
                 shape(pShape);
                 popMatrix();
@@ -365,8 +363,8 @@ public class P3DMap extends ProcessingBase{
                 fill(224, 224, 224);
 
                 pushMatrix();
-                translate(0, 0, (float)rb.getShapePos()[2][3]+1-mapH/2f);
-                pShape = PshapeList.get(2);
+                translate(0, 0, (float)rb.getShapePos()[2][3]-mapH/2f);
+                pShape = pShapeArrayList.get(2);
                 pShape.setFill(shapeColor[2]);
                 shape(pShape);
                 popMatrix();
@@ -416,15 +414,16 @@ public class P3DMap extends ProcessingBase{
         cam.endHUD();
     }
     private boolean isIK = false;
-    private float[] targetPos_Rel;
-    private final float k = (float) 0.1;
+    private float[] targetPosRel;
+
     public void draw3DRobot(PeasyCam cam){
         translate(0,0,-100);
         frame[1].show(true);
         if(isIK){
             drawTarget();
             System.out.println("qfinal:"+ Arrays.toString(qFinal));
-            r1.setDhTable(r1.qProp(qFinal,k));
+            float k = (float) 0.1;
+            r1.setDhTable(r1.qProp(qFinal, k));
 //            r1.setDhTable(qFinal);
         }
         r1.drawLink();
@@ -437,7 +436,7 @@ public class P3DMap extends ProcessingBase{
     private void drawTarget() {
         pushMatrix();
         // set reference frame
-        translate(targetPos_Rel[0],targetPos_Rel[1],targetPos_Rel[2]);
+        translate(targetPosRel[0], targetPosRel[1], targetPosRel[2]);
         // draw sphere
         stroke(255,0,0);
         strokeWeight(2);
@@ -465,7 +464,6 @@ public class P3DMap extends ProcessingBase{
         pgl.scissor(x, y, w, h);
         pgl.viewport(x, y, w, h);
     }
-    private float time = 0.0f;
     public void simulinkModel(){
         try {
 
