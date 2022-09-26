@@ -9,6 +9,7 @@ import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.Utils;
 import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
+import com.effibot.robind_manipolator.bean.VisionBean;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
@@ -71,12 +72,13 @@ public class SettingController {
     }
 
     private Thread t;
-
+    private final VisionBean vb;
     public SettingController(SettingModule sm, SettingBean sb, RobotBean robotBean, Workbench wb) {
         this.sm = sm;
         this.sb = sb;
         this.rb = robotBean;
         this.wb = wb;
+        this.vb = new VisionBean();
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
     }
@@ -188,15 +190,13 @@ public class SettingController {
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
                 inverseThread.start();
-//                next[1].acquire();
+                next[1].acquire();
+                Thread visionThread = vision();
+                visionThread.start();
             } catch (InterruptedException e) {
                 LOGGER.error("Interruption",e);
                 Thread.currentThread().interrupt();
             }
-
-
-
-
         });
     }
 
@@ -277,11 +277,41 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally IK");
-
+                next[1].release();
             }
         });
     }
-
+    private Thread vision(){
+        return new Thread(()->{
+            // make new packet
+            try {
+                LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
+                pkt.put("PROC","VIS");
+                pkt.put("SHAPE",sb.shapeToID());
+                notifyPropertyChange("SEND", null, pkt);
+                notifyPropertyChange(RECEIVE, false, true);
+                boolean finish = false;
+                while (!finish) {
+                    pkt = queue.take();
+                    String key = (String) (pkt.keySet().toArray())[0];
+                    switch (key) {
+                        case "AREA" -> vb.setObjArea((double) pkt.get(key));
+                        case "PERIM" -> vb.setObjPerim((double) pkt.get(key));
+                        case "FORMA" -> vb.setObjShape((String) pkt.get(key));
+                        case "ORIENT" -> vb.setObjOrient((double) pkt.get(key));
+                        case "BW" -> vb.setObjImage((byte[]) pkt.get(key));
+                        case "FINISH" -> finish = true;
+                        default -> LOGGER.warn("{} key isn't mapped", key);
+                    }
+                }
+            } catch (InterruptedException e){
+                LOGGER.error("Inverse Kinemetics acquire error", e);
+                Thread.currentThread().interrupt();
+            } finally {
+                sequence[0].release();
+            }
+        });
+    }
     public void setOnHoverInfo(ToolbarItem toolbarItem) {
         toolbarItem.setOnClick(evt->
             wb.showInformationDialog(

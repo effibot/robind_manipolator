@@ -129,6 +129,11 @@ public class SettingBean implements Serializable {
     }
 
     public double[] shapeToPos(){
+        int select = shapeToID();
+        this.selectedShapePos = new double[]{getShapeList()[select][1],getShapeList()[select][2]};
+        return this.selectedShapePos;
+    }
+    public int shapeToID(){
         int select = -1;
         switch(getSelectedShape()){
             case "Sfera"-> select=0;
@@ -136,8 +141,7 @@ public class SettingBean implements Serializable {
             case "Cubo" -> select=2;
             default -> LOGGER.warn("ShapeToPos shape not found");
         }
-        this.selectedShapePos = new double[]{getShapeList()[select][1],getShapeList()[select][2]};
-        return this.selectedShapePos;
+        return select;
     }
 
     public String getSelectedMethod() {
