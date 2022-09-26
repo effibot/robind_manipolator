@@ -17,12 +17,13 @@ import java.io.File;
 import java.util.*;
 
 import static java.lang.Math.*;
+import static processing.core.PApplet.radians;
 import static processing.core.PConstants.PI;
 
 public class Robot {
     private final RobotBean rb;
     // Theta
-    private float[] q = new float[]{0, -PI / 2, PI / 2, 0, PI/2f, 0};
+    private float[] q = new float[]{0, -PI / 2, PI / 2, 0, 0, 0};
     // d
     private static final float D_1 = 33.0f;
     private static final float D_2 = 0.0f;
@@ -243,7 +244,7 @@ public class Robot {
         int id = 0;
         for (float qi : joints) {
             this.setJoint(id, qi);
-            q[id] = qi;
+            this.q[id] = qi;
             id += 1;
         }
     }
@@ -271,16 +272,19 @@ public class Robot {
 
 
     public float[] inverseKinematics(float xdes, float ydes, float zdes, float roll, float pitch, float yaw, int elbow) {
-
+        float phi = radians(roll);
+        float theta = radians(pitch);
+        float psi = radians(yaw);
+        int[] sol = RobotUtils.ELBOW[elbow];
         /* inversa di posizione */
-        RealMatrix RDes = RobotUtils.rotZYX(roll,pitch,yaw);
+        RealMatrix RDes = RobotUtils.rotZYX(phi, theta, psi);
 //        RealVector d1 = MatrixUtils.createRealVector(new double[]{});
         // posizione del polso
-        float xh = (float) (xdes - D_6 * (sin(roll*sin(yaw)+cos(roll)*sin(pitch)*cos(yaw))));
-        float yh = (float) (ydes - D_6 * (sin(roll) * sin(pitch)*cos(yaw)-cos(roll)*sin(yaw)));
-        float zh = (float) (zdes - D_6 * cos(pitch)*cos(yaw));
+        float xh = (float) (xdes - D_6 * (sin(phi)*sin(psi)+cos(phi)*sin(theta)*cos(psi)));
+        float yh = (float) (ydes - D_6 * (sin(phi) * sin(theta)*cos(psi)-cos(phi)*sin(psi)));
+        float zh = (float) (zdes - D_6 * cos(theta)*cos(psi));
         // setups for next calculations
-        float b2 = (float) (-elbow * sqrt(pow(xh, 2) + pow(yh, 2)));
+        float b2 = (float) (- sol[1] * sqrt(pow(xh, 2) + pow(yh, 2)));
         float b1 = D_1 - zh;
 
         // sin(q[3])
@@ -288,9 +292,9 @@ public class Robot {
         float ns3 = (float) (pow(b1, 2) + pow(yh, 2) + pow(xh, 2) - pow(A_2, 2) - pow(D_4, 2));
         float s3 = (ns3) / ds3;
         // cos(q[3])
-        float c3 = (float) (elbow * sqrt(1 - pow(s3, 2)));
+        float c3 = (float) ( sol[2] * sqrt(1 - pow(s3, 2)));
         // q[3]
-        float q3 = (float) atan2((s3), (c3));
+        float q3 = (float) atan2(s3,c3);
         // setups for next calculations
         float A11 = -D_4 * c3;
         float A12 = A_2 + D_4 * s3;
@@ -307,33 +311,46 @@ public class Robot {
         // sin(q[1])
         float s1 = yh / k;
         // q[1]
-        float q1 = (float) atan2((s1), (c1));
+        float q1 = (float) atan2(s1,c1);
         /* inversa di orientamento */
         // Setup for next calculations
         Vector<Vector<Float>> dh03 = new Vector<>();
         dh03.add(getDhTable().get(0));
+        dh03.get(0).set(0,q1);
         dh03.add(getDhTable().get(1));
+        dh03.get(1).set(0,q2);
         dh03.add(getDhTable().get(2));
+        dh03.get(2).set(0,q3);
+
         double[][] dhValue = RobotUtils.dhValue(dh03);
         RealMatrix Q03 = MatrixUtils.createRealMatrix(dhValue);
         RealMatrix R03T = Q03.getSubMatrix(0, 2, 0, 2).transpose();
         RealMatrix R = R03T.multiply(RDes);
         // q[5]
         float c5 = (float) R.getEntry(2, 2);
-        float s5 = (float) (elbow * sqrt(1 - pow(c5, 2)));
+//        float s5 = (float)   R.getEntry(2,0);
+        float s5 = (float) (sol[4] * sqrt(1 - pow(c5, 2)));
+//        float c5 = (float) (elbow * sqrt(1 - pow(s5, 2)));
         float q5 = (float) atan2(s5, c5);
         // q[4]
         float c4 = (float) R.getEntry(0, 2) / s5;
         float s4 = (float) R.getEntry(1, 2) / s5;
+//        float c4 = (float) R.getEntry(0,0) /c5;
+//        float s4 = (float) R.getEntry(1,0) /c5;
         float q4 = (float) atan2(s4, c4);
         // q[6]
-        float c6 = (float) -R.getEntry(2, 0) / s5;
+        float c6 = (float) - R.getEntry(2, 0) / s5;
         float s6 = (float) R.getEntry(2, 1) / s5;
+//        float c6 = (float) R.getEntry(2, 2) / c5;
+//        float s6 = (float) R.getEntry(2, 1) / c5;
         float q6 = (float) atan2(s6, c6);
+
         return new float[]{q1, q2, q3, q4, q5, q6};
     }
-
-
+//    public float[] inverseKinematics(float xdes, float ydes, float zdes, float roll, float pitch, float yaw, int elbow) {
+//        float q3 =
+//        return new float[]{q1, q2, q3, q4, q5, q6};
+//    }
     public boolean isOpSpace() {
         return opSpace;
     }
@@ -396,24 +413,15 @@ public class Robot {
         float[] qNew = this.q;
 
         for (int i = 0; i < 6; i++) {
-            float diff = qRef[i] - this.q[i];
+            float diff = qRef[i] - qNew[i];
             if (abs(diff) != 0) {
-                qNew[i] = k * (diff);
+                qNew[i] = qNew[i] + k * (diff);
             }
         }
         return qNew;
-//        float q_mod;
-//        q_mod = atan2(s, c) + 2*PI*nPis[solSel][index];
-//        if (abs(q_mod + 2*PI - qrs[index]) < abs(q_mod - qrs[index])) {
-//            q_mod = q_mod + 2*PI;
-//            nPis[solSel][index] += 1;
-//        } else {
-//            if (abs(q_mod - 2*PI - qrs[index]) < abs(q_mod - qrs[index])) {
-//                q_mod = q_mod - 2*PI;
-//                nPis[solSel][index] -= 1;
-//            }
-//        }
-//        return q_mod;
+    }
 
+    public float[] getQ() {
+        return q;
     }
 }

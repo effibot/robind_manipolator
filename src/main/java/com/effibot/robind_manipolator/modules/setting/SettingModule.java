@@ -111,7 +111,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
                 .label("Yaw").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
-        controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, yawField, pitchField));
+        controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, pitchField, yawField));
         settingController.setControlForm(controlForm);
         return new FormRenderer(controlForm);
     }

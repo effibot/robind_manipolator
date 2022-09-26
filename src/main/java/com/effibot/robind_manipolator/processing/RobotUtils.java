@@ -13,6 +13,18 @@ import static java.lang.Math.sin;
 
 public class RobotUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(RobotUtils.class);
+    public static final int[][] ELBOW = {
+            {1,1,1,1,1,1},
+            {1,1,1,1,-1,1},
+            {1,-1,1,1,1,1},
+            {1,-1,1,1,-1,1},
+            {1,1,-1,1,1,1},
+            {1,1,-1,1,-1,1},
+            {1,-1,-1,1,1,1},
+            {1,-1,-1,1,-1,1}
+
+    };
+
     public static void printR(RealMatrix realMatrix) {
         LOGGER.info("\n[{},{},{}]\n[{},{},{}]\n[{},{},{}]",
                 realMatrix.getEntry(0, 0), realMatrix.getEntry(0, 1), realMatrix.getEntry(0, 2),
@@ -76,9 +88,9 @@ public class RobotUtils {
         return value;
     }
     public static RealMatrix rotZYX(float roll, float pitch, float yaw) {
-        RealMatrix rx = MatrixUtils.createRealMatrix(rotateXm(roll));
+        RealMatrix rx = MatrixUtils.createRealMatrix(rotateXm(yaw));
         RealMatrix ry = MatrixUtils.createRealMatrix(rotateYm(pitch));
-        RealMatrix rz = MatrixUtils.createRealMatrix(rotateZm(yaw));
+        RealMatrix rz = MatrixUtils.createRealMatrix(rotateZm(roll));
         return rz.multiply(ry).multiply(rx);
     }
 
