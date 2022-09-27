@@ -19,13 +19,13 @@ public class Robot {
     private float[] q = new float[]{0, -PI / 2, PI / 2, 0, 0, 0};
     //private float[] q = new float[]{-2.4004,2.1881,-3.1451,-23.9823,1.2456,26.1715};
     // d
-    private final float d1 = 33.0f;
-    private final float d2 = 0.0f;
-    private final float d3 = 0.0f;
-    private final float d4 = 51.0f;
-    private final float d5 = 0.0f;
-    private final float d6 = 12.0f;
-    private final float[] d = new float[]{d1, d2, d3, d4, d5, d6};
+    private final float D_1 = 33.0f;
+    private final float D_2 = 0.0f;
+    private final float D_3 = 0.0f;
+    private final float D_4 = 51.0f;
+    private final float D_5 = 0.0f;
+    private final float D_6 = 12.0f;
+    private final float[] d = new float[]{D_1, D_2, D_3, D_4, D_5, D_6};
     // Alpha
     private final float alpha1 = -PI / 2;
     private final float alpha2 = 0.0f;
@@ -153,7 +153,7 @@ public class Robot {
         strokeWeight(0.5);
         //sphere(abs(a2 - d4));
         noFill();
-        sphere(d6);
+        sphere(D_6);
         noStroke();
         stroke(0);
         strokeWeight(1);
@@ -217,16 +217,18 @@ public class Robot {
         /* inversa di po
         sizione */
         // posizione del polso
-        float xh = xdes - d6 * cos(roll) * sin(pitch);
-        float yh = (ydes - d6 * sin(roll) * sin(pitch));
-        float zh = zdes - d6 * cos(pitch);
+
+
+        float xh = (float) (xdes - D_6 * (sin(roll*sin(yaw)+cos(roll)*sin(pitch)*cos(yaw))));
+        float yh = (float) (ydes - D_6 * (sin(roll) * sin(pitch)*cos(yaw)-cos(roll)*sin(yaw)));
+        float zh = (float) (zdes - D_6 * cos(pitch)*cos(yaw));
         // setups for next calculations
         float B2 = -elbow * sqrt(pow(xh,2) + pow(yh,2));
-        float B1 = d1 - zh;
+        float B1 = D_1 - zh;
         
         // sin(q[3])
-        float ds3 = 2 * a2 * d4;
-        float ns3 = pow(B1,2) + pow(yh,2) + pow(xh,2) - pow(a2,2) - pow(d4,2);
+        float ds3 = 2 * a2 * D_4;
+        float ns3 = pow(B1,2) + pow(yh,2) + pow(xh,2) - pow(a2,2) - pow(D_4,2);
         float s3 = (ns3) / ds3;
         // cos(q[3])
         float c3 = elbow * sqrt(1 - pow(s3,2));
@@ -245,8 +247,8 @@ public class Robot {
         //float s2 = (d1*a2-a2*zh-d4*zh*s3+d1*d4*s3+d4*c3*B2)/( pow(a2,2)+2*s3*a2*a4+pow(d4,2));
         //// q[2]
         //float q2 = atan2((s2),(c2));
-        float A11 = -d4 * c3;
-        float A12 = a2 + d4 * s3;
+        float A11 = -D_4 * c3;
+        float A12 = a2 + D_4 * s3;
         float A21 = -A12;
         float A22 = A11;
         float det = A11 * A22 - A12 * A21;
@@ -255,7 +257,7 @@ public class Robot {
         float q2 = atan2(s2,c2);
         //// another setup
         //float k = a2*c2+d4*sin(q2+q3);
-        float k = a2 * c2 + d4 * (s2 * c3 + c2 * s3);
+        float k = a2 * c2 + D_4 * (s2 * c3 + c2 * s3);
         // cos(q[1])
         float c1 = xh / k;
         // sin(q[1])

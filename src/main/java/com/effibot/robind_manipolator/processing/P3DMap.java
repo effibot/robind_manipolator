@@ -142,10 +142,11 @@ public class P3DMap extends ProcessingBase {
         r = new Robot(this, rb, true);
         symQueue = setupSimulationQueue();
         // setup inverse kin vars
-        Double[] robotPos = rb.getqRover().get(rb.getqRover().size() - 1);
-        double[] robotPosD = ArrayUtils.toPrimitive(robotPos);
+        double[] robotPos = ArrayUtils.toPrimitive(rb.getqRover().get(rb.getqRover().size() - 1));
         double[] selectedShapePos = rb.getSelectedShape();
-        targetPosRel = new float[]{(float) selectedShapePos[0] - (float) robotPosD[1], (float) selectedShapePos[1] - (float) robotPosD[0], 50};
+        targetPosRel = new float[]{((float) selectedShapePos[0] - (float) robotPos[1])/2f,
+                ((float) selectedShapePos[1] - (float) robotPos[0])/2f,
+                (float) selectedShapePos[2]+20};
         r1 = new Robot(this, rb, false);
         qFinal = r1.getQ();
         // continue the setup
@@ -246,7 +247,7 @@ public class P3DMap extends ProcessingBase {
             setIK(!isIK);
         } else if (key == 'G' || key == 'g') {
             elbow += 1;
-            qFinal = r.inverseKinematics(targetPosRel[0], targetPosRel[1], targetPosRel[2],
+            qFinal = r1.inverseKinematics(targetPosRel[0], targetPosRel[1], targetPosRel[2],
                     rb.getRoll(), rb.getPitch(), rb.getYaw(), elbow % 7);
         }
 
@@ -425,7 +426,7 @@ public class P3DMap extends ProcessingBase {
     public void draw3DRobot(PeasyCam cam) {
         translate(0, 0, -200);
         drawTarget();
-        r1.setDhTable(r1.qProp(qFinal, k));
+        r1.setTable(r1.qProp(qFinal, k));
         r1.drawLink();
         r1.showSpace(showSpace);
         cam.beginHUD();

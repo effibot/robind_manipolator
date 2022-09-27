@@ -30,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 
 public class SettingModule extends WorkbenchModule implements PropertyChangeListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingModule.class.getName());
@@ -47,23 +48,21 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
 
     private VBox vb;
 
-    private final ObjectProperty<Double> id = new SimpleObjectProperty<>();
+    private final ObjectProperty<Integer> id = new SimpleObjectProperty<>();
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
     private Form controlForm;
-
-
     private final SettingBean settingBean;
     private RobotBean robotBean;
     private final ListProperty<String> shapeName = new SimpleListProperty<>(
             FXCollections.observableArrayList(
-                    Arrays.asList("Sfera", "Cono", "Cubo")
+                    List.of()
             ));
     private final ListProperty<String> methods = new SimpleListProperty<>(
             FXCollections.observableArrayList(
                     Arrays.asList("Paraboloic", "Quintic", "Cubic")
             ));
-    private final DoubleProperty pitchValue = new SimpleDoubleProperty(0);
+    private final DoubleProperty pitchValue = new SimpleDoubleProperty(0.1);
     private final DoubleProperty rollValue = new SimpleDoubleProperty(0);
 
     private final DoubleProperty yawValue = new SimpleDoubleProperty(0);
@@ -75,9 +74,16 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         this.robotBean.addPropertyChangeListener(this);
         this.wb = wb;
         settingController = new SettingController(this, this.settingBean, this.robotBean,this.wb);
-
+        setShapeName();
     }
-
+    private void setShapeName() {
+        int len = robotBean.getObsList().size();
+        switch (len){
+            case 1 -> shapeName.add("Sfera");
+            case 2 -> shapeName.addAll("Sfera", "Cono");
+            default -> shapeName.addAll("Sfera", "Cono" , "Cubo");
+        }
+    }
     private FormRenderer setupForm() {
         // Construct control form
         /* Id e Forma */
@@ -87,7 +93,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
                 .tooltip("Forma da raggiungere");
         shape.bindBidirectional(settingBean.selectedShapeProperty());
         shape.addListener(change -> settingController.setIdByShape(shape.get()));
-        Field<SingleSelectionField<Double>> idField = Field.ofSingleSelectionType(settingBean.idListProperty(), id)
+        Field<SingleSelectionField<Integer>> idField = Field.ofSingleSelectionType(settingBean.idListProperty(), id)
                 .label("Start ID")
                 .required(true)
                 .tooltip("ID di un nodo Verde");
@@ -106,7 +112,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
 
         Field<DoubleField> pitchField = Field.ofDoubleType(pitchValue)
                 .label("Pitch").required(specifyValue)
-                .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
+                .validate(DoubleRangeValidator.between(0.1d, 360.0d, valueNonCompliant));
 
         Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
                 .label("Yaw").required(specifyValue)

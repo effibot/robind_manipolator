@@ -17,9 +17,9 @@ import java.util.List;
 public class SettingBean implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingBean.class.getName());
     private final transient  ListProperty<Double> greenId = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
-    private final transient ListProperty<Double> idList = new SimpleListProperty<>(FXCollections.observableArrayList(1.0d));
+    private final transient ListProperty<Integer> idList = new SimpleListProperty<>(FXCollections.observableArrayList(1));
 
-    private final transient ObjectProperty<Double> selectedId = new SimpleObjectProperty<>();
+    private final transient ObjectProperty<Integer> selectedId = new SimpleObjectProperty<>();
 
     private final transient ObjectProperty<String> selectedShape = new SimpleObjectProperty<>();
 
@@ -37,7 +37,7 @@ public class SettingBean implements Serializable {
     private double[][] shapeList;
 
     private  byte[] animation;
-    private ArrayList<double[]> shapeIdList;
+    private ArrayList<Integer[]> shapeIdList;
     private boolean finish = false;
     private double[] selectedShapePos;
 
@@ -64,7 +64,7 @@ public class SettingBean implements Serializable {
     }
 
     public double[] adaptToDouble(){
-         ObservableList<Double> values = getIdList();
+         ObservableList<Integer> values = getIdList();
          double[] result = new double[values.size()];
          for(int i = 0; i < values.size(); i++){
              result[i] = values.get(i);
@@ -90,29 +90,39 @@ public class SettingBean implements Serializable {
     public byte[] getAnimation(){return this.animation;}
 
     public void setShapeIdList(List<double[]> greenIdShape) {
-        this.shapeIdList = (ArrayList<double[]>)greenIdShape;
+        this.shapeIdList = new ArrayList<>();
+        for(double[] ids : greenIdShape){
+            String list = ArrayUtils.toString(ids);
+            String[] listArray = list.substring(1,list.length()-1).split(",");
+            Integer[] newList = new Integer[listArray.length];
+            for(int i = 0; i <  listArray.length; i++) {
+                newList[i] = Integer.valueOf(listArray[i].split("\\.")[0]);
+            }
+            shapeIdList.add(newList);
+        }
+
     }
 
-    public List<double[]> getShapeIdList(){return shapeIdList;}
-    public ObservableList<Double> getIdList() {
+    public List<Integer[]> getShapeIdList(){return shapeIdList;}
+    public ObservableList<Integer> getIdList() {
         return idList.get();
     }
 
-    public ListProperty<Double> idListProperty() {
+    public ListProperty<Integer> idListProperty() {
         return idList;
     }
-    public void setIdList(ObservableList<Double> idList) {
+    public void setIdList(ObservableList<Integer> idList) {
         this.idList.set(idList);
     }
-    public Double getSelectedId() {
+    public Integer getSelectedId() {
         return selectedId.get();
     }
 
-    public ObjectProperty<Double> selectedIdProperty() {
+    public ObjectProperty<Integer> selectedIdProperty() {
         return selectedId;
     }
 
-    public void setSelectedId(Double selectedId) {
+    public void setSelectedId(Integer selectedId) {
         this.selectedId.set(selectedId);
     }
 
@@ -130,7 +140,9 @@ public class SettingBean implements Serializable {
 
     public double[] shapeToPos(){
         int select = shapeToID();
-        this.selectedShapePos = new double[]{getShapeList()[select][1],getShapeList()[select][2]};
+        this.selectedShapePos = new double[]{getShapeList()[select][1],
+                getShapeList()[select][2],
+                getShapeList()[select][3]};
         return this.selectedShapePos;
     }
     public int shapeToID(){

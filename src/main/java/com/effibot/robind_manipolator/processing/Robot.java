@@ -56,6 +56,7 @@ public class Robot {
     //    Base point
     // DH Table
     private Vector<Vector<Float>> dhTable = new Vector<>();
+    private Vector<Vector<Float>> iKTable = new Vector<>();
     // Model storage
     private final ArrayList<PShape> shapeList = new ArrayList<>();
 
@@ -71,19 +72,23 @@ public class Robot {
                             new float[]{0f, -PI / 2, PI / 2, 0f, PI/2f, 0f}
                     ))
     ));
-
+    private final boolean toBind;
     public Robot(ProcessingBase p3d, RobotBean rb, boolean toBind) {
         this.p3d = p3d;
         this.shapeList.add(loadLink(0));
         this.rb = rb;
         this.coords = convert();
-        if (toBind) bind();
+        this.toBind = toBind;
+        if (this.toBind) bind();
         for (int i = 0; i < 6; i++) {
             // load link_i
             this.shapeList.add(loadLink(i + 1));
             // Assign DH table
             Vector<Float> dhRow = new Vector<>(Arrays.asList(qJoint.get(i), d[i], alpha[i], a[i]));
+            Vector<Float> iKRow = new Vector<>(Arrays.asList(q[i], d[i], alpha[i], a[i]));
+
             dhTable.add(dhRow);
+            iKTable.add(iKRow);
         }
 
 
@@ -141,7 +146,7 @@ public class Robot {
         p3d.shape(shapeList.get(0));
         p3d.popMatrix();
         // dh 01
-        Vector<Float> r01 = dhTable.get(0);
+        Vector<Float> r01 = getDHrow(0);
         dh(r01.get(0), r01.get(1), r01.get(2), r01.get(3));
         shapeList.get(1).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
@@ -163,7 +168,7 @@ public class Robot {
         }
 
         // dh 12
-        Vector<Float> r12 = dhTable.get(1);
+        Vector<Float> r12 = getDHrow(1);
         dh(r12.get(0), r12.get(1), r12.get(2), r12.get(3));
         shapeList.get(2).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
@@ -172,7 +177,7 @@ public class Robot {
         p3d.shape(shapeList.get(2));
         p3d.popMatrix();
         // dh 23
-        Vector<Float> r23 = dhTable.get(2);
+        Vector<Float> r23 = getDHrow(2);
         dh(r23.get(0), r23.get(1), r23.get(2), r23.get(3));
         shapeList.get(3).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
@@ -183,7 +188,7 @@ public class Robot {
         p3d.shape(shapeList.get(3));
         p3d.popMatrix();
         // dh 34
-        Vector<Float> r34 = dhTable.get(3);
+        Vector<Float> r34 = getDHrow(3);
         dh(r34.get(0), r34.get(1), r34.get(2), r34.get(3));
         shapeList.get(4).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
@@ -205,7 +210,7 @@ public class Robot {
             p3d.noStroke();
         }
         // dh 45
-        Vector<Float> r45 = dhTable.get(4);
+        Vector<Float> r45 = getDHrow(4);
         dh(r45.get(0), r45.get(1), r45.get(2), r45.get(3));
         shapeList.get(5).setFill(p3d.color(100, 200, 0));
         p3d.pushMatrix();
@@ -216,7 +221,7 @@ public class Robot {
         p3d.shape(shapeList.get(5));
         p3d.popMatrix();
         // dh 56
-        Vector<Float> r56 = dhTable.get(5);
+        Vector<Float> r56 = getDHrow(5);
         dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
         shapeList.get(6).setFill(p3d.color(40, 2, 100));
         p3d.pushMatrix();
@@ -229,37 +234,51 @@ public class Robot {
     }
 
     public Vector<Float> getDHrow(int rIndex) {
-        return this.dhTable.get(rIndex);
+        if(toBind)
+            return this.dhTable.get(rIndex);
+        else
+            return this.iKTable.get(rIndex);
     }
 
     public Vector<Vector<Float>> getDhTable() {
-        return this.dhTable;
+        if(toBind)
+            return this.dhTable;
+        else
+            return this.iKTable;
     }
 
     public void setDhTable(Vector<Vector<Float>> newTable) {
-        this.dhTable = newTable;
+        if(toBind)
+            this.dhTable = newTable;
+        else
+            this.iKTable = newTable;
     }
 
-    public void setDhTable(float[] joints) {
+    public void setTable(float[] joints) {
         int id = 0;
         for (float qi : joints) {
             this.setJoint(id, qi);
-            this.q[id] = qi;
             id += 1;
         }
     }
 
     public void setJoint(int rIndex, float qNew) {
         Vector<Float> tempRow = getDHrow(rIndex);
-//        tempRow.set(0, tempRow.get(0) + qNew);
         tempRow.set(0, qNew);
-        this.dhTable.set(rIndex, tempRow);
+        if(toBind)
+            this.dhTable.set(rIndex, tempRow);
+        else
+            this.iKTable.set(rIndex,tempRow);
     }
+
 
     public void setDistance(int rIndex, int cIndex, float dNew) {
         Vector<Float> tempRow = getDHrow(rIndex);
         tempRow.set(cIndex, tempRow.get(cIndex) + dNew);
-        this.dhTable.set(rIndex, tempRow);
+        if(toBind)
+            this.dhTable.set(rIndex, tempRow);
+        else
+            this.iKTable.set(rIndex, tempRow);
     }
 
     public PShape getShape(int id) {
@@ -408,7 +427,6 @@ public class Robot {
         return new float[]{ALPHA_1, ALPHA_2, ALPHA_3, ALPHA_4, ALPHA_5, ALPHA_6};
     }
 
-    /* atan2 without "jumps". */
     public float[] qProp(float[] qRef, float k) {
         float[] qNew = this.q;
 

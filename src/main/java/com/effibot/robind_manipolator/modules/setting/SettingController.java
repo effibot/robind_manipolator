@@ -95,18 +95,18 @@ public class SettingController {
     }
 
     public void setIdByShape(String shape) {
-        ListProperty<Double> list = new SimpleListProperty<>();
-        ArrayList<double[]> shapesID = (ArrayList<double[]>) sb.getShapeIdList();
+        ListProperty<Integer> list = new SimpleListProperty<>();
+        ArrayList<Integer[]> shapesID = (ArrayList<Integer[]>) sb.getShapeIdList();
         switch (shape) {
-            case "Sfera" -> list.setValue(arrayToObsListProp(shapesID.get(0)));
-            case "Cono" -> list.setValue(arrayToObsListProp(shapesID.get(1)));
-            case "Cubo" -> list.setValue(arrayToObsListProp(shapesID.get(2)));
+            case "Sfera" -> list.setValue(arrayToObsListProp(ArrayUtils.toPrimitive(shapesID.get(0))));
+            case "Cono" -> list.setValue(arrayToObsListProp(ArrayUtils.toPrimitive(shapesID.get(1))));
+            case "Cubo" -> list.setValue(arrayToObsListProp(ArrayUtils.toPrimitive(shapesID.get(2))));
             default -> LOGGER.warn("Forma non esistente");
         }
         sb.setIdList(list);
     }
 
-    private ObservableList<Double> arrayToObsListProp(double[] array) {
+    private ObservableList<Integer> arrayToObsListProp(int[] array) {
         return FXCollections.observableList(
                 Arrays.asList(
                         ArrayUtils.toObject(
