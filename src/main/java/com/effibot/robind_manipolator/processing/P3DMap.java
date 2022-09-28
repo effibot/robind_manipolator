@@ -240,8 +240,7 @@ public class P3DMap extends ProcessingBase {
         Float[] pos;
         for (Double[] value : qRoverObs.get()) {
             pos = new Float[]{Float.valueOf(value[0].toString()),
-                    Float.valueOf(value[1].toString()),
-                    Float.valueOf(value[2].toString())};
+                    Float.valueOf(value[1].toString())};
             try {
                 queue.put(pos);
             } catch (InterruptedException e) {
@@ -431,8 +430,6 @@ public class P3DMap extends ProcessingBase {
 //            thread("inverseKinematic");
 //        }
         translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
-//        rotateZ(symPos[2]);
-
         r.drawLink();
 
         popMatrix();

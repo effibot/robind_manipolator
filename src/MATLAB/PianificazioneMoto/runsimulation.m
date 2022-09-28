@@ -1,38 +1,26 @@
 function [qr,dqr,ddqr,e]=runsimulation(mass,alpha,src)
 % time = 0:step:(size(p,1)-1)/1000;
-Fa = 10*mass;
 Kp = alpha^2;
 Kd = 2*alpha;
-Kptheta = (alpha*2)^2;
-Kdomega = 4*alpha;
 load path.mat
-inertia = 1/2*mass*(robotsize/2)^2;
 step=1/100;
 time = 0:step:size(p,2)/100;
 pidm = 'PIDTrajectory';
 load_system(pidm);
 mdlWks = get_param(pidm,'ModelWorkspace');
 assignin(mdlWks,'mass',1/mass);
-assignin(mdlWks,'inertia',1/inertia);
 assignin(mdlWks,'xp',p(1,:));
 assignin(mdlWks,'yp',p(2,:));
-assignin(mdlWks,'thetap',p(3,:));
 assignin(mdlWks,'vxp',dp(1,:));
 assignin(mdlWks,'vyp',dp(2,:));
-assignin(mdlWks,'omegap',dp(3,:));
 assignin(mdlWks,'axp',ddp(1,:));
 assignin(mdlWks,'ayp',ddp(2,:));
-assignin(mdlWks,'alphap',ddp(3,:));
 assignin(mdlWks,'x0',p(1,1));
 assignin(mdlWks,'y0',p(2,1));
-assignin(mdlWks,'theta0',p(3,1));
 assignin(mdlWks,'v0x',dp(1,1));
 assignin(mdlWks,'v0y',dp(2,1));
-assignin(mdlWks,'omega0',dp(3,1));
 assignin(mdlWks,'Kp',Kp);
 assignin(mdlWks,'Kd',Kd);
-assignin(mdlWks,'Kptheta',Kptheta);
-assignin(mdlWks,'Kdomega',Kdomega);
 assignin(mdlWks,'step',step);
 opt = simset('FixedStep',num2str(step));
 simout=sim(pidm,[time(1) time(end)],opt);
@@ -49,7 +37,6 @@ msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 save_system('PIDTrajectory');
 close_system('PIDTrajectory');
-% runonmap(M,qr,redObsbc',nodeList,robotsize,src);
 msg = src.UserData.buildMessage(0,"FINISH",1);
 src.UserData.sendMessage(src,msg);
 end
