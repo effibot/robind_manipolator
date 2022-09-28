@@ -8,7 +8,7 @@ plot(cp(:,1),cp(:,2),'LineWidth',3);
 saving=@(gcf)frame2im(getframe(gcf));
 % 
 for j = 1:ceil((size(p,2)-1)/100):size(p,2)
-    currPoint = p(:,j)';
+    currPoint = p(1:2,j)';
     [closestObs, minDist] = findClosestObs(rbclist, fliplr(currPoint));
     obsNode= findobj(nodeList,'bc',closestObs);
     radiusObs=sqrt(2)/2*obsNode.dim;

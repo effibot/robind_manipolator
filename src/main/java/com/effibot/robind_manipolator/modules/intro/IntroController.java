@@ -90,8 +90,8 @@ public class IntroController {
         btn.setOnAction(event -> {
             introBean = new IntroBean();
             this.settingBean = new SettingBean();
-            robotBean = new RobotBean();
             this.robotBean = new RobotBean();
+//            this.robotBean = new RobotBean();
             this.robotBean.setObsList(((P2DMap)sketch).getObstacleList());
             SettingModule sm = new SettingModule(settingBean,robotBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));

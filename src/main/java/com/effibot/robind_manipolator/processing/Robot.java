@@ -366,7 +366,7 @@ public class Robot {
 
         return new float[]{q1, q2, q3, q4, q5, q6};
     }
-//    public float[] inverseKinematics(float xdes, float ydes, float zdes, float roll, float pitch, float yaw, int elbow) {
+    //    public float[] inverseKinematics(float xdes, float ydes, float zdes, float roll, float pitch, float yaw, int elbow) {
 //        float q3 =
 //        return new float[]{q1, q2, q3, q4, q5, q6};
 //    }

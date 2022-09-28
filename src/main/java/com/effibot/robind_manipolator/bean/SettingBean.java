@@ -64,7 +64,7 @@ public class SettingBean implements Serializable {
     }
 
     public double[] adaptToDouble(){
-         ObservableList<Integer> values = getIdList();
+        ObservableList<Integer> values = getIdList();
          double[] result = new double[values.size()];
          for(int i = 0; i < values.size(); i++){
              result[i] = values.get(i);
@@ -155,7 +155,6 @@ public class SettingBean implements Serializable {
         }
         return select;
     }
-
     public String getSelectedMethod() {
         return selectedMethod.get();
     }

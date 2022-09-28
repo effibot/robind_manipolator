@@ -9,12 +9,12 @@ import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.Utils;
 import com.effibot.robind_manipolator.bean.RobotBean;
 import com.effibot.robind_manipolator.bean.SettingBean;
-import com.effibot.robind_manipolator.bean.VisionBean;
 import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import com.jogamp.newt.opengl.GLWindow;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -45,7 +45,7 @@ public class SettingController {
     private final BlockingQueue<LinkedHashMap<String, Object>> queue;
     private static final String RECEIVE = "RECEIVE";
     private final Workbench wb;
-    private RobotBean rb;
+    private final RobotBean rb;
     TCPFacade tcp = TCPFacade.getInstance();
     PropertyChangeSupport changes = new PropertyChangeSupport(this);
     
@@ -72,13 +72,12 @@ public class SettingController {
     }
 
     private Thread t;
-    private final VisionBean vb;
+
     public SettingController(SettingModule sm, SettingBean sb, RobotBean robotBean, Workbench wb) {
         this.sm = sm;
         this.sb = sb;
         this.rb = robotBean;
         this.wb = wb;
-        this.vb = new VisionBean();
         addPropertyChangeListener(tcp);
         this.queue = tcp.getQueue();
     }
@@ -93,6 +92,7 @@ public class SettingController {
             }
         });
     }
+
 
     public void setIdByShape(String shape) {
         ListProperty<Integer> list = new SimpleListProperty<>();
@@ -190,13 +190,15 @@ public class SettingController {
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
                 inverseThread.start();
-                next[1].acquire();
-                Thread visionThread = vision();
-                visionThread.start();
+//                next[1].acquire();
             } catch (InterruptedException e) {
                 LOGGER.error("Interruption",e);
                 Thread.currentThread().interrupt();
             }
+
+
+
+
         });
     }
 
@@ -207,8 +209,8 @@ public class SettingController {
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
-                pkt.put("M",20);
-                pkt.put("ALPHA",300);
+                pkt.put("M",50);
+                pkt.put("ALPHA",500);
                 notifyPropertyChange("SEND", null, pkt);
                 notifyPropertyChange(RECEIVE, false, true);
                 boolean finish = false;
@@ -257,17 +259,24 @@ public class SettingController {
                     String key = (String) (pkt.keySet().toArray())[0];
                     switch (key) {
                         case "Q" ->{
-                            LOGGER.info("Receiving Q IK");
-                            double[] qlist = (double[]) pkt.get(key);
-                            String qstring = ArrayUtils.toString(qlist);
-                            qstring =qstring.substring(1,qstring.length()-1);
-                            String[] qStringArray = qstring.split(",");
+//                            LOGGER.info("Receiving Q IK");
+                            String qString = ArrayUtils.toString(pkt.get(key));
+                            qString =qString.substring(1,qString.length()-1);
                             ObservableList<Float> qJoint = FXCollections.observableArrayList(
-                                    Arrays.stream(qStringArray).map(Float::valueOf).toArray(Float[]::new)
+                                    Arrays.stream(qString.split(",")).map(Float::valueOf).toArray(Float[]::new)
                             );
                             rb.setQ(qJoint);
+                            rb.getQ1Newton().add(qJoint.get(0));
+                            rb.getQ2Newton().add(qJoint.get(1));
+                            rb.getQ3Newton().add(qJoint.get(2));
+                            rb.getQ4Newton().add(qJoint.get(3));
+                            rb.getQ5Newton().add(qJoint.get(4));
+                            rb.getQ6Newton().add(qJoint.get(5));
+
                         }
-                        case "ENEWTON"->{}
+                        case "ENEWTON"->{
+                            rb.getErrorNewton().add( ((Double) pkt.get(key)).floatValue());
+                        }
                         case "FINISH"->finish = true;
                         default -> LOGGER.warn("IK not mapped case:{}",key);
                     }
@@ -277,41 +286,11 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally IK");
-                next[1].release();
+
             }
         });
     }
-    private Thread vision(){
-        return new Thread(()->{
-            // make new packet
-            try {
-                LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
-                pkt.put("PROC","VIS");
-                pkt.put("SHAPE",sb.shapeToID());
-                notifyPropertyChange("SEND", null, pkt);
-                notifyPropertyChange(RECEIVE, false, true);
-                boolean finish = false;
-                while (!finish) {
-                    pkt = queue.take();
-                    String key = (String) (pkt.keySet().toArray())[0];
-                    switch (key) {
-                        case "AREA" -> vb.setObjArea((double) pkt.get(key));
-                        case "PERIM" -> vb.setObjPerim((double) pkt.get(key));
-                        case "FORMA" -> vb.setObjShape((String) pkt.get(key));
-                        case "ORIENT" -> vb.setObjOrient((double) pkt.get(key));
-                        case "BW" -> vb.setObjImage((byte[]) pkt.get(key));
-                        case "FINISH" -> finish = true;
-                        default -> LOGGER.warn("{} key isn't mapped", key);
-                    }
-                }
-            } catch (InterruptedException e){
-                LOGGER.error("Inverse Kinemetics acquire error", e);
-                Thread.currentThread().interrupt();
-            } finally {
-                sequence[0].release();
-            }
-        });
-    }
+
     public void setOnHoverInfo(ToolbarItem toolbarItem) {
         toolbarItem.setOnClick(evt->
             wb.showInformationDialog(

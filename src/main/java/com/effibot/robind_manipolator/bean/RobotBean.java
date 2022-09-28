@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static processing.core.PConstants.PI;
@@ -31,6 +32,7 @@ public class RobotBean implements Serializable {
     private double pitch;
     private double yaw;
 
+    private final ListProperty<Float> errorNewton = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
     private static int MAXPOINT=0;
     public double[][] getShapePos() {
         return shapePos;
@@ -68,8 +70,14 @@ public class RobotBean implements Serializable {
     private final transient ListProperty<Double[]> ddqGRover = new SimpleListProperty<>(
             FXCollections.observableList(new ArrayList<>(0)));
     // Rover Error [e_x][e_y][e_dx][e_dy]
-    private final transient ListProperty<Double[]> errors = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final transient ListProperty<Double[]> errors = new SimpleListProperty<>(FXCollections.observableArrayList(new ArrayList<>(1)));
 
+    private final transient ListProperty<Float> q1Newton = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Float> q2Newton = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Float> q3Newton =new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Float> q4Newton =new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Float> q5Newton =new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
+    private final transient ListProperty<Float> q6Newton =new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
 
     // map image's stream
     private byte[] animation;
@@ -130,7 +138,7 @@ public class RobotBean implements Serializable {
         return q;
     }
 
-    public void setQ(ObservableList<Float> q) {
+    public synchronized void setQ(ObservableList<Float> q) {
         this.q.set(q);
     }
     // ROVER
@@ -253,4 +261,92 @@ public class RobotBean implements Serializable {
     public float getYaw() {
         return (float) this.yaw;
     }
+
+
+
+    public ObservableList<Float> getErrorNewton() {
+        return errorNewton.get();
+    }
+
+    public ListProperty<Float> errorNewtonProperty() {
+        return errorNewton;
+    }
+
+    public void setErrorNewton(ObservableList<Float> errorNewton) {
+        this.errorNewton.set(errorNewton);
+    }
+
+    public ObservableList<Float> getQ1Newton() {
+        return q1Newton.get();
+    }
+
+    public ListProperty<Float> q1NewtonProperty() {
+        return q1Newton;
+    }
+
+    public void setQ1Newton(ObservableList<Float> q1Newton) {
+        this.q1Newton.set(q1Newton);
+    }
+
+    public ObservableList<Float> getQ2Newton() {
+        return q2Newton.get();
+    }
+
+    public ListProperty<Float> q2NewtonProperty() {
+        return q2Newton;
+    }
+
+    public void setQ2Newton(ObservableList<Float> q2Newton) {
+        this.q2Newton.set(q2Newton);
+    }
+
+    public ObservableList<Float> getQ3Newton() {
+        return q3Newton.get();
+    }
+
+    public ListProperty<Float> q3NewtonProperty() {
+        return q3Newton;
+    }
+
+    public void setQ3Newton(ObservableList<Float> q3Newton) {
+        this.q3Newton.set(q3Newton);
+    }
+
+    public ObservableList<Float> getQ4Newton() {
+        return q4Newton.get();
+    }
+
+    public ListProperty<Float> q4NewtonProperty() {
+        return q4Newton;
+    }
+
+    public void setQ4Newton(ObservableList<Float> q4Newton) {
+        this.q4Newton.set(q4Newton);
+    }
+
+    public ObservableList<Float> getQ5Newton() {
+        return q5Newton.get();
+    }
+
+    public ListProperty<Float> q5NewtonProperty() {
+        return q5Newton;
+    }
+
+    public void setQ5Newton(ObservableList<Float> q5Newton) {
+        this.q5Newton.set(q5Newton);
+    }
+
+    public ObservableList<Float> getQ6Newton() {
+        return q6Newton.get();
+    }
+
+    public ListProperty<Float> q6NewtonProperty() {
+        return q6Newton;
+    }
+
+    public void setQ6Newton(ObservableList<Float> q6Newton) {
+        this.q6Newton.set(q6Newton);
+    }
+
+
 }

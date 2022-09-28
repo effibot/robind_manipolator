@@ -52,6 +52,8 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     private final ObjectProperty<String> shape = new SimpleObjectProperty<>();
     private final ObjectProperty<String> selectedMethod = new SimpleObjectProperty<>();
     private Form controlForm;
+
+
     private final SettingBean settingBean;
     private RobotBean robotBean;
     private final ListProperty<String> shapeName = new SimpleListProperty<>(
@@ -75,6 +77,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         this.wb = wb;
         settingController = new SettingController(this, this.settingBean, this.robotBean,this.wb);
         setShapeName();
+
     }
     private void setShapeName() {
         int len = robotBean.getObsList().size();
@@ -84,6 +87,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
             default -> shapeName.addAll("Sfera", "Cono" , "Cubo");
         }
     }
+
     private FormRenderer setupForm() {
         // Construct control form
         /* Id e Forma */
@@ -113,6 +117,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         Field<DoubleField> pitchField = Field.ofDoubleType(pitchValue)
                 .label("Pitch").required(specifyValue)
                 .validate(DoubleRangeValidator.between(0.1d, 360.0d, valueNonCompliant));
+
 
         Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
                 .label("Yaw").required(specifyValue)

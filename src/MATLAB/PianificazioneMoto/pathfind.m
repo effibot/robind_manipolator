@@ -80,10 +80,10 @@ dim = length(nPoints);
 x = nPoints(:,1);
 y= nPoints(:,2);
 [pt,dpt] = interparc(dim,x,y,'linear');
+        step=1/100;
 
 switch method
     case 'Paraboloic'
-        step = 1/100;
         [qx,qxd,qxdd]= paraboloic_blend(pt(:,1)',step);
         [qy,qyd,qydd]= paraboloic_blend(pt(:,2)',step);
 %         [pt,vt] = interparc(1000*(dim-1),qx,qy,'linear');
@@ -95,21 +95,27 @@ switch method
 %         qydd = zeros(1,1000*(dim-1))';
 
     case 'Cubic'
-        step=1/100;
         [qx,qxd,qxdd]=cubic_spline(x,step);
         [qy,qyd,qydd]=cubic_spline(y,step);
 
     case 'Quintic'
-     step=1/100;
      [qx,qxd,qxdd]=quintic_spline(x,step);
      [qy,qyd,qydd]=quintic_spline(y,step);
 end
 
+theta = zeros(1,size(qx,2));
+
+for i = 2:length(theta)
+    theta(i) = atan2(qy(i)-qy(i-1),qx(i)-qx(i-1));
+end
+
+thetad = gradient(theta,step)*step;
+thetadd = gradient(thetad,step)*step;
 
 
-curve = [qy;qx];
-dcurve = [qxd;qyd];
-ddcurve = [qxdd;qydd];
+curve = [qy;qx;theta];
+dcurve = [qxd;qyd;thetad];
+ddcurve = [qxdd;qydd;thetadd];
 end
 
 function point = selectPoint(node, next, Amid, Aint, obsList)

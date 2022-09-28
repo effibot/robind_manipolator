@@ -20,12 +20,10 @@ function newtongrad(roll,pitch,yaw,src)
 %     de = DH(dhparams);
     dep = dr(1:3,4);
 %     Rzyx Roll 180,Yaw 60 Pitch 4
-    pitchp = atan2(-Rq(3,1),sqrt(1-Rq(3,1)^2));
-    rollp=atan2(Rq(2,1)/sqrt(1-Rq(3,1)^2),Rq(1,1)/sqrt(1-Rq(3,1)^2));
-    yawp = atan2(Rq(3,2)/sqrt(1-Rq(3,1)^2),Rq(3,3)/sqrt(1-Rq(3,1)^2));
-%     pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));
-%     yawp=atan2(Rq(3,2)/sqrt(1-Rq(3,3)^2),Rq(3,1)/(-sqrt(1-Rq(3,3)^2)));
-%     rollp = atan2(Rq(2,3)/sqrt(1-Rq(3,3)^2),Rq(1,3)/sqrt(1-Rq(3,3)^2));
+   
+    pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));
+    yawp=atan2(Rq(3,2)/sqrt(1-Rq(3,3)^2),Rq(3,1)/(-sqrt(1-Rq(3,3)^2)));
+    rollp = atan2(Rq(2,3)/sqrt(1-Rq(3,3)^2),Rq(1,3)/sqrt(1-Rq(3,3)^2));
 
     j = jacobian([dep;rollp;pitchp;yawp],q);
     J= matlabFunction(j);

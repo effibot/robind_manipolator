@@ -1,21 +1,22 @@
 package com.effibot.robind_manipolator.oscilloscope;
 
 import com.effibot.robind_manipolator.bean.RobotBean;
-import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
-import javafx.beans.value.ObservableListValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
+
 public class Plot {
-    private static int titleHeight = 30;
+    private  int titleHeight = 30;
     private  int nPoints;
     private int referenceLineColor;
     private int currentLineColor;
@@ -31,19 +32,19 @@ public class Plot {
     private int titleColor;
     private int gridLineColor;
     private int spacing = 25;
-    private static int textSize = 18 ;
-    private processing.core.PGraphics pGraphics;
+    private  int textSize = 18 ;
+    private final processing.core.PGraphics pGraphics;
 //    FXCollections.observableList(
 //            new ArrayList<>(List .<Double[]>of(new Double[]{0d, 0d}))
 //            )
-    private final ListProperty<Float> currentValProperty = new SimpleListProperty<>(
+    private  final ListProperty<Float> currentValProperty = new SimpleListProperty<>(
             FXCollections.observableList(new ArrayList<>(0)));
-    private final ListProperty<Float> referenceValProperty = new SimpleListProperty<>(
+    private  final ListProperty<Float> referenceValProperty = new SimpleListProperty<>(
             FXCollections.observableList(new ArrayList<>(0)));
-    private ObservableList<Float> currentVal;
-    private ObservableList<Float> referenceVal;
     private int canvasColor;
     private boolean visible = false;
+    private float currentLineStroke=0.5f;
+    private float referenceLineStroke=1f;
 
     public Plot(ProcessingBase processingBase, String title, int xPos, int yPos, int width, int height) {
         // Plot Title
@@ -107,29 +108,20 @@ public class Plot {
         this.spacing = spacing;
     }
 
-    public void setCurrentBinding(ListProperty<Float> xVal) {
-        xVal.bind(xVal);
-
-    }
-
-    public void setReferenceBinding(ListProperty<Float> yVal) {
-        yVal.bind(yVal);
-    }
-
-    public static int getTitleHeight() {
+    public  int getTitleHeight() {
         return titleHeight;
     }
 
-    public static void setTitleHeight(int titleHeight) {
-        Plot.titleHeight = titleHeight;
+    public  void setTitleHeight(int titleHeight) {
+        this.titleHeight = titleHeight;
     }
 
-    public static int getTextSize() {
+    public  int getTextSize() {
         return textSize;
     }
 
-    public static void setTextSize(int textSize) {
-        Plot.textSize = textSize;
+    public  void setTextSize(int textSize) {
+        this.textSize = textSize;
     }
 
     public int getCanvasColor() {
@@ -173,53 +165,70 @@ public class Plot {
     }
 
     public void drawPlot(){
-        if(visible) {
+        if(visible && (!currentValProperty.get().isEmpty()) ||!referenceValProperty.get().isEmpty()) {
             pGraphics.beginDraw();
             pGraphics.stroke(canvasColor);
             drawBackground();
             // Drawing Points
-            currentVal = currentValProperty.get();
-            referenceVal = referenceValProperty.get();
 
-//            pGraphics.beginDraw();
-//            pGraphics.stroke(0);
-//            pGraphics.strokeWeight(1);
-//            pGraphics.line(0,currentVal.get(0),width,currentVal.get(0));
-//            pGraphics.endDraw();
-
-
-            pGraphics.beginShape();
-            pGraphics.strokeWeight(3);
-            pGraphics.stroke(currentLineColor);
-            drawCurrentPoint();
-            pGraphics.endShape();
-
-
-
+            float minValf;
+            float maxValf;
+            if(title.contains("Q")) {
+                minValf = Collections.min(referenceValProperty.get());
+                maxValf = Collections.max(referenceValProperty.get());
+            }else if(title.contains("E")){
+                minValf = Collections.min(referenceValProperty.get());
+                maxValf = Collections.max(referenceValProperty.get());
+            }
+            else {
+                List<Float> minVal=Arrays.asList(
+                        Collections.min(currentValProperty.get()),
+                        Collections.min(referenceValProperty.get()));
+                List<Float> maxVal= Arrays.asList(
+                        Collections.max(currentValProperty.get()),
+                        Collections.max(referenceValProperty.get()));
+                minValf = Collections.min(minVal);
+                maxValf=Collections.max(maxVal);
+            }
             pGraphics.beginShape();
             pGraphics.stroke(0);
-            pGraphics.strokeWeight(1);
-            pGraphics.stroke(referenceLineColor);
-            drawReferencePoint();
+            pGraphics.strokeWeight(0.5f);
+            float scaling = PApplet.map(0,
+                   minValf,maxValf,
+                    0,gridHeight-20f);
+            pGraphics.line(0,scaling+titleHeight,width,scaling+titleHeight);
             pGraphics.endShape();
 
+            if(!currentValProperty.get().isEmpty()) {
+                pGraphics.beginShape();
+                pGraphics.strokeWeight(currentLineStroke);
+                pGraphics.stroke(currentLineColor);
+                scaleValue(currentValProperty,minValf,maxValf);
+                pGraphics.endShape();
+            }
+
+
+            if(!referenceValProperty.get().isEmpty()) {
+                pGraphics.beginShape();
+                pGraphics.stroke(0);
+                pGraphics.strokeWeight(referenceLineStroke);
+                pGraphics.stroke(referenceLineColor);
+                scaleValue(referenceValProperty,minValf,maxValf);
+                pGraphics.endShape();
+            }
             pGraphics.endDraw();
 
             processingBase.image(pGraphics, xPos, yPos);
         }
     }
 
-    private void drawReferencePoint() {
-        scaleValue(referenceValProperty);
-    }
 
-    private void scaleValue(ListProperty<Float> referenceValProperty) {
-        if(!referenceValProperty.isEmpty() && !referenceValProperty.get().isEmpty()) {
+    private void scaleValue(ListProperty<Float> valProperty,float min,float max) {
+        if(!valProperty.isEmpty() && !valProperty.get().isEmpty()) {
             float time = 0.0f;
             float step = 1/100f;
-            for (int i = 0; i < referenceVal.size(); i++) {
-
-                    float scaledYValue = PApplet.map(referenceVal.get(i), Collections.min(referenceVal), Collections.max(referenceVal), 0,gridHeight-20f);
+            for (int i = 0; i < valProperty.get().size(); i++) {
+                    float scaledYValue = PApplet.map(valProperty.get().get(i), min,max, 0,gridHeight-20f);
                     float scaledXValue = PApplet.map(time, 0, RobotBean.getMaxPoint()/100f, 0, width);
                     pGraphics.fill(0,0,0,0);
                     pGraphics.vertex(scaledXValue, scaledYValue+titleHeight);
@@ -233,9 +242,12 @@ public class Plot {
         }
     }
 
-    private void drawCurrentPoint() {
-        scaleValue(currentValProperty);
-    }
+
+//    private synchronized ArrayList<Float> yBound(ref,curr){
+//        ArrayList<Float> allPlotValue = currentValProperty.get();
+//        allPlotValue.addAll(referenceValProperty.get());
+//        return new ArrayList<>(Arrays.asList(Collections.max(allPlotValue),Collections.min(allPlotValue)));
+//    }
 
 
     private void drawBackground(){
@@ -304,23 +316,66 @@ public class Plot {
         return currentValProperty.get();
     }
 
-    public void setCurrentVal(ObservableList<Float> currentVal) {
-        this.currentVal = currentVal;
-    }
+
 
     public ObservableList<Float> getReferenceVal() {
         return referenceValProperty.get();
     }
 
-    public void setReferenceVal(ObservableList<Float> referenceVal) {
-        this.referenceVal = referenceVal;
+
+    public boolean isVisible() {
+        return this.visible;
     }
 
-    public int getnPoints() {
-        return nPoints;
+    public float getCurrentLineStroke() {
+        return currentLineStroke;
     }
 
-    public void setnPoints(int nPoints) {
-        this.nPoints = nPoints;
+    public void setCurrentLineStroke(float currentLineStroke) {
+        this.currentLineStroke = currentLineStroke;
+    }
+
+    public float getReferenceLineStroke() {
+        return referenceLineStroke;
+    }
+
+    public void setReferenceLineStroke(float referenceLineStroke) {
+        this.referenceLineStroke = referenceLineStroke;
+    }
+
+    public void setGridHeight(int gridHeight) {
+        this.gridHeight = gridHeight;
+    }
+
+    public ProcessingBase getProcessingBase() {
+        return processingBase;
+    }
+
+    public int getTitleBg() {
+        return titleBg;
+    }
+
+    public void setTitleBg(int titleBg) {
+        this.titleBg = titleBg;
+    }
+
+    public int getTitleColor() {
+        return titleColor;
+    }
+
+    public void setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
+    }
+
+    public int getGridLineColor() {
+        return gridLineColor;
+    }
+
+    public void setGridLineColor(int gridLineColor) {
+        this.gridLineColor = gridLineColor;
+    }
+
+    public PGraphics getpGraphics() {
+        return pGraphics;
     }
 }
