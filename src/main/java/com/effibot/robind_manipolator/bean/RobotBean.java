@@ -141,6 +141,12 @@ public class RobotBean implements Serializable {
     public synchronized void setQ(ObservableList<Float> q) {
         this.q.set(q);
     }
+
+    public synchronized void setE(ObservableList<Float> e){
+        this.errorNewton.set(e);
+        notifyPropertyChange("NEWTON",false,true);
+
+    }
     // ROVER
     public ObservableList<Double[]> getqRover() {
         return this.qRover.get();
@@ -346,6 +352,31 @@ public class RobotBean implements Serializable {
 
     public void setQ6Newton(ObservableList<Float> q6Newton) {
         this.q6Newton.set(q6Newton);
+    }
+
+
+    public void addQ1Point(Float aFloat) {
+        q1NewtonProperty().add(aFloat);
+    }
+
+    public void addQ2Point(Float aFloat) {
+        q2NewtonProperty().add(aFloat);
+    }
+
+    public void addQ3Point(Float aFloat) {
+        q3NewtonProperty().add(aFloat);
+    }
+
+    public void addQ4Point(Float aFloat) {
+        q4NewtonProperty().add(aFloat);
+    }
+
+    public void addQ5Point(Float aFloat) {
+        q5NewtonProperty().add(aFloat);
+    }
+
+    public void addQ6Point(Float aFloat) {
+        q6NewtonProperty().add(aFloat);
     }
 
 

@@ -14,7 +14,6 @@ module com.effibot.robind_manipolator {
     requires com.jfoenix;
     requires org.kordamp.ikonli.javafx;
     requires javafx.swing;
-
     opens com.effibot.robind_manipolator ;
     exports com.effibot.robind_manipolator;
     exports com.effibot.robind_manipolator.processing;

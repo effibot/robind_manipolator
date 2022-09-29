@@ -7,17 +7,15 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class Plot {
+    private final List<Float> minArray;
+    private final List<Float> maxArray;
     private  int titleHeight = 30;
-    private  int nPoints;
     private int referenceLineColor;
     private int currentLineColor;
     private  int gridColor;
@@ -34,13 +32,11 @@ public class Plot {
     private int spacing = 25;
     private  int textSize = 18 ;
     private final processing.core.PGraphics pGraphics;
-//    FXCollections.observableList(
-//            new ArrayList<>(List .<Double[]>of(new Double[]{0d, 0d}))
-//            )
-    private  final ListProperty<Float> currentValProperty = new SimpleListProperty<>(
+
+    private final  ListProperty<Float> currentValProperty = new SimpleListProperty<>(
             FXCollections.observableList(new ArrayList<>(0)));
-    private  final ListProperty<Float> referenceValProperty = new SimpleListProperty<>(
-            FXCollections.observableList(new ArrayList<>(0)));
+    private final  ListProperty<Float> referenceValProperty = new SimpleListProperty<>(
+            FXCollections.observableList(new ArrayList<>(0)));;
     private int canvasColor;
     private boolean visible = false;
     private float currentLineStroke=0.5f;
@@ -64,7 +60,11 @@ public class Plot {
         referenceLineColor = processingBase.color(204, 0, 0);
         setGridHeight();
         pGraphics = processingBase.createGraphics(width,height);
-        nPoints = 200;
+
+        minArray = Collections.synchronizedList(this.referenceValProperty.get());
+        maxArray = Collections.synchronizedList(this.referenceValProperty.get());
+
+
     }
 
     public void setTitleBackground(int r, int g, int b){
@@ -163,59 +163,64 @@ public class Plot {
     public void setCurrentLineColor(int currentLineColor) {
         this.currentLineColor = currentLineColor;
     }
-
-    public void drawPlot(){
-        if(visible && (!currentValProperty.get().isEmpty()) ||!referenceValProperty.get().isEmpty()) {
+    public void onlyRef(){
+        if (visible ) {
             pGraphics.beginDraw();
             pGraphics.stroke(canvasColor);
             drawBackground();
-            // Drawing Points
 
-            float minValf;
-            float maxValf;
-            if(title.contains("Q")) {
-                minValf = Collections.min(referenceValProperty.get());
-                maxValf = Collections.max(referenceValProperty.get());
-            }else if(title.contains("E")){
-                minValf = Collections.min(referenceValProperty.get());
-                maxValf = Collections.max(referenceValProperty.get());
-            }
-            else {
-                List<Float> minVal=Arrays.asList(
-                        Collections.min(currentValProperty.get()),
-                        Collections.min(referenceValProperty.get()));
-                List<Float> maxVal= Arrays.asList(
-                        Collections.max(currentValProperty.get()),
-                        Collections.max(referenceValProperty.get()));
-                minValf = Collections.min(minVal);
-                maxValf=Collections.max(maxVal);
-            }
+
+            pGraphics.beginShape();
+            pGraphics.stroke(0);
+            pGraphics.strokeWeight(referenceLineStroke);
+            pGraphics.stroke(referenceLineColor);
+            scaleValue(referenceValProperty, referenceValProperty.get().stream().min(Float::compare).get(),
+                    referenceValProperty.get().stream().max(Float::compare).get());
+            pGraphics.endShape();
+
+            pGraphics.endDraw();
+        }
+    }
+
+    public void drawRefCurr() {
+
+        if (visible) {
+            pGraphics.beginDraw();
+            pGraphics.stroke(canvasColor);
+            drawBackground();
+
+            List<Float> minVal = Arrays.asList(
+                    Collections.min(currentValProperty.get()),
+                    Collections.min(referenceValProperty.get()));
+            List<Float> maxVal = Arrays.asList(
+                    Collections.max(currentValProperty.get()),
+                    Collections.max(referenceValProperty.get()));
+            Float minValf = Collections.min(minVal);
+            Float maxValf = Collections.max(maxVal);
+
             pGraphics.beginShape();
             pGraphics.stroke(0);
             pGraphics.strokeWeight(0.5f);
             float scaling = PApplet.map(0,
-                   minValf,maxValf,
-                    0,gridHeight-20f);
-            pGraphics.line(0,scaling+titleHeight,width,scaling+titleHeight);
+                    minValf, maxValf,
+                    0, gridHeight - 20f);
+            pGraphics.line(0, scaling + titleHeight, width, scaling + titleHeight);
             pGraphics.endShape();
 
-            if(!currentValProperty.get().isEmpty()) {
-                pGraphics.beginShape();
-                pGraphics.strokeWeight(currentLineStroke);
-                pGraphics.stroke(currentLineColor);
-                scaleValue(currentValProperty,minValf,maxValf);
-                pGraphics.endShape();
-            }
+            pGraphics.beginShape();
+            pGraphics.strokeWeight(currentLineStroke);
+            pGraphics.stroke(currentLineColor);
+            scaleValue(currentValProperty, minValf, maxValf);
+            pGraphics.endShape();
 
 
-            if(!referenceValProperty.get().isEmpty()) {
-                pGraphics.beginShape();
-                pGraphics.stroke(0);
-                pGraphics.strokeWeight(referenceLineStroke);
-                pGraphics.stroke(referenceLineColor);
-                scaleValue(referenceValProperty,minValf,maxValf);
-                pGraphics.endShape();
-            }
+            pGraphics.beginShape();
+            pGraphics.stroke(0);
+            pGraphics.strokeWeight(referenceLineStroke);
+            pGraphics.stroke(referenceLineColor);
+            scaleValue(referenceValProperty, minValf, maxValf);
+            pGraphics.endShape();
+
             pGraphics.endDraw();
 
             processingBase.image(pGraphics, xPos, yPos);
@@ -329,6 +334,10 @@ public class Plot {
 
     public float getCurrentLineStroke() {
         return currentLineStroke;
+    }
+
+    public void setRefPoint(Float val){
+        this.referenceValProperty.add(val);
     }
 
     public void setCurrentLineStroke(float currentLineStroke) {

@@ -13,22 +13,29 @@ import com.effibot.robind_manipolator.modules.intro.IntroModule;
 import com.effibot.robind_manipolator.processing.P3DMap;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
+import com.jogamp.nativewindow.WindowClosingProtocol;
+import com.jogamp.nativewindow.awt.JAWTWindow;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.util.FPSAnimator;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import jogamp.opengl.GLAutoDrawableBase;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import processing.core.PSurface;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -266,16 +273,26 @@ public class SettingController {
                                     Arrays.stream(qString.split(",")).map(Float::valueOf).toArray(Float[]::new)
                             );
                             rb.setQ(qJoint);
-                            rb.getQ1Newton().add(qJoint.get(0));
-                            rb.getQ2Newton().add(qJoint.get(1));
-                            rb.getQ3Newton().add(qJoint.get(2));
-                            rb.getQ4Newton().add(qJoint.get(3));
-                            rb.getQ5Newton().add(qJoint.get(4));
-                            rb.getQ6Newton().add(qJoint.get(5));
+//                            rb.getQ1Newton().add(qJoint.get(0));
+//                            rb.getQ2Newton().add(qJoint.get(1));
+//                            rb.getQ3Newton().add(qJoint.get(2));
+//                            rb.getQ4Newton().add(qJoint.get(3));
+//                            rb.getQ5Newton().add(qJoint.get(4));
+//                            rb.getQ6Newton().add(qJoint.get(5));
+//
+//                            rb.addQ1Point(qJoint.get(0));
+//                            rb.addQ2Point(qJoint.get(1));
+//                            rb.addQ3Point(qJoint.get(2));
+//                            rb.addQ4Point(qJoint.get(3));
+//                            rb.addQ5Point(qJoint.get(4));
+//                            rb.addQ6Point(qJoint.get(5));
+
 
                         }
                         case "ENEWTON"->{
-                            rb.getErrorNewton().add( ((Double) pkt.get(key)).floatValue());
+//                            rb.getErrorNewton().add( ((Double) pkt.get(key)).floatValue());
+
+                            rb.setE(FXCollections.observableList(List.of(((Double) pkt.get(key)).floatValue())));
                         }
                         case "FINISH"->finish = true;
                         default -> LOGGER.warn("IK not mapped case:{}",key);
@@ -302,13 +319,7 @@ public class SettingController {
 
     }
 
-    public void closeProcessing() {
-        if(p3d!=null){
-            p3d.noLoop();
-            GLWindow pane = (GLWindow)p3d.getSurface().getNative();
-            pane.destroy();
-        }
-    }
+
 
 
     public Form getControlForm() {
@@ -317,4 +328,5 @@ public class SettingController {
     public void setControlForm(Form cf){
         this.controlForm = cf;
     }
+
 }

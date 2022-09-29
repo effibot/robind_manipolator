@@ -53,22 +53,24 @@ public class Oscilloscope implements PropertyChangeListener {
         Plot plt;
         for (String k : ROVER_NAMES_PLOT) {
             plt = plotMap.get(k);
-            if(plt.isVisible()) plt.drawPlot();
+            if(plt.isVisible()) plt.drawRefCurr();
         }
     }
     public void drawIKOscilloscope() {
         Plot plt;
         for (String k : IK_NAMES_PLOT) {
             plt = plotMap.get(k);
-            if(plt.isVisible()) plt.drawPlot();
+            if(plt.isVisible()) plt.onlyRef();
         }
+        plt = plotMap.get("E");
+        if(plt.isVisible()) plt.onlyRef();
     }
 
     public ProcessingBase getProcessingBase() {
         return processingBase;
     }
 
-    public static void setProcessingBase(ProcessingBase processingBase) {
+    public  void setProcessingBase(ProcessingBase processingBase) {
         Oscilloscope.processingBase = processingBase;
     }
 
@@ -83,7 +85,7 @@ public class Oscilloscope implements PropertyChangeListener {
         return rb;
     }
 
-    public static void setRb(RobotBean rb) {
+    public  void setRb(RobotBean rb) {
         Oscilloscope.rb = rb;
     }
 
@@ -101,19 +103,39 @@ public class Oscilloscope implements PropertyChangeListener {
                 addPoint("Y", "getqRover", false, 1);
                 addPoint("X", "getqGRover", true, 0);
                 addPoint("Y", "getqGRover", true, 1);
-                addPoint("VX", "getDqRover", false, 0);
-                addPoint("VY", "getDqRover", false, 1);
-                addPoint("VX", "getDqGRover", true, 0);
+                addPoint("VX", "getDqRover", false, 1);
+                addPoint("VY", "getDqRover", false, 0);
                 addPoint("VY", "getDqGRover", true, 1);
+                addPoint("VX", "getDqGRover", true, 0);
                 addPoint("AX", "getDdqRover", false, 0);
                 addPoint("AY", "getDdqRover", false, 1);
-                addPoint("AX", "getDdqGRover", true, 0);
-                addPoint("AY", "getDdqGRover", true, 1);
+                addPoint("AY", "getDdqGRover", true, 0);
+                addPoint("AX", "getDdqGRover", true, 1);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }else if("NEWTON".equals(evt.getPropertyName())){
+            try {
+                ObservableList<Float> qj =  rb.getQ();
+                int index = 0;
+                for(String qN:IK_NAMES_PLOT){
+                    addSinglePoint(qN, qj.get(index));
+                    index++;
+                }
+                addSinglePoint("E",rb.getErrorNewton().get(0));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private void addSinglePoint(String plotName,Float value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method valMethod;
+        valMethod = Plot.class.getMethod("setRefPoint", Float.class);
+        valMethod.invoke(plotMap.get(plotName), value);
+
+    }
+
     private void addPoint(String plotName, String beanMethod, boolean reference, int index) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method m = RobotBean.class.getMethod(beanMethod);
         int size;
@@ -142,19 +164,17 @@ public class Oscilloscope implements PropertyChangeListener {
 //
 //
 //    }
-    private static final List<String> IK_NAMES_PLOT = Arrays.asList("Q1","Q2","Q3","Q4","Q5","Q6","E");
+    private static final List<String> IK_NAMES_PLOT = Arrays.asList("Q1","Q2","Q3","Q4","Q5","Q6");
 
-    public void setQNewtonVisible(boolean visible, int qSelection) {
+    public  synchronized void setQNewtonVisible(boolean visible, int qSelection) {
 //        String[] keys = plotMap.keySet().toArray(new String[0]);
         String toShow = "Q"+(qSelection+1);
-        LOGGER.info(toShow);
         for (String k : IK_NAMES_PLOT) {
-                plotMap.get(k).setVisible(false);
+            plotMap.get(k).setVisible(false);
+
         }
-        Plot plt = plotMap.get(toShow);
-        if(plt!=null) plt.setVisible(visible);
-        plt = plotMap.get("E");
-        if(plt!=null) plt.setVisible(visible);
+        plotMap.get(toShow).setVisible(visible);
+        plotMap.get("E").setVisible(visible);
 
     }
 

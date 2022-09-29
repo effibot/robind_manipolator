@@ -232,6 +232,7 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
             }
             case "OBSUPDATE" -> LOGGER.info("OBS UPDATE");
             case "PLOT"->{}
+            case "NEWTON"->{}
             default -> LOGGER.warn("Not Mapped Case.");
 
         }
@@ -249,8 +250,9 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     @Override
     public boolean destroy(){
         TCPFacade.getInstance().resetSocket();
+
         wb.getModules().remove(this);
-        settingController.closeProcessing();
+
         return true;
     }
 

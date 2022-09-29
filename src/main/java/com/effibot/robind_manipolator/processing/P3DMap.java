@@ -37,8 +37,6 @@ public class P3DMap extends ProcessingBase {
     private int qSelection = 0;// Joint selection (for interactive controls).
 
     private int charOffset = (6) + 48;
-    private final Oscilloscope oscilloscope = Oscilloscope.getInstance();
-
     private Robot r1;
     private Float[] symPos = new Float[]{0f, 0f,0f};
 
@@ -64,9 +62,9 @@ public class P3DMap extends ProcessingBase {
         observers = new ArrayList<>();
         this.padding = 5;
         this.next = next;
-        Oscilloscope.setProcessingBase(this);
-        Oscilloscope.setRb(this.rb);
-        rb.addPropertyChangeListener(oscilloscope);
+        Oscilloscope.getInstance().setProcessingBase(this);
+        Oscilloscope.getInstance().setRb(this.rb);
+        rb.addPropertyChangeListener(Oscilloscope.getInstance());
 
     }
 
@@ -74,7 +72,6 @@ public class P3DMap extends ProcessingBase {
         float radius = SHAPE_DIAMETER / 2;
         PShape sphere = createShape(SPHERE, radius);
         sphere.setFill(shapeColor[0]);
-        sphere.noStroke();
         return sphere;
     }
 
@@ -94,15 +91,13 @@ public class P3DMap extends ProcessingBase {
     private processing.core.PShape cubeShape() {
         PShape cubeShape = createShape(BOX, SHAPE_DIAMETER);
         cubeShape.setFill(shapeColor[2]);
-
-        cubeShape.noStroke();
         return cubeShape;
     }
 
 
     @Override
     public void draw() {
-        frameRate(200);
+//        frameRate(100);
         setGLGraphicsViewport(0, 0, width, height);
         background(153, 204, 153);
         // Aggiungo degli effetti di luce direzionale
@@ -149,9 +144,12 @@ public class P3DMap extends ProcessingBase {
         double[] robotPos = ArrayUtils.toPrimitive(rb.getqRover().get(rb.getqRover().size() - 1));
 
         double[] selectedShapePos = rb.getSelectedShape();
-        targetPosRel = new float[]{((float) selectedShapePos[0] - (float) robotPos[1])/2f,
-                ((float) selectedShapePos[1] - (float) robotPos[0])/2f,
-                (float) selectedShapePos[2]+20};        r1 = new Robot(this, rb, false);
+        if(selectedShapePos!=null) {
+            targetPosRel = new float[]{((float) selectedShapePos[0] - (float) robotPos[1]) / 2f,
+                    ((float) selectedShapePos[1] - (float) robotPos[0]) / 2f,
+                    (float) selectedShapePos[2] + 20};
+        }
+        r1 = new Robot(this, rb, false);
         qFinal = r1.getQ();
         // continue the setup
         surface.setTitle("Mappa 3D");
@@ -192,44 +190,30 @@ public class P3DMap extends ProcessingBase {
 
     public void initializeRoverPlot() {
         // Rover Plots
-        oscilloscope.addPlot("X", LEFT_MARGIN, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
-        oscilloscope.addPlot("Y", LEFT_MARGIN, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
-        oscilloscope.addPlot("VX", 2 * LEFT_MARGIN + PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
-        oscilloscope.addPlot("VY", 2 * LEFT_MARGIN + PLOT_WIDTH, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
-        oscilloscope.addPlot("AX", 3 * LEFT_MARGIN + 2 * PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
-        oscilloscope.addPlot("AY", 3 * LEFT_MARGIN + 2 * PLOT_WIDTH, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("X", LEFT_MARGIN, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Y", LEFT_MARGIN, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("VX", 2 * LEFT_MARGIN + PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("VY", 2 * LEFT_MARGIN + PLOT_WIDTH, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("AX", 3 * LEFT_MARGIN + 2 * PLOT_WIDTH, UP_MARGIN, PLOT_WIDTH, PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("AY", 3 * LEFT_MARGIN + 2 * PLOT_WIDTH, 2 * UP_MARGIN + PLOT_HEIGHT, PLOT_WIDTH, PLOT_HEIGHT);
 
-        oscilloscope.addPlot("Q1",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("Q2",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("Q3",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("Q4",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("Q5",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("Q6",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
-        oscilloscope.addPlot("E",LEFT_MARGIN, UP_MARGIN,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q1",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q2",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q3",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q4",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q5",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("Q6",LEFT_MARGIN,2*UP_MARGIN+NEWTON_PLOT_HEIGHT,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
+        Oscilloscope.getInstance().addPlot("E",LEFT_MARGIN, UP_MARGIN,NEWTON_PLOT_WIDTH,NEWTON_PLOT_HEIGHT);
 
-        oscilloscope.setRefBinding("E", rb.errorNewtonProperty());
-        oscilloscope.setRefBinding("Q1", rb.q1NewtonProperty());
-        oscilloscope.setRefBinding("Q2", rb.q2NewtonProperty());
-        oscilloscope.setRefBinding("Q3", rb.q3NewtonProperty());
-        oscilloscope.setRefBinding("Q4", rb.q4NewtonProperty());
-        oscilloscope.setRefBinding("Q5", rb.q5NewtonProperty());
-        oscilloscope.setRefBinding("Q6", rb.q6NewtonProperty());
 
-        oscilloscope.setPlotProperty("Q1",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q2",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q2",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q3",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q4",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q5",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
-        oscilloscope.setPlotProperty("Q6",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q1",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q2",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q2",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q3",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q4",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q5",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
+        Oscilloscope.getInstance().setPlotProperty("Q6",STROKE_REFERENCE_LINE,REFERENCE_STRING,2);
 
-        oscilloscope.setPlotProperty("Q1",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q2",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q2",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q3",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q4",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q5",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
-        oscilloscope.setPlotProperty("Q6",TITLE_COLOR,REFERENCE_STRING, this.color(229, 115, 115));
 
     }
 
@@ -276,11 +260,11 @@ public class P3DMap extends ProcessingBase {
         } else if (key == 'c') {
             dz -= 1;
         } else if (key == 'K' || key == 'k') {
-            oscilloscope.setAllRoverVisible(true);
+            Oscilloscope.getInstance().setAllRoverVisible(true);
         } else if (key == 'W' || key == 'w') {
-            oscilloscope.setAllRoverVisible(false);
+            Oscilloscope.getInstance().setAllRoverVisible(false);
         } else if (key == 'M' || key == 'm') {
-            oscilloscope.setQNewtonVisible(false, qSelection);
+            Oscilloscope.getInstance().setQNewtonVisible(false, qSelection);
         } else if (key == 'F' || key == 'f') {
             setShowSpace(!showSpace);
             setIK(!isIK);
@@ -298,7 +282,7 @@ public class P3DMap extends ProcessingBase {
         // Select joint to control (with some ASCII magic).
         if ((key >= '1') && (key <= (char) charOffset)) {
             qSelection = key - 48 - 1;  // It's an array index.
-            oscilloscope.setQNewtonVisible(true,qSelection);
+            Oscilloscope.getInstance().setQNewtonVisible(true,qSelection);
 
         }
 
@@ -437,7 +421,8 @@ public class P3DMap extends ProcessingBase {
 
         // screen-aligned 2D HUD
         cam.beginHUD();
-        oscilloscope.drawRoverOscilloscope();
+
+        Oscilloscope.getInstance().drawRoverOscilloscope();
         cam.endHUD();
     }
 
@@ -452,9 +437,14 @@ public class P3DMap extends ProcessingBase {
         r1.drawLink();
         r1.showSpace(showSpace);
         cam.beginHUD();
-        oscilloscope.drawIKOscilloscope();
+//        thread("drawIK");
+            Oscilloscope.getInstance().drawIKOscilloscope();
         cam.endHUD();
     }
+//    public void drawIK(){
+//      oscilloscope.drawIKOscilloscope();
+//
+//    }
 
     private void drawTarget() {
         pushMatrix();
