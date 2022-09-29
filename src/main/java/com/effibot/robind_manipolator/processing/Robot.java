@@ -118,7 +118,10 @@ public class Robot {
         float scaleFactor;
         if (id == 0) {
             scaleFactor = 9f;
-        } else {
+        } else if(id==7){
+            scaleFactor=6f;
+        }
+        else{
             scaleFactor = 1;
         }
         shape.scale(scaleFactor);
@@ -229,6 +232,7 @@ public class Robot {
         zeroFrame.show(true);
         //show(0,0,0,true);
         p3d.translate(0, 0, -13);
+        p3d.rotateY(PI/2);
         p3d.shape(shapeList.get(6));
         p3d.popMatrix();
     }

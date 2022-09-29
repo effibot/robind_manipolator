@@ -13,13 +13,14 @@ import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class Plot {
-    private final List<Float> minArray;
-    private final List<Float> maxArray;
+
     private  int titleHeight = 30;
     private int referenceLineColor;
     private int currentLineColor;
     private  int gridColor;
     private int gridHeight;
+    private int START_WINDOW;
+    private int END_WINDOW;
     private final ProcessingBase processingBase;
     private final String title;
     private final int xPos;
@@ -60,10 +61,6 @@ public class Plot {
         referenceLineColor = processingBase.color(204, 0, 0);
         setGridHeight();
         pGraphics = processingBase.createGraphics(width,height);
-
-        minArray = Collections.synchronizedList(this.referenceValProperty.get());
-        maxArray = Collections.synchronizedList(this.referenceValProperty.get());
-
 
     }
 
@@ -134,6 +131,15 @@ public class Plot {
 
     public void setGridHeight(){
         this.gridHeight = height-titleHeight;
+        this.END_WINDOW = gridHeight;
+    }
+
+    public int getEND_WINDOW() {
+        return END_WINDOW;
+    }
+
+    public void setEND_WINDOW(int END_WINDOW) {
+        this.END_WINDOW = END_WINDOW;
     }
 
     public float getGridHeight(){
@@ -168,18 +174,47 @@ public class Plot {
             pGraphics.beginDraw();
             pGraphics.stroke(canvasColor);
             drawBackground();
+            ArrayList<Float> range;
+            if(this.title.equals("E")){
+                pGraphics.beginShape();
+                pGraphics.stroke(0);
+                pGraphics.strokeWeight(1f);
+                range = searchRangeData(referenceValProperty.get());
+                float scaling = PApplet.map(0,
+                        range.get(0), range.get(range.size()-1),
+                        END_WINDOW,START_WINDOW+titleHeight );
+                pGraphics.line(0, scaling , width, scaling );
+                pGraphics.endShape();
+            }else{
+                range = new ArrayList<>(Arrays.asList(processing.core.PConstants.PI,-processing.core.PConstants.PI));
+                pGraphics.beginShape();
+                pGraphics.stroke(0);
+                pGraphics.strokeWeight(1f);
 
+                float scaling = PApplet.map(0,range.get(0),range.get(1),
+                        END_WINDOW,START_WINDOW+titleHeight );
+                pGraphics.line(0, scaling , width, scaling );
+                pGraphics.endShape();
+            }
 
             pGraphics.beginShape();
             pGraphics.stroke(0);
             pGraphics.strokeWeight(referenceLineStroke);
             pGraphics.stroke(referenceLineColor);
-            scaleValue(referenceValProperty, referenceValProperty.get().stream().min(Float::compare).get(),
-                    referenceValProperty.get().stream().max(Float::compare).get());
+            synchronized (referenceValProperty) {
+                scaleValue(referenceValProperty, range.get(0),range.get(1));
+            }
             pGraphics.endShape();
 
             pGraphics.endDraw();
+            processingBase.image(pGraphics, xPos, yPos);
         }
+    }
+
+    private ArrayList<Float> searchRangeData(ObservableList<Float> floats){
+        ObservableList<Float> fsorted = floats.sorted();
+        return new ArrayList<>(Arrays.asList(fsorted.get(0),fsorted.get(fsorted.size()-1)));
+
     }
 
     public void drawRefCurr() {
@@ -200,11 +235,13 @@ public class Plot {
 
             pGraphics.beginShape();
             pGraphics.stroke(0);
-            pGraphics.strokeWeight(0.5f);
+            pGraphics.strokeWeight(1f);
             float scaling = PApplet.map(0,
                     minValf, maxValf,
-                    0, gridHeight - 20f);
-            pGraphics.line(0, scaling + titleHeight, width, scaling + titleHeight);
+                    END_WINDOW,START_WINDOW+titleHeight );
+//            pGraphics.line(0, scaling + titleHeight, width, scaling + titleHeight);
+            pGraphics.line(0, scaling , width, scaling );
+
             pGraphics.endShape();
 
             pGraphics.beginShape();
@@ -233,10 +270,10 @@ public class Plot {
             float time = 0.0f;
             float step = 1/100f;
             for (int i = 0; i < valProperty.get().size(); i++) {
-                    float scaledYValue = PApplet.map(valProperty.get().get(i), min,max, 0,gridHeight-20f);
+                    float scaledYValue = PApplet.map(valProperty.get().get(i), min,max, END_WINDOW,START_WINDOW+titleHeight);
                     float scaledXValue = PApplet.map(time, 0, RobotBean.getMaxPoint()/100f, 0, width);
                     pGraphics.fill(0,0,0,0);
-                    pGraphics.vertex(scaledXValue, scaledYValue+titleHeight);
+                    pGraphics.vertex(scaledXValue, scaledYValue);
                     pGraphics.noFill();
                     time += step;
 

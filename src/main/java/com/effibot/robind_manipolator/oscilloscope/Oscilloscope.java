@@ -103,8 +103,8 @@ public class Oscilloscope implements PropertyChangeListener {
                 addPoint("Y", "getqRover", false, 1);
                 addPoint("X", "getqGRover", true, 0);
                 addPoint("Y", "getqGRover", true, 1);
-                addPoint("VX", "getDqRover", false, 1);
                 addPoint("VY", "getDqRover", false, 0);
+                addPoint("VX", "getDqRover", false, 1);
                 addPoint("VY", "getDqGRover", true, 1);
                 addPoint("VX", "getDqGRover", true, 0);
                 addPoint("AX", "getDdqRover", false, 0);
@@ -166,8 +166,7 @@ public class Oscilloscope implements PropertyChangeListener {
 //    }
     private static final List<String> IK_NAMES_PLOT = Arrays.asList("Q1","Q2","Q3","Q4","Q5","Q6");
 
-    public  synchronized void setQNewtonVisible(boolean visible, int qSelection) {
-//        String[] keys = plotMap.keySet().toArray(new String[0]);
+    public void setQNewtonVisible(boolean visible, int qSelection) {
         String toShow = "Q"+(qSelection+1);
         for (String k : IK_NAMES_PLOT) {
             plotMap.get(k).setVisible(false);
