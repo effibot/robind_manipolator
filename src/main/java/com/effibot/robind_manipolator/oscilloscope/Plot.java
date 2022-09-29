@@ -170,7 +170,7 @@ public class Plot {
         this.currentLineColor = currentLineColor;
     }
     public void onlyRef(){
-        if (visible ) {
+        if (visible && !referenceValProperty.get().isEmpty() ) {
             pGraphics.beginDraw();
             pGraphics.stroke(canvasColor);
             drawBackground();

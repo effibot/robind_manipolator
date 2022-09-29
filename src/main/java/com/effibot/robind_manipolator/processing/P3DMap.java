@@ -19,8 +19,9 @@ import java.util.concurrent.Semaphore;
 import com.effibot.robind_manipolator.oscilloscope.Oscilloscope;
 public class P3DMap extends ProcessingBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(P3DMap.class.getName());
+
     private static final String CURRENT_STRING = "current";
-    private final List<Obstacle> obsList;
+    private List<Obstacle> obsList;
     private static final int NX = 2;
     private static final int NY = 1;
     private final int mapH;
@@ -53,9 +54,8 @@ public class P3DMap extends ProcessingBase {
     private static final String TITLE_COLOR = "titlecolor";
 
 
-    public P3DMap(List<Obstacle> obsList, RobotBean rb, Semaphore[] next) {
+    public P3DMap(RobotBean rb, Semaphore[] next) {
         super();
-        this.obsList = obsList;
         this.rb = rb;
         size = 1024;
         mapH = 20;
@@ -67,6 +67,9 @@ public class P3DMap extends ProcessingBase {
         Oscilloscope.getInstance().setRb(this.rb);
         rb.addPropertyChangeListener(Oscilloscope.getInstance());
 
+    }
+    public void setObs(){
+        obsList = rb.getObsList();
     }
 
     private processing.core.PShape sphereShape() {

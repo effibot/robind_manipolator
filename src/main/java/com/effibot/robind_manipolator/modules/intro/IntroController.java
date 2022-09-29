@@ -52,6 +52,8 @@ public class IntroController {
                 ostacoli.Poi tornare sulla finestra
                 principale per annullare o confermare
                 la selezione.
+                Per retrocedere alla schermata principale
+                chiudere la tab.
                 """;
 
     public IntroController(IntroModule introModule, ProcessingBase sketch, Workbench workbench) {
@@ -91,7 +93,6 @@ public class IntroController {
             introBean = new IntroBean();
             this.settingBean = new SettingBean();
             this.robotBean = new RobotBean();
-//            this.robotBean = new RobotBean();
             this.robotBean.setObsList(((P2DMap)sketch).getObstacleList());
             SettingModule sm = new SettingModule(settingBean,robotBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));

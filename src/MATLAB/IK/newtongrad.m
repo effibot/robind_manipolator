@@ -46,9 +46,7 @@ function newtongrad(roll,pitch,yaw,src)
             errorNewton = norm(E(qN(1,1),qN(2,1),qN(3,1),qN(4,1),qN(5,1),qN(6,1)));
 %             errorGradient = norm(E(qG(1,1),qG(2,1),qG(3,1),qG(4,1),qG(5,1),qG(6,1)));
             q0=qN;
-            det(Jval);
-            Rv(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1))
-            errnorm = errorNewton
+            errnorm = errorNewton;
 %             if abs(det(Jval)) <1e-1 
 %                 q0=qG;
 %                 errnorm = errorGradient;

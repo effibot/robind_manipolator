@@ -1,6 +1,10 @@
 .root > * {
-    -fx-light-text-color: rgba(33, 33, 33, 0.58);
+    -fx-light-text-color: rgb(12, 0, 0);
     -fx-base: rgba(250, 208, 208, 0.96);
+    -fx-background-image: url('img/RobotWallPaper.jpg');
+    -fx-background-repeat: stretch;
+    -fx-background-position: center center;
+    -fx-background-size:1094.5 830.5;
 
     -primary-color: #4db6ac;
     -primary-variant-color: #3cc7d3;
@@ -25,7 +29,7 @@
 /*Raised button example */
 .jfx-button {
     -jfx-button-type: RAISED;
-    -fx-background-color: #7e7ee8;
+    -fx-background-color: rgb(21, 101, 192);
     -fx-text-fill: white;
 }
 #user-icon {

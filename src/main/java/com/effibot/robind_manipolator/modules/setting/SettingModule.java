@@ -250,7 +250,6 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
     @Override
     public boolean destroy(){
         TCPFacade.getInstance().resetSocket();
-
         wb.getModules().remove(this);
 
         return true;

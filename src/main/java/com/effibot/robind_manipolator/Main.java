@@ -5,6 +5,9 @@ import com.dlsc.workbenchfx.view.controls.ToolbarItem;
 import com.effibot.robind_manipolator.modules.manual.WelcomeModule;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -29,7 +32,6 @@ public class Main extends Application {
 
             wb.getToolbarControlsRight().add(tb);
             wb.getStylesheets().add(Objects.requireNonNull(getClass().getResource("ui.css")).toExternalForm());
-
             Scene myScene = new Scene(wb);
             stage.setTitle("Robind Manipolator");
             stage.setScene(myScene);

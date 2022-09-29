@@ -9,16 +9,16 @@ endId = list(idx).endid;
 startPos = [findobj(nodeList,'id',endId).bc,0];
 pend=shapepos(idx,2:4);
 P = shortestpath(G, startId, endId);
-if P == startId 
-    msg = src.UserData.buildMessage(0,"FINISH",1);
-    src.UserData.sendMessage(src,msg);
-    return
-elseif isempty(P)
-    msg = src.UserData.buildMessage(0,"ERROR_CYCLE",3);
-    msg = src.UserData.buildMessage(msg,"FINISH",1);
-    src.UserData.sendMessage(src,msg);
-    return
-end
+% if P == startId 
+%     msg = src.UserData.buildMessage(0,"FINISH",1);
+%     src.UserData.sendMessage(src,msg);
+%     return
+% elseif isempty(P)
+%     msg = src.UserData.buildMessage(0,"ERROR_CYCLE",3);
+%     msg = src.UserData.buildMessage(msg,"FINISH",1);
+%     src.UserData.sendMessage(src,msg);
+%     return
+% end
 msg = src.UserData.buildMessage(0, "PATHIDS",P);
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);

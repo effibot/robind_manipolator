@@ -60,12 +60,21 @@ public class SettingController {
     private final Semaphore[] next = {new Semaphore(0),new Semaphore(0)};
 
     private static final String WIKICONTENT = """
+            JAVA:
             Selezionare la forma e l'ID da cui far partire il rover, il metodo di
-             interpolazione della generazione del cammino e gli angoli
+             interpolazione per la generazione del cammino e gli angoli
             di roll,pitch e yaw da utilizzare nella cinematica inversa per avvicinare
-            il PUMA alla forma e procedere all'identificazione dell'oggetto.
+            il PUMA alla forma.
             Nel caso in cui si voglia cambiare i parametri, modificare le scelte e
             premere il bottono Start 2D; altrimenti, per continuare premere Start 3D.
+            PROCESSING:
+            Tasto K: Visualizza i grafici delle posizioni, velocità e accelerazioni del Rover
+            Tasto W: Nasconde tutti i grafici del Rover
+            Tasto F: Mostra lo spazio operativo di posizione e orientamento del Robot
+            Tasto G: Esegue la cinematica inversa esatta di posizione e di orientamento
+            Tasto 1-2-3-4-5-6: Mostra i grafici delle variabili di giunto e dell'errore della
+                                cinematica inversa effettuata tramite Newton
+            Tasto M: Nasconde tutti i grafici relativi all'inversa di Newton
             """;
     public void notifyPropertyChange(String propertyName, Object oldValue, Object newValue) {
         /*
@@ -192,8 +201,13 @@ public class SettingController {
             try {
                 sequence[1].acquire();
                 rb.setShapePos(sb.getShapeList());
-                p3d = new P3DMap(rb.getObsList(), rb, next);
-                p3d.run(p3d.getClass().getSimpleName());
+                if(p3d == null) {
+                    p3d = new P3DMap( rb, next);
+                    p3d.setObs();
+                    p3d.run(p3d.getClass().getSimpleName());
+                }else{
+                    p3d.setObs();
+                }
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
                 inverseThread.start();
@@ -303,6 +317,7 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally IK");
+                sequence[1].release();
 
             }
         });
@@ -328,5 +343,6 @@ public class SettingController {
     public void setControlForm(Form cf){
         this.controlForm = cf;
     }
+
 
 }
