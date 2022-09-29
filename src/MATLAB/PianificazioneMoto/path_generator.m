@@ -19,11 +19,19 @@ P = shortestpath(G, startId, endId);
 %     src.UserData.sendMessage(src,msg);
 %     return
 % end
+if(length(P)==1 && findobj(nodeList,'id',endId).dim == 64)
+msg = src.UserData.buildMessage(0, "PATHIDS",[P,P]);
+p = fliplr([startPos(1:2);startPos(1:2)])';
+dp = zeros(2,2);
+ddp = zeros(2,2);
+else
 msg = src.UserData.buildMessage(0, "PATHIDS",P);
-msg = src.UserData.buildMessage(msg,"FINISH",0);
-src.UserData.sendMessage(src,msg);
 [p,dp,ddp,pik] = pathfind(nodeList, P, Aint, Amid, redObsbc',method,pend);
 pend = pik;
+end
+msg = src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+
 msg =src.UserData.buildMessage(0,"Q",p');
 msg =src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);

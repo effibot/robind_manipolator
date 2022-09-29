@@ -1,31 +1,28 @@
 package com.effibot.robind_manipolator.modules.intro;
 
 import com.dlsc.workbenchfx.Workbench;
-import com.dlsc.workbenchfx.model.WorkbenchDialog;
 import com.dlsc.workbenchfx.view.controls.ToolbarItem;
+import com.effibot.robind_manipolator.Utils;
+import com.effibot.robind_manipolator.bean.IntroBean;
 import com.effibot.robind_manipolator.bean.RobotBean;
+import com.effibot.robind_manipolator.bean.SettingBean;
+import com.effibot.robind_manipolator.modules.setting.SettingModule;
 import com.effibot.robind_manipolator.processing.Obstacle;
 import com.effibot.robind_manipolator.processing.P2DMap;
 import com.effibot.robind_manipolator.processing.ProcessingBase;
-import com.effibot.robind_manipolator.Utils;
-import com.effibot.robind_manipolator.bean.IntroBean;
-import com.effibot.robind_manipolator.bean.SettingBean;
-import com.effibot.robind_manipolator.modules.setting.SettingModule;
 import com.effibot.robind_manipolator.tcp.Lock;
 import com.effibot.robind_manipolator.tcp.TCPFacade;
 import com.jfoenix.controls.JFXButton;
 import com.jogamp.newt.opengl.GLWindow;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import org.controlsfx.control.PopOver;
+import javafx.embed.swing.SwingFXUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
@@ -86,7 +83,7 @@ public class IntroController {
             }
         });
     }
-
+    private SettingModule sm = null;
     public void onContinueAction(JFXButton btn, Workbench wb, ProcessingBase pb) {
 
         btn.setOnAction(event -> {
@@ -94,7 +91,7 @@ public class IntroController {
             this.settingBean = new SettingBean();
             this.robotBean = new RobotBean();
             this.robotBean.setObsList(((P2DMap)sketch).getObstacleList());
-            SettingModule sm = new SettingModule(settingBean,robotBean,wb);
+            sm = new SettingModule(settingBean,robotBean,wb);
             introBean.setObsList(Utils.obs2List(((P2DMap) pb).getObstacleList()));
 
             if(t!=null)
@@ -180,6 +177,13 @@ public class IntroController {
             LOGGER.debug( " Take Queue Interrupted!", e);
             Thread.currentThread().interrupt();
         }finally {
+            File fl = new File("src/main/resources/com/effibot/robind_manipolator/img/textureImg.png");
+            try {
+                ImageIO.write(SwingFXUtils.fromFXImage(sm.getMap(),null),"png",fl);
+            } catch (IOException e) {
+                LOGGER.error("Unable to make Texture",e);
+                Thread.currentThread().interrupt();
+            }
             Thread.currentThread().interrupt();
         }
 

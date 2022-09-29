@@ -134,13 +134,6 @@ public class SettingController {
 
     public void onStart2DAction(JFXButton start) {
         start.setOnAction(event -> {
-            File fl = new File("src/main/resources/com/effibot/robind_manipolator/img/textureImg.png");
-            try {
-                ImageIO.write(SwingFXUtils.fromFXImage(sm.getMap(),null),"png",fl);
-            } catch (IOException e) {
-                LOGGER.error("Unable to make Texture",e);
-                Thread.currentThread().interrupt();
-            }
             t = getNew2DThread();
             t.start();
             sm.getVb().setDisable(true);
@@ -152,7 +145,7 @@ public class SettingController {
         LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
         pkt.put("PROC", "PATH");
         pkt.put("START", sb.getSelectedId());
-        pkt.put("END", sb.shapeToPos());
+        pkt.put("END", ArrayUtils.subarray(sb.shapeToPos(),1,3));
         rb.setSelectedShape(sb.shapeToPos());
         pkt.put("METHOD", sb.getSelectedMethod());
         notifyPropertyChange("SEND", null, pkt);
@@ -202,11 +195,12 @@ public class SettingController {
                 sequence[1].acquire();
                 rb.setShapePos(sb.getShapeList());
                 if(p3d == null) {
-                    p3d = new P3DMap( rb, next);
+                    p3d = new P3DMap(rb, next);
                     p3d.setObs();
                     p3d.run(p3d.getClass().getSimpleName());
                 }else{
                     p3d.setObs();
+                    p3d.setup();
                 }
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
@@ -216,11 +210,8 @@ public class SettingController {
                 LOGGER.error("Interruption",e);
                 Thread.currentThread().interrupt();
             }
-
-
-
-
         });
+        sm.getVb().setDisable(true);
     }
 
     private Thread makeSimulation() {
@@ -256,6 +247,7 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally Simulink, releasing IK");
+                TCPFacade.getInstance().resetSocket();
                 sequence[1].release();
             }
         });
@@ -308,7 +300,10 @@ public class SettingController {
 
                             rb.setE(FXCollections.observableList(List.of(((Double) pkt.get(key)).floatValue())));
                         }
-                        case "FINISH"->finish = true;
+                        case "FINISH"->{
+                            finish = true;
+                            sm.getVb().setDisable(false);
+                        }
                         default -> LOGGER.warn("IK not mapped case:{}",key);
                     }
                 }
@@ -318,7 +313,6 @@ public class SettingController {
             }finally {
                 LOGGER.info("Finally IK");
                 sequence[1].release();
-
             }
         });
     }

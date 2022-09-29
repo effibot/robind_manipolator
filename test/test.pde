@@ -81,12 +81,12 @@ public PeasyCam setupScene(PeasyCam cam,int id) {
         cam.setYawRotationMode();
         cam.setRightDragHandler(null);
         cam.setCenterDragHandler(null);
-        switch(id){
+        /*switch(id){
             case 0:              
                 cam.setMinimumDistance(300);
                 cam.setMaximumDistance(1000);
                 break;
-        }
+        }*/
         cam.feed();
         // projection - using camera viewport
         perspective(60 * PI / 180, w / (float) h, 1, 5000);
@@ -133,23 +133,24 @@ void keyPressed(){
     case 'd': pz +=1;break;
     case 'c': pz -=1;break;
   }
+  float[] status = r.getJoint();
   if (key == '1') {
-            r.setJoint(0,0.2f);
+            r.setJoint(0,elbow*status[0]+0.2f);
         }
         if (key == '2') {
-            r.setJoint(1,0.2f);
+            r.setJoint(1,elbow*status[1]+0.2f);
         }
         if (key == '3') {
-            r.setJoint(2,0.2f);
+            r.setJoint(2,elbow*status[2]+0.2f);
         }
         if (key == '4') {
-            r.setJoint(3,0.2f);
+            r.setJoint(3,elbow*status[3]+0.2f);
         }
         if (key == '5') {
-            r.setJoint(4,0.2f);
+            r.setJoint(4,elbow*status[4]+0.2f);
         }
         if (key == '6') {
-            r.setJoint(5,0.2f);
+            r.setJoint(5,elbow*status[5]+0.2f);
         }
         if (key=='q'){
           roll =roll+0.2;
@@ -173,6 +174,8 @@ void keyPressed(){
         if(key == 'e'){
           elbow = -elbow;
         }  
+      System.out.format("%f %f %f\n",px,py,pz);
+        
 }
 int box_size = 10;
 public void show(float x, float y, float z, boolean show) {
@@ -211,8 +214,8 @@ public void show(float x, float y, float z, boolean show) {
      //float pitch = 0;
      //float yaw = 0;
      float px= 0;
-float py= 80f;
-float pz = 50f;
+float py= 0f;
+float pz = 0f;
 int dx = 0;
 Ellipsoid shape;
 int elbow = 1;
@@ -227,8 +230,9 @@ public void draw3Drobot(PeasyCam cam){
         fill(255);
         stroke(0);
         strokeWeight(3);
-        pushMatrix();
-        translate(px,py,pz);
+        translate(0,0,-100);
+        /*pushMatrix();
+        
         //show(0,0,96+dx,true);    
         rotateZ(roll);
         rotateY(pitch);
@@ -240,10 +244,10 @@ public void draw3Drobot(PeasyCam cam){
         noStroke();                
         //translate(0,0,-32);
         Float[] val = coords.get(dx+67);
-          r.setDhTable(r.inverseKinematics(val[0],val[1],val[2],roll,pitch,yaw,elbow));
+          //r.setDhTable(r.inverseKinematics(val[0],val[1],val[2],roll,pitch,yaw,elbow));
           
-        pushMatrix();
-        for(int i = 0; i < coords.size(); i++){
+        pushMatrix();/*
+        /*for(int i = 0; i < coords.size(); i++){
           pushMatrix();
           Float[] bc = coords.get(i);
           translate(bc[0],bc[1],bc[2]);
@@ -252,24 +256,24 @@ public void draw3Drobot(PeasyCam cam){
         noFill();
           sphere(12);
           popMatrix();
-        }
+        }*/
          r.drawLink();
          //show(0,0,0,true);
          
-        popMatrix();
-       pushMatrix();
+        //popMatrix();
+       /*pushMatrix();
 
         translate(0.0, 0.0, 33);
         //fill(color(20,200,150));
         stroke(0);
-        strokeWeight(2);
+        strokeWeight(2);*/
         //sphere(abs(a2 - d4));
         //sphere(50+51);
         //shape = new Ellipsoid(50+51, 50+51, 50+51, 24, 12);
         //shape.fill(color(1,1,1, 0.5));
         //shape.drawMode(S3D.WIRE);
         //shape.draw(getGraphics());
-        popMatrix();
+        //popMatrix();
         cam.beginHUD();
 
 
@@ -283,3 +287,4 @@ public void setGLGraphicsViewport(int x, int y, int w, int h) {
     pgl.scissor(x, y, w, h);
     pgl.viewport(x, y, w, h);
 }  
+

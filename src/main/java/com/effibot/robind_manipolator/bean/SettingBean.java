@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SettingBean implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(SettingBean.class.getName());
@@ -140,7 +141,9 @@ public class SettingBean implements Serializable {
 
     public double[] shapeToPos(){
         int select = shapeToID();
-        this.selectedShapePos = new double[]{getShapeList()[select][1],
+        this.selectedShapePos = new double[]{
+                getShapeList()[select][0],
+                getShapeList()[select][1],
                 getShapeList()[select][2],
                 getShapeList()[select][3]};
         return this.selectedShapePos;
@@ -183,6 +186,8 @@ public class SettingBean implements Serializable {
     }
 
     public void setPathLabels(ObservableList<String> pathLabels) {
+        if(pathLabels.size() == 2 && Objects.equals(pathLabels.get(0), pathLabels.get(1)))
+            this.pathLabels.set(FXCollections.observableArrayList(pathLabels.get(0)));
         this.pathLabels.set(pathLabels);
     }
     public void setFinish(boolean finish) {

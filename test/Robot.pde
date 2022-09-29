@@ -24,7 +24,7 @@ public class Robot {
     private final float D_3 = 0.0f;
     private final float D_4 = 51.0f;
     private final float D_5 = 0.0f;
-    private final float D_6 = 12.0f;
+    private final float D_6 = 28.0f;
     private final float[] d = new float[]{D_1, D_2, D_3, D_4, D_5, D_6};
     // Alpha
     private final float alpha1 = -PI / 2;
@@ -77,12 +77,15 @@ public class Robot {
         if (id == 0) {
             //  scaleFactor = 30.0f;
             scaleFactor = 9f;
+        } else if (id == 6) {
+            scaleFactor = 0.3f;
         } else {
             scaleFactor = 1;
         }
         shape.scale(scaleFactor);
         return shape;
     }
+    
     public void drawLink() {
         this.getShapeList().get(0).setFill(color(102,51,0));
         //! Offset dalla mappa 9.5        
@@ -146,6 +149,7 @@ public class Robot {
         //  zeroFrame = new Reference(p3d,new PVector(0,0,0));
         //  zeroFrame.show(true);
         translate(0, 0, -1);
+        stroke(0);
         rotateZ(PI / 2);
         shape(this.getShapeList().get(5));
         popMatrix();
@@ -160,18 +164,22 @@ public class Robot {
         //sphere(abs(a2 - d4));
         //sphere(d6);
         noStroke();
+        
         // dh 56
         Vector<Float> r56 = this.getDhTable().get(5);
         this.dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
         
-        this.getShapeList().get(6).setFill(color(40, 2, 100));
+        this.getShapeList().get(6).setFill(color(255, 0, 100));
         pushMatrix();
-        //  zeroFrame = new Reference(p3d,new PVector(0,0,0));
+        //  
         //  zeroFrame.show(true);
-        //show(0,0,0,true);
-        translate(0, 0, -13);
+        
+        //
+        show(0,0,0,true);
+        translate(0,0,-10);
         shape(this.getShapeList().get(6));
         popMatrix();
+   
     }
     
     public Vector<Float> getDHrow(int rIndex) {
@@ -217,11 +225,11 @@ public class Robot {
         /* inversa di po
         sizione */
         // posizione del polso
-
-
-        float xh = (float) (xdes - D_6 * (sin(roll*sin(yaw)+cos(roll)*sin(pitch)*cos(yaw))));
-        float yh = (float) (ydes - D_6 * (sin(roll) * sin(pitch)*cos(yaw)-cos(roll)*sin(yaw)));
-        float zh = (float) (zdes - D_6 * cos(pitch)*cos(yaw));
+        
+        
+        float xh = (float)(xdes - D_6 * (sin(roll * sin(yaw) + cos(roll) * sin(pitch) * cos(yaw))));
+        float yh = (float)(ydes - D_6 * (sin(roll) * sin(pitch) * cos(yaw) - cos(roll) * sin(yaw)));
+        float zh = (float)(zdes - D_6 * cos(pitch) * cos(yaw));
         // setups for next calculations
         float B2 = -elbow * sqrt(pow(xh,2) + pow(yh,2));
         float B1 = D_1 - zh;
@@ -359,8 +367,14 @@ public class Robot {
     }
         return value;
     }
-        public void printEF(){
+        public float[] getJoint(){
+        float[] status = new float[6];
+        for (int i = 0; i < 6; i++){
+        status[i] = this.getDhTable().get(i).get(0);
+    }
+        return status;
+    }
         
     }
-    }
+        
         

@@ -17,6 +17,7 @@ for i = 1:dimPath -1
         nPoints(end+1,:) = next.bc;
     end
 end
+if(~isempty(nPoints))
 if(next.dim>64)
     p1 = next.bc;
     p2 = pend(1:2);
@@ -34,6 +35,9 @@ if(next.dim>64)
     ybox = ylimit([1 2 2 1 1]);
     [xi,yi] = polyxpoly([p1(2) p2(2)],[p1(1) p2(1)],xbox,ybox);
     nPoints(end+1,:)=[yi,xi];
+end
+else
+    nPoints = findobj(nodeList,'id',idList(1)).bc;
 end
 pik = [(pend(1:2)+nPoints(end,:))./2,pend(3)] ;
 % figure

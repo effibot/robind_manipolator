@@ -3,7 +3,7 @@ function newtongrad(roll,pitch,yaw,src)
     pfinal =pend-startPos;% [50 50 50];
     P=[pfinal(1);pfinal(2);pfinal(3)+20;deg2rad(roll);deg2rad(pitch);deg2rad(yaw)];
     q=sym('q',[6,1]);
-    L=[33;50;0;51;0;12];
+    L=[33;50;0;51;0;28];
     dof=6;
     col=4;
     dhparams=sym('b',[dof,col]);

@@ -7,11 +7,9 @@ import javafx.collections.FXCollections;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processing.core.PShape;
-import processing.core.PVector;
 
 import java.io.File;
 import java.util.*;
@@ -30,7 +28,7 @@ public class Robot {
     private static final float D_3 = 0.0f;
     private static final float D_4 = 51.0f;
     private static final float D_5 = 0.0f;
-    private static final float D_6 = 12.0f;
+    private static final float D_6 = 28.0f;
     private static final float[] d = new float[]{D_1, D_2, D_3, D_4, D_5, D_6};
     // Alpha
     private static final float ALPHA_1 = -PI / 2;
@@ -73,6 +71,8 @@ public class Robot {
                     ))
     ));
     private final boolean toBind;
+    private static int[] robotColor;
+    private final Reference frame;
     public Robot(ProcessingBase p3d, RobotBean rb, boolean toBind) {
         this.p3d = p3d;
         this.shapeList.add(loadLink(0));
@@ -90,7 +90,8 @@ public class Robot {
             dhTable.add(dhRow);
             iKTable.add(iKRow);
         }
-
+        robotColor = new int[]{p3d.color(210, 105, 30), p3d.color(100, 200, 0)};
+        this.frame = new Reference(p3d);
 
     }
 
@@ -118,8 +119,8 @@ public class Robot {
         float scaleFactor;
         if (id == 0) {
             scaleFactor = 9f;
-        } else if(id==7){
-            scaleFactor=6f;
+        } else if(id == 6){
+            scaleFactor= 0.3f;
         }
         else{
             scaleFactor = 1;
@@ -140,22 +141,18 @@ public class Robot {
                 p3d.popMatrix();
             }
         }
-        shapeList.get(0).setFill(p3d.color(102, 51, 0));
+        shapeList.get(0).setFill(robotColor[0]);
         //! Offset dalla mappa 9.5
         p3d.pushMatrix();
         p3d.rotateX(PI / 2);
-        //rotateY(PI/2);
         // Rover
         p3d.shape(shapeList.get(0));
         p3d.popMatrix();
         // dh 01
         Vector<Float> r01 = getDHrow(0);
         dh(r01.get(0), r01.get(1), r01.get(2), r01.get(3));
-        shapeList.get(1).setFill(p3d.color(100, 200, 0));
+        shapeList.get(1).setFill(robotColor[1]);
         p3d.pushMatrix();
-//        zeroFrame = new Reference(p3d,new PVector(0,0,0));
-//        zeroFrame.show(true);
-        //show(0,dx,0,true);
         p3d.rotateY(-PI / 2);
         p3d.rotateZ(PI);
         p3d.translate(0, -25, 0);
@@ -169,11 +166,10 @@ public class Robot {
             p3d.sphere(A_2 + D_4);
             p3d.noStroke();
         }
-
         // dh 12
         Vector<Float> r12 = getDHrow(1);
         dh(r12.get(0), r12.get(1), r12.get(2), r12.get(3));
-        shapeList.get(2).setFill(p3d.color(40, 2, 100));
+        shapeList.get(2).setFill(robotColor[0]);
         p3d.pushMatrix();
         p3d.translate(-50, 0, 0);
         p3d.rotateY(PI / 2);
@@ -182,10 +178,8 @@ public class Robot {
         // dh 23
         Vector<Float> r23 = getDHrow(2);
         dh(r23.get(0), r23.get(1), r23.get(2), r23.get(3));
-        shapeList.get(3).setFill(p3d.color(100, 200, 0));
+        shapeList.get(3).setFill(robotColor[1]);
         p3d.pushMatrix();
-//        zeroFrame = new Reference(this,new PVector(0,0,0));
-//        zeroFrame.show(true);
         p3d.rotateZ(PI / 2);
         p3d.rotateX(-PI);
         p3d.shape(shapeList.get(3));
@@ -193,17 +187,13 @@ public class Robot {
         // dh 34
         Vector<Float> r34 = getDHrow(3);
         dh(r34.get(0), r34.get(1), r34.get(2), r34.get(3));
-        shapeList.get(4).setFill(p3d.color(40, 2, 100));
+        shapeList.get(4).setFill(robotColor[0]);
         p3d.pushMatrix();
-//        zeroFrame = new Reference(p3d,new PVector(0,0,0));
-//        zeroFrame.show(true);
-
         p3d.translate(0, 51, 0);
         p3d.rotateX(-PI / 2);
         p3d.rotateZ(PI / 2);
         p3d.shape(shapeList.get(4));
         p3d.popMatrix();
-
         // draw rotOpSpace
         if (rotOpSpace && toShow) {
             p3d.stroke(0);
@@ -215,10 +205,8 @@ public class Robot {
         // dh 45
         Vector<Float> r45 = getDHrow(4);
         dh(r45.get(0), r45.get(1), r45.get(2), r45.get(3));
-        shapeList.get(5).setFill(p3d.color(100, 200, 0));
+        shapeList.get(5).setFill(robotColor[1]);
         p3d.pushMatrix();
-//        zeroFrame = new Reference(p3d,new PVector(0,0,0));
-//        zeroFrame.show(true);
         p3d.translate(0, 0, -1);
         p3d.rotateZ(PI / 2);
         p3d.shape(shapeList.get(5));
@@ -226,13 +214,10 @@ public class Robot {
         // dh 56
         Vector<Float> r56 = getDHrow(5);
         dh(r56.get(0), r56.get(1), r56.get(2), r56.get(3));
-        shapeList.get(6).setFill(p3d.color(40, 2, 100));
+        shapeList.get(6).setFill(robotColor[0]);
         p3d.pushMatrix();
-        Reference zeroFrame = new Reference(p3d, new PVector(0, 0, 0));
-        zeroFrame.show(true);
-        //show(0,0,0,true);
-        p3d.translate(0, 0, -13);
-        p3d.rotateY(PI/2);
+        frame.show(true);
+        p3d.translate(0,0,-10);
         p3d.shape(shapeList.get(6));
         p3d.popMatrix();
     }
