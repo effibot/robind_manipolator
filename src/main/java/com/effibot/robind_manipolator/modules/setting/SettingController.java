@@ -189,6 +189,7 @@ public class SettingController {
             sb.setPitch(((DoubleField)controlForm.getFields().get(4)).getValue());
             sb.setYaw(((DoubleField)controlForm.getFields().get(5)).getValue());
             rb.setSelectedOrient(sb.getRoll(),sb.getPitch(),sb.getYaw());
+
             Thread simulationThread = makeSimulation();
             simulationThread.start();
             try {
@@ -200,7 +201,9 @@ public class SettingController {
                     p3d.run(p3d.getClass().getSimpleName());
                 }else{
                     p3d.setObs();
+                    p3d.getSurface().pauseThread();
                     p3d.setup();
+                    p3d.getSurface().resumeThread();
                 }
                 next[0].acquire();
                 Thread inverseThread = inverseKinematics();
@@ -210,13 +213,18 @@ public class SettingController {
                 LOGGER.error("Interruption",e);
                 Thread.currentThread().interrupt();
             }
+            finally{
+                sm.getVb().setDisable(true);
+                Thread.currentThread().interrupt();
+
+            }
         });
-        sm.getVb().setDisable(true);
     }
 
     private Thread makeSimulation() {
         return new Thread(()->{
             try {
+
                 sequence[0].acquire();
                 // make new packet
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
@@ -239,6 +247,7 @@ public class SettingController {
                         rb.setError((double[][]) pkt.get("E"));
                     } else {
                         finish = true;
+
                     }
                 }
 
@@ -247,8 +256,10 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally Simulink, releasing IK");
-                TCPFacade.getInstance().resetSocket();
                 sequence[1].release();
+
+
+//                Thread.currentThread().interrupt();
             }
         });
     }
@@ -279,25 +290,9 @@ public class SettingController {
                                     Arrays.stream(qString.split(",")).map(Float::valueOf).toArray(Float[]::new)
                             );
                             rb.setQ(qJoint);
-//                            rb.getQ1Newton().add(qJoint.get(0));
-//                            rb.getQ2Newton().add(qJoint.get(1));
-//                            rb.getQ3Newton().add(qJoint.get(2));
-//                            rb.getQ4Newton().add(qJoint.get(3));
-//                            rb.getQ5Newton().add(qJoint.get(4));
-//                            rb.getQ6Newton().add(qJoint.get(5));
-//
-//                            rb.addQ1Point(qJoint.get(0));
-//                            rb.addQ2Point(qJoint.get(1));
-//                            rb.addQ3Point(qJoint.get(2));
-//                            rb.addQ4Point(qJoint.get(3));
-//                            rb.addQ5Point(qJoint.get(4));
-//                            rb.addQ6Point(qJoint.get(5));
-
 
                         }
                         case "ENEWTON"->{
-//                            rb.getErrorNewton().add( ((Double) pkt.get(key)).floatValue());
-
                             rb.setE(FXCollections.observableList(List.of(((Double) pkt.get(key)).floatValue())));
                         }
                         case "FINISH"->{
@@ -312,7 +307,9 @@ public class SettingController {
                 Thread.currentThread().interrupt();
             }finally {
                 LOGGER.info("Finally IK");
-                sequence[1].release();
+//                sequence[1].release();
+                sequence[0].release();
+                Thread.currentThread().interrupt();
             }
         });
     }

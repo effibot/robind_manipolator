@@ -101,7 +101,7 @@ public class RobotBean implements Serializable {
 
     public void setRoverPos(double[][] roverPos) {
         RobotBean.MAXPOINT=roverPos.length;
-        this.qRover.addAll(adaptToPropertyList(roverPos));
+        this.qRover.setAll(adaptToPropertyList(roverPos));
     }
 
     public void setRoverVel(double[][] roverVel) {

@@ -153,8 +153,8 @@ public class P3DMap extends ProcessingBase {
         double[] robotPos = ArrayUtils.toPrimitive(rb.getqRover().get(rb.getqRover().size() - 1));
         selectedShapePos = rb.getSelectedShape();
         if (selectedShapePos != null) {
-            targetPosRel = new float[]{((float) selectedShapePos[1] - (float) robotPos[1]) / 2f,
-                    ((float) selectedShapePos[2] - (float) robotPos[0]) / 2f,
+            targetPosRel = new float[]{((float) selectedShapePos[1] - (float) robotPos[1]) ,
+                    ((float) selectedShapePos[2] - (float) robotPos[0]) ,
                     (float) selectedShapePos[3] + 20};
         }
         r1 = new Robot(this, rb, false);
@@ -227,6 +227,7 @@ public class P3DMap extends ProcessingBase {
         Oscilloscope.getInstance().setPlotProperty("Q4", STROKE_LINE, REFERENCE_STRING, 2);
         Oscilloscope.getInstance().setPlotProperty("Q5", STROKE_LINE, REFERENCE_STRING, 2);
         Oscilloscope.getInstance().setPlotProperty("Q6", STROKE_LINE, REFERENCE_STRING, 2);
+        Oscilloscope.getInstance().setPlotProperty("E", STROKE_LINE, REFERENCE_STRING, 2);
 
 
     }
@@ -285,7 +286,7 @@ public class P3DMap extends ProcessingBase {
         } else if (key == 'G' || key == 'g') {
             elbow += 1;
             LOGGER.info("Elbow {}", elbow % 7);
-            qFinal = r1.inverseKinematics(targetPosRel[0], targetPosRel[1], targetPosRel[2],
+            qFinal = r1.inverseKinematics(targetPosRel[0]/2f, targetPosRel[1]/2f, targetPosRel[2],
                     rb.getRoll(), rb.getPitch(), rb.getYaw(), elbow % 7);
         }
         if (key == 'o' || key == 'O') {
@@ -453,7 +454,6 @@ public class P3DMap extends ProcessingBase {
         r1.drawLink();
         r1.showSpace(showSpace);
         cam.beginHUD();
-//        thread("drawIK");
         Oscilloscope.getInstance().drawIKOscilloscope();
         cam.endHUD();
     }

@@ -182,7 +182,7 @@ public class Plot {
                 range = searchRangeData(referenceValProperty.get());
                 float scaling = PApplet.map(0,
                         range.get(0), range.get(range.size()-1),
-                        END_WINDOW,START_WINDOW+titleHeight );
+                        END_WINDOW,START_WINDOW+(float)titleHeight );
                 pGraphics.line(0, scaling , width, scaling );
                 pGraphics.endShape();
             }else{
@@ -192,7 +192,7 @@ public class Plot {
                 pGraphics.strokeWeight(1f);
 
                 float scaling = PApplet.map(0,range.get(0),range.get(1),
-                        END_WINDOW,START_WINDOW+titleHeight );
+                        END_WINDOW,START_WINDOW+(float)titleHeight );
                 pGraphics.line(0, scaling , width, scaling );
                 pGraphics.endShape();
             }
