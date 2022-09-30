@@ -21,7 +21,10 @@ function newtongrad(roll,pitch,yaw,src)
     pitchp = atan2(sqrt(1-Rq(3,3)^2),Rq(3,3));
     yawp=atan2(Rq(3,2)/sqrt(1-Rq(3,3)^2),Rq(3,1)/(-sqrt(1-Rq(3,3)^2)));
     rollp = atan2(Rq(2,3)/sqrt(1-Rq(3,3)^2),Rq(1,3)/sqrt(1-Rq(3,3)^2));
-    
+    Rdes = rotz(deg2rad(roll))*roty(deg2rad(pitch))*rotx(deg2rad(yaw));
+    pitchpf = matlabFunction(pitchp);
+    yawpf = matlabFunction(yawp);
+    rollpf = matlabFunction(rollp);
     dep = dr(1:3,4);
     j = jacobian([dep;rollp;pitchp;yawp],q);
     J= matlabFunction(j);
@@ -38,21 +41,21 @@ function newtongrad(roll,pitch,yaw,src)
             % Jacobian
             Jval =J(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
             %Calcolo Algoritmo di Newton
-            qdot = -pinv(Jval)*E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
-            qN = q0+0.009*qdot;
+            qdotN = -pinv(Jval)*E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
+            qN = q0+0.009*qdotN;
             %Calcolo algoritmo del gradiente Gradiente
-            qdot = -Jval'*(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
+            qdotG = -Jval'*(E(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1)));
             %Controllo se il gradiente si ferma dato che E appartiene al
             % Ker di J'-> Ker(J)
-            if(abs(qdot) <1e-2) 
-                qdot = qdot+rand(1)*2;
+            if(abs(qdotG) <1e-2)
+                qdotG = qdotG+rand(1)*max(real(eig(Jval)));
             end
-            qG = q0+1e-4*qdot;
+            qG = q0+1e-4*qdotG;
             % Calcolo degli errori del gradiente e di Newton del passo
             % successivo
             errorNewton = norm(E(qN(1,1),qN(2,1),qN(3,1),qN(4,1),qN(5,1),qN(6,1)));
             errorGradient = norm(E(qG(1,1),qG(2,1),qG(3,1),qG(4,1),qG(5,1),qG(6,1)));
-%           Scelta dell'algoritmo da utilizzare al passo corrente: 
+%           Scelta dell'algoritmo da utilizzare al passo corrente:
 %           Scelgo il gradiente se mi trovo lontano da una singolarità ed
 %           ottengo un errore minore.
 %           Scelgo Newton in tutti gli altri casi.
@@ -63,7 +66,7 @@ function newtongrad(roll,pitch,yaw,src)
             pCurrent = drf(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1));
             positionCondition = abs(cond(L(1),L(2),L(4),pCurrent(1),pCurrent(2),pCurrent(3)));
 %           Calcolo orientamento
-            orientationCondition = Rv(q0(1,1),q0(2,1),q0(3,1),q0(4,1),q0(5,1),q0(6,1));
+            orientationCondition = Rv(qN(1,1),qN(2,1),qN(3,1),qN(4,1),qN(5,1),qN(6,1));
 %             disp("Position Error");
 %             disp(positionCondition);
 %             disp("Orientation Errot");
@@ -71,7 +74,7 @@ function newtongrad(roll,pitch,yaw,src)
             if (positionCondition>0.9 || abs(orientationCondition(3,3))>0.9) && errorGradient<errorNewton
 %                 Mi trovo vicino ad una singolarità di posizione e/o
 %                 orientamento
-                q0 = qG;   
+                q0 = qG;
                 errnorm = errorGradient;
             else
                 q0=qN;
@@ -79,7 +82,7 @@ function newtongrad(roll,pitch,yaw,src)
             end
 %             errnorm
             % Stop Criteria
-            if errnorm<1e-2 || step==0
+            if errnorm<1e-3 || step==0
                 q0
                 msg = src.UserData.buildMessage(0,"Q",q0);
                 msg = src.UserData.buildMessage(msg,"FINISH",0);

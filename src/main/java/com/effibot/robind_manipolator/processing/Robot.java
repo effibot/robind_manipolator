@@ -299,6 +299,10 @@ public class Robot {
         float ds3 = 2 * A_2 * D_4;
         float ns3 = (float) (pow(b1, 2) + pow(yh, 2) + pow(xh, 2) - pow(A_2, 2) - pow(D_4, 2));
         float s3 = (ns3) / ds3;
+        if(abs(s3) == 1) {
+            LOGGER.warn("Desired Point Out of Operative Space");
+            return this.q;
+        }
         // cos(q[3])
         float c3 = (float) ( sol[2] * sqrt(1 - pow(s3, 2)));
         // q[3]

@@ -23,15 +23,12 @@ if(src.NumBytesAvailable~=0)
         case "MAP"
             obs = hashmap.get("OBSLIST");
             dim = hashmap.get("DIM");
-            mapGeneration(obs,dim',src);
-          
+            mapGeneration(obs,dim',src);          
         case "PATH"
             start = hashmap.get("START");
             endp = hashmap.get("END");
             method = hashmap.get("METHOD");
             path_generator(start,endp(1:2)',method,src);
-
-
         case "SYM"
             mass = hashmap.get("M");
             alpha = hashmap.get("ALPHA");

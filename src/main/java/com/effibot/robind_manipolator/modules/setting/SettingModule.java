@@ -111,17 +111,17 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         String valueNonCompliant = "Valore non ammesso";
         String specifyValue = "Specificare un valore";
         Field<DoubleField> rollField = Field.ofDoubleType(rollValue)
-                .label("Roll").required(specifyValue)
+                .label("Roll").required(specifyValue).tooltip("Da 0 a 360")
                 .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
 
         Field<DoubleField> pitchField = Field.ofDoubleType(pitchValue)
-                .label("Pitch").required(specifyValue)
-                .validate(DoubleRangeValidator.between(0.1d, 360.0d, valueNonCompliant));
+                .label("Pitch").required(specifyValue).tooltip("Da 0 a 270")
+                .validate(DoubleRangeValidator.between(0.1d, 270d, valueNonCompliant));
 
 
         Field<DoubleField> yawField = Field.ofDoubleType(yawValue)
-                .label("Yaw").required(specifyValue)
-                .validate(DoubleRangeValidator.between(0.0d, 360.0d, valueNonCompliant));
+                .label("Yaw").required(specifyValue).tooltip("Da -90 a 90")
+                .validate(DoubleRangeValidator.between(-90.0d, 90.0d, valueNonCompliant));
         controlForm = Form.of(Group.of(shapeField, idField, interpField, rollField, pitchField, yawField));
         settingController.setControlForm(controlForm);
         return new FormRenderer(controlForm);
@@ -156,15 +156,20 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         JFXButton start2D = new JFXButton("Start 2D");
         settingController.onStart2DAction(start2D);
         // Start 3D Button
-        JFXButton start3d = new JFXButton("Start 3D");
-        settingController.onStart3DAction(start3d);
+        JFXButton start3D = new JFXButton("Start 3D");
+        settingController.onStart3DAction(start3D);
         // Back Button
         JFXButton back = new JFXButton("Indietro");
         settingController.onBackAction(back);
         settingController.setOnHoverInfo(wb.getToolbarControlsRight().get(0));
+        // validate form
+        controlForm.validProperty().addListener((observableValue, oldValue, newValue) -> {
+                start2D.setDisable(!newValue);
+                start3D.setDisable(!newValue);
+        });
         // Bottom Hbox for start and back
         HBox btmBox = new HBox();
-        btmBox.getChildren().addAll(back, start2D,start3d);
+        btmBox.getChildren().addAll(back, start2D,start3D);
         btmBox.setAlignment(Pos.CENTER);
         btmBox.setSpacing(50);
         vb.getChildren().addAll(form, btmBox);
