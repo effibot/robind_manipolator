@@ -17,17 +17,21 @@ for i = 1:dimPath -1
         nPoints(end+1,:) = next.bc;
     end
 end
-if(~isempty(nPoints))
+if(isempty(nPoints))
+    nPoints(end+1,:) = findobj(nodeList, 'id', idList(1)).bc;
+    next = findobj(nodeList, 'id', idList(1));
+end
+  
 if(next.dim>64)
     p1 = next.bc;
     p2 = pend(1:2);
     
     corners = next.corner';
 
-    corners(1,:) = [corners(1,1)+32 corners(1,2)+32];
-    corners(2,:) = [corners(2,1)-32 corners(2,2)+32];
-    corners(3,:) = [corners(3,1)+32 corners(3,2)-32];
-    corners(4,:) = [corners(4,1)-32 corners(4,2)-32];
+    corners(1,:) = [corners(1,1)+25 corners(1,2)+25];
+    corners(2,:) = [corners(2,1)-25 corners(2,2)+25];
+    corners(3,:) = [corners(3,1)+25 corners(3,2)-25];
+    corners(4,:) = [corners(4,1)-25 corners(4,2)-25];
     
     xlimit = [corners(1,2) corners(4,2)];
     ylimit = [corners(1,1) corners(4,1)];
@@ -36,9 +40,7 @@ if(next.dim>64)
     [xi,yi] = polyxpoly([p1(2) p2(2)],[p1(1) p2(1)],xbox,ybox);
     nPoints(end+1,:)=[yi,xi];
 end
-else
-    nPoints = findobj(nodeList,'id',idList(1)).bc;
-end
+
 pik = [(pend(1:2)+nPoints(end,:))./2,pend(3)] ;
 % figure
 % hold on

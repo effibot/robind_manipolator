@@ -34,6 +34,8 @@ public class RobotBean implements Serializable {
 
     private final ListProperty<Float> errorNewton = new SimpleListProperty<>(FXCollections.observableList(new ArrayList<>(0)));
     private static int MAXPOINT=0;
+    private double[] shapeBc;
+
     public double[][] getShapePos() {
         return shapePos;
     }
@@ -380,4 +382,11 @@ public class RobotBean implements Serializable {
     }
 
 
+    public void setShapeBc(double[] doubles) {
+        this.shapeBc = doubles;
+    }
+
+    public double[] getShapeBc(){
+        return this.shapeBc;
+    }
 }

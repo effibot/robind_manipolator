@@ -54,6 +54,7 @@ public class P3DMap extends ProcessingBase {
     private static final String STROKE_LINE = "strokeline";
     private static final String TITLE_COLOR = "titlecolor";
     private double[] selectedShapePos;
+    private double[] robotPos;
 
 
     public P3DMap(RobotBean rb, Semaphore[] next) {
@@ -150,13 +151,15 @@ public class P3DMap extends ProcessingBase {
         r = new Robot(this, rb, true);
         symQueue = setupSimulationQueue();
         // setup inverse kin vars
-        double[] robotPos = ArrayUtils.toPrimitive(rb.getqRover().get(rb.getqRover().size() - 1));
+        robotPos = ArrayUtils.toPrimitive(rb.getqRover().get(rb.getqRover().size() - 1));
+        LOGGER.info("ROBOT POS:{}",robotPos);
         selectedShapePos = rb.getSelectedShape();
         if (selectedShapePos != null) {
-            targetPosRel = new float[]{((float) selectedShapePos[1] - (float) robotPos[1]) ,
-                    ((float) selectedShapePos[2] - (float) robotPos[0]) ,
+            targetPosRel = new float[]{((float) selectedShapePos[1]-(float)robotPos[1] ) ,
+                    ((float) selectedShapePos[2] -(float)robotPos[0]) ,
                     (float) selectedShapePos[3] + 20};
         }
+        LOGGER.info("RELPOS:{}",targetPosRel);
         r1 = new Robot(this, rb, false);
         selectedShape = selectShape();
         qFinal = r1.getQ();
@@ -286,7 +289,7 @@ public class P3DMap extends ProcessingBase {
         } else if (key == 'G' || key == 'g') {
             elbow += 1;
             LOGGER.info("Elbow {}", elbow % 7);
-            qFinal = r1.inverseKinematics(targetPosRel[0]/2f, targetPosRel[1]/2f, targetPosRel[2],
+            qFinal = r1.inverseKinematics(targetPosRel[0], targetPosRel[1], targetPosRel[2],
                     rb.getRoll(), rb.getPitch(), rb.getYaw(), elbow % 7);
         }
         if (key == 'o' || key == 'O') {
@@ -385,14 +388,14 @@ public class P3DMap extends ProcessingBase {
             if (obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, (float) rb.getShapePos()[0][3]);
+                translate(0, 0, obs.getH()-mapH/2f);
                 pShape = pShapeArrayList.get(0);
                 shape(pShape);
                 popMatrix();
             } else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, (float) rb.getShapePos()[1][3] - SHAPE_DIAMETER / 2 - mapH / 2f);
+                translate(0, 0, obs.getH()-mapH/2f-SHAPE_DIAMETER/2f);
                 pShape = pShapeArrayList.get(1);
                 pShape.setFill(shapeColor[1]);
                 shape(pShape);
@@ -400,7 +403,7 @@ public class P3DMap extends ProcessingBase {
             } else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, (float) rb.getShapePos()[2][3] - mapH / 2f);
+                translate(0, 0, obs.getH()-mapH/2f);
                 pShape = pShapeArrayList.get(2);
                 shape(pShape);
                 popMatrix();
@@ -467,7 +470,11 @@ public class P3DMap extends ProcessingBase {
     private void drawTarget() {
         pushMatrix();
         // set reference frame
-        translate(targetPosRel[0], targetPosRel[1], targetPosRel[2]);
+        double[] posBc = rb.getShapeBc();
+        translate((float)posBc[0]-(float)robotPos[1],
+                (float)posBc[1]-(float)robotPos[0],
+                (float)selectedShapePos[3]+20);
+//        LOGGER.info("POSITION SHAPE:{}",new float[]{(float)posBc[1]-(float)robotPos[1],(float)posBc[0]-(float)robotPos[0]});
         // draw sphere
         stroke(255, 0, 0);
         strokeWeight(2);

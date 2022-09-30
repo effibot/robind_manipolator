@@ -146,7 +146,6 @@ public class SettingController {
         pkt.put("PROC", "PATH");
         pkt.put("START", sb.getSelectedId());
         pkt.put("END", ArrayUtils.subarray(sb.shapeToPos(),1,3));
-        rb.setSelectedShape(sb.shapeToPos());
         pkt.put("METHOD", sb.getSelectedMethod());
         notifyPropertyChange("SEND", null, pkt);
         notifyPropertyChange(RECEIVE, false, true);
@@ -160,6 +159,8 @@ public class SettingController {
                 case "dQ" -> rb.setDqGRover((double[][]) pkt.get(key));
                 case "ddQ" -> rb.setDdqGRover((double[][]) pkt.get(key));
                 case "PATHIDS" -> sb.setPathLabel((double[]) pkt.get(key));
+                case "PIK" ->rb.setSelectedShape((double[]) pkt.get(key));
+                case "SHAPEBC" -> rb.setShapeBc((double[]) pkt.get(key));
                 case "ANIMATION" -> sb.setAnimation((byte[]) Utils.decompress((byte[]) pkt.get(key)));
                 case "FINISH" ->{
 
@@ -230,7 +231,7 @@ public class SettingController {
                 LinkedHashMap<String, Object> pkt = new LinkedHashMap<>();
                 pkt.put("PROC","SYM");
                 pkt.put("M",50);
-                pkt.put("ALPHA",500);
+                pkt.put("ALPHA",600);
                 notifyPropertyChange("SEND", null, pkt);
                 notifyPropertyChange(RECEIVE, false, true);
                 boolean finish = false;

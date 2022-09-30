@@ -8,6 +8,7 @@ idx = find(ismember(shapeposlist,shape,'rows'));
 endId = list(idx).endid;
 startPos = [findobj(nodeList,'id',endId).bc,0];
 pend=shapepos(idx,2:4);
+pobs = pend;
 P = shortestpath(G, startId, endId);
 % if P == startId 
 %     msg = src.UserData.buildMessage(0,"FINISH",1);
@@ -24,15 +25,25 @@ msg = src.UserData.buildMessage(0, "PATHIDS",[P,P]);
 p = fliplr([startPos(1:2);startPos(1:2)])';
 dp = zeros(2,2);
 ddp = zeros(2,2);
+pik = [(pend(1:2)+p(:,1)')./2,pend(3)] ;
+
 else
-msg = src.UserData.buildMessage(0, "PATHIDS",P);
+msg = src.UserData.buildMessage(0, "PATHIDS",[P,P]);
 [p,dp,ddp,pik] = pathfind(nodeList, P, Aint, Amid, redObsbc',method,pend);
 pend = pik;
 end
+startPos = [p(1:2,end);0]';
 msg = src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 
 msg =src.UserData.buildMessage(0,"Q",p');
+msg =src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+pobs
+msg =src.UserData.buildMessage(0,"SHAPEBC",shape);
+msg =src.UserData.buildMessage(msg,"FINISH",0);
+src.UserData.sendMessage(src,msg);
+msg =src.UserData.buildMessage(0,"PIK",[idx-1,pik]);
 msg =src.UserData.buildMessage(msg,"FINISH",0);
 src.UserData.sendMessage(src,msg);
 msg =src.UserData.buildMessage(0,"dQ",dp');

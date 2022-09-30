@@ -1,6 +1,7 @@
 function newtongrad(roll,pitch,yaw,src)
     load path.mat pend startPos
-    pfinal =(pend-startPos);% [50 50 50];
+    pfinal =(pend-[fliplr(startPos(1:2)),0]) % [50 50 50];
+    startPos
     P=[pfinal(1);pfinal(2);pfinal(3)+20;deg2rad(roll);deg2rad(pitch);deg2rad(yaw)];
     q=sym('q',[6,1]);
     L=[33;50;0;51;0;28];
@@ -67,7 +68,7 @@ function newtongrad(roll,pitch,yaw,src)
 %             disp(positionCondition);
 %             disp("Orientation Errot");
 %             disp(abs(orientationCondition(3,3)));
-            if (positionCondition>0.9 || abs(orientationCondition(3,3))>0.99) 
+            if (positionCondition>0.9 || abs(orientationCondition(3,3))>0.9) && errorGradient<errorNewton
 %                 Mi trovo vicino ad una singolarità di posizione e/o
 %                 orientamento
                 q0 = qG;   
