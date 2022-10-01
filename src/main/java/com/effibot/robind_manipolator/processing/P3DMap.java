@@ -375,7 +375,7 @@ public class P3DMap extends ProcessingBase {
         vertex(512, -512, 0, 1024);
         endShape();
         // elevate everything to the top of the floor
-        translate(0, 0, mapH / 2.0f);
+//        translate(0, 0, mapH / 2.0f);
         // origin of R3
         stroke(0);
         strokeWeight(1);
@@ -388,14 +388,14 @@ public class P3DMap extends ProcessingBase {
             if (obs.getXc() == rb.getShapePos()[0][2] && obs.getYc() == rb.getShapePos()[0][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, obs.getH()-mapH/2f);
+                translate(0, 0, obs.getH()/2+SHAPE_DIAMETER/2);
                 pShape = pShapeArrayList.get(0);
                 shape(pShape);
                 popMatrix();
             } else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, obs.getH()-mapH/2f-SHAPE_DIAMETER/2f);
+                translate(0, 0, obs.getH()/2-SHAPE_DIAMETER/2);
                 pShape = pShapeArrayList.get(1);
                 pShape.setFill(shapeColor[1]);
                 shape(pShape);
@@ -403,14 +403,12 @@ public class P3DMap extends ProcessingBase {
             } else if (obs.getXc() == rb.getShapePos()[2][2] && obs.getYc() == rb.getShapePos()[2][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, obs.getH()-mapH/2f);
+                translate(0, 0, obs.getH()/2+SHAPE_DIAMETER/2);
                 pShape = pShapeArrayList.get(2);
                 shape(pShape);
                 popMatrix();
             } else
                 fill(224, 224, 224);
-
-
             box(obs.getR(), obs.getR(), obs.getH());
 
             popMatrix();
