@@ -155,9 +155,11 @@ public class SettingModule extends WorkbenchModule implements PropertyChangeList
         // Start Button
         JFXButton start2D = new JFXButton("Start 2D");
         settingController.onStart2DAction(start2D);
+        start2D.setDisable(true);
         // Start 3D Button
         JFXButton start3D = new JFXButton("Start 3D");
         settingController.onStart3DAction(start3D);
+        start3D.setDisable(true);
         // Back Button
         JFXButton back = new JFXButton("Indietro");
         settingController.onBackAction(back);

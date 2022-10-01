@@ -395,7 +395,7 @@ public class P3DMap extends ProcessingBase {
             } else if (obs.getXc() == rb.getShapePos()[1][2] && obs.getYc() == rb.getShapePos()[1][1]) {
                 fill(224, 224, 224);
                 pushMatrix();
-                translate(0, 0, obs.getH()/2-SHAPE_DIAMETER/2);
+                translate(0, 0, obs.getH()/2);
                 pShape = pShapeArrayList.get(1);
                 pShape.setFill(shapeColor[1]);
                 shape(pShape);
