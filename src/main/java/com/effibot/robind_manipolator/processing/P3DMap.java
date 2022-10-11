@@ -431,7 +431,7 @@ public class P3DMap extends ProcessingBase {
 //            symEnd = true;
 //            thread("inverseKinematic");
 //        }
-        translate(symPos[1] - 512, symPos[0] - 512, -5.5f);
+        translate(symPos[1] - 512, symPos[0] - 512, 0);
         r.drawLink();
 
         popMatrix();
